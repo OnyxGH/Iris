@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>PiSharp.CodingAgent</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PiSharp.Ai\PiSharp.Ai.csproj" />
+    <ProjectReference Include="..\PiSharp.Agent\PiSharp.Agent.csproj" />
+    <ProjectReference Include="..\PiSharp.Tui\PiSharp.Tui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Semver" Version="3.0.0" />
+    <PackageReference Include="SkiaSharp" Version="4.152.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.152.0" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="2.0.4" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Assets\theme\*.json" Link="theme\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PiSharp.CodingAgent.Tests" />
+  </ItemGroup>
+
+</Project>
