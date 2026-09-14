@@ -1,0 +1,2066 @@
+{
+ "edits": [
+  {
+   "content": "  indent 0 return\ntrailing    1 return\nreturn 2 gamma\ndash — here 3 fn()\n“quoted” 4 fn()\n\ttab 5 café\ndelta 6 \ndelta 7 delta\ncafé 8 “quoted”\n“quoted” 9 beta\n} 10 fn()\n\ttab 11   indent\n\ttab 12 dash — here\n“quoted” 13 x = 1;\nx = 1; 14 “quoted”\ngamma 15 gamma\n\ttab 16 x = 1;\n{ 17 trailing   \n} 18 café\ndelta 19 x = 1;\n“quoted” 20 “quoted”\n  indent 21 {\n“quoted” 22 fn()\nbeta 23 \nbeta 24 fn()\nx = 1; 25 fn()\n  indent 26 x = 1;\n",
+   "edits": [
+    {
+     "oldText": "x = 1; 25 fn()",
+     "newText": ""
+    },
+    {
+     "oldText": "delta 6",
+     "newText": "replaced 1\nsecond\nthird"
+    }
+   ],
+   "newContent": "  indent 0 return\ntrailing    1 return\nreturn 2 gamma\ndash — here 3 fn()\n“quoted” 4 fn()\n\ttab 5 café\nreplaced 1\nsecond\nthird \ndelta 7 delta\ncafé 8 “quoted”\n“quoted” 9 beta\n} 10 fn()\n\ttab 11   indent\n\ttab 12 dash — here\n“quoted” 13 x = 1;\nx = 1; 14 “quoted”\ngamma 15 gamma\n\ttab 16 x = 1;\n{ 17 trailing   \n} 18 café\ndelta 19 x = 1;\n“quoted” 20 “quoted”\n  indent 21 {\n“quoted” 22 fn()\nbeta 23 \nbeta 24 fn()\n\n  indent 26 x = 1;\n",
+   "diff": {
+    "diff": "    ...\n  3 return 2 gamma\n  4 dash — here 3 fn()\n  5 “quoted” 4 fn()\n  6 \ttab 5 café\n- 7 delta 6 \n+ 7 replaced 1\n+ 8 second\n+ 9 third \n  8 delta 7 delta\n  9 café 8 “quoted”\n 10 “quoted” 9 beta\n 11 } 10 fn()\n    ...\n 22   indent 21 {\n 23 “quoted” 22 fn()\n 24 beta 23 \n 25 beta 24 fn()\n-26 x = 1; 25 fn()\n+28 \n 27   indent 26 x = 1;",
+    "firstChangedLine": 7
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -3,9 +3,11 @@\n return 2 gamma\n dash — here 3 fn()\n “quoted” 4 fn()\n \ttab 5 café\n-delta 6 \n+replaced 1\n+second\n+third \n delta 7 delta\n café 8 “quoted”\n “quoted” 9 beta\n } 10 fn()\n@@ -22,6 +24,6 @@\n   indent 21 {\n “quoted” 22 fn()\n beta 23 \n beta 24 fn()\n-x = 1; 25 fn()\n+\n   indent 26 x = 1;\n"
+  },
+  {
+   "content": "  indent 0 x = 1;\ndelta 1 café\n} 2 {\n“quoted” 3 \nfn() 4 alpha\n{ 5 }\n{ 6 return\n  indent 7 }\ntrailing    8 delta\n{ 9 dash — here\n 10 alpha\nreturn 11 return\n",
+   "edits": [
+    {
+     "oldText": "trailing    8 delta",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "{ 5 }",
+     "newText": "{ 5 }\nextra line 1"
+    }
+   ],
+   "newContent": "  indent 0 x = 1;\ndelta 1 café\n} 2 {\n“quoted” 3 \nfn() 4 alpha\n{ 5 }\nextra line 1\n{ 6 return\n  indent 7 }\nreplaced 0\n{ 9 dash — here\n 10 alpha\nreturn 11 return\n",
+   "diff": {
+    "diff": "    ...\n  3 } 2 {\n  4 “quoted” 3 \n  5 fn() 4 alpha\n  6 { 5 }\n+ 7 extra line 1\n  7 { 6 return\n  8   indent 7 }\n- 9 trailing    8 delta\n+10 replaced 0\n 10 { 9 dash — here\n 11  10 alpha\n 12 return 11 return",
+    "firstChangedLine": 7
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -3,10 +3,11 @@\n } 2 {\n “quoted” 3 \n fn() 4 alpha\n { 5 }\n+extra line 1\n { 6 return\n   indent 7 }\n-trailing    8 delta\n+replaced 0\n { 9 dash — here\n  10 alpha\n return 11 return\n"
+  },
+  {
+   "content": " 0 fn()\nbeta 1 dash — here\nbeta 2 delta\n} 3 café\n  indent 4 “quoted”\ndelta 5 café\nx = 1; 6 x = 1;\nalpha 7 \ttab\nfn() 8 “quoted”\ncafé 9 trailing   \n 10 “quoted”\n  indent 11 alpha\n  indent 12 {\nreturn 13 return\nreturn 14 }\nreturn 15 dash — here\nreturn 16 gamma\n 17 delta\nreturn 18 }\n\ttab 19 return\n\ttab 20 x = 1;\ndelta 21 \ttab\nbeta 22 {\ntrailing    23 fn()\n{ 24 “quoted”\ncafé 25 \ttab\n} 26 }\ngamma 27 dash — here\n\ttab 28 alpha\n 29 x = 1;\nbeta 30 gamma\nbeta 31 beta\ncafé 32 fn()\nfn() 33 \ttab\ndelta 34 }",
+   "edits": [
+    {
+     "oldText": "} 3 café",
+     "newText": "} 3 café\nextra line 0"
+    }
+   ],
+   "newContent": " 0 fn()\nbeta 1 dash — here\nbeta 2 delta\n} 3 café\nextra line 0\n  indent 4 “quoted”\ndelta 5 café\nx = 1; 6 x = 1;\nalpha 7 \ttab\nfn() 8 “quoted”\ncafé 9 trailing   \n 10 “quoted”\n  indent 11 alpha\n  indent 12 {\nreturn 13 return\nreturn 14 }\nreturn 15 dash — here\nreturn 16 gamma\n 17 delta\nreturn 18 }\n\ttab 19 return\n\ttab 20 x = 1;\ndelta 21 \ttab\nbeta 22 {\ntrailing    23 fn()\n{ 24 “quoted”\ncafé 25 \ttab\n} 26 }\ngamma 27 dash — here\n\ttab 28 alpha\n 29 x = 1;\nbeta 30 gamma\nbeta 31 beta\ncafé 32 fn()\nfn() 33 \ttab\ndelta 34 }",
+   "diff": {
+    "diff": "  1  0 fn()\n  2 beta 1 dash — here\n  3 beta 2 delta\n  4 } 3 café\n+ 5 extra line 0\n  5   indent 4 “quoted”\n  6 delta 5 café\n  7 x = 1; 6 x = 1;\n  8 alpha 7 \ttab\n    ...",
+    "firstChangedLine": 5
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,8 +1,9 @@\n  0 fn()\n beta 1 dash — here\n beta 2 delta\n } 3 café\n+extra line 0\n   indent 4 “quoted”\n delta 5 café\n x = 1; 6 x = 1;\n alpha 7 \ttab\n"
+  },
+  {
+   "content": "delta 0 delta\n 1 trailing   \n  indent 2 fn()\n  indent 3 “quoted”\n  indent 4 {\nfn() 5 {\nfn() 6 return\n  indent 7 gamma\ncafé 8 alpha\ngamma 9 }\n} 10 \ttab\nfn() 11 return\n 12 \ttab\nx = 1; 13 x = 1;\n 14 \ttab\ndash — here 15 dash — here\n 16 x = 1;\ndash — here 17   indent\nalpha 18 x = 1;\nx = 1; 19 dash — here\ntrailing    20 alpha\nx = 1; 21 x = 1;\ngamma 22 dash — here\n  indent 23 trailing   \nfn() 24 trailing   \ncafé 25 }\nreturn 26 dash — here\n  indent 27 café\n 28 return\n{ 29 beta\ndash — here 30 fn()\nalpha 31 return\n  indent 32 “quoted”\nfn() 33 trailing   \n{ 34 dash — here\ndelta 35 beta\ndelta 36 dash — here\ncafé 37   indent\n\ttab 38 “quoted”\ncafé 39 fn()",
+   "edits": [
+    {
+     "oldText": "fn() 33 trailing   ",
+     "newText": "replaced 0\nsecond\nthird"
+    }
+   ],
+   "newContent": "delta 0 delta\n 1 trailing   \n  indent 2 fn()\n  indent 3 “quoted”\n  indent 4 {\nfn() 5 {\nfn() 6 return\n  indent 7 gamma\ncafé 8 alpha\ngamma 9 }\n} 10 \ttab\nfn() 11 return\n 12 \ttab\nx = 1; 13 x = 1;\n 14 \ttab\ndash — here 15 dash — here\n 16 x = 1;\ndash — here 17   indent\nalpha 18 x = 1;\nx = 1; 19 dash — here\ntrailing    20 alpha\nx = 1; 21 x = 1;\ngamma 22 dash — here\n  indent 23 trailing   \nfn() 24 trailing   \ncafé 25 }\nreturn 26 dash — here\n  indent 27 café\n 28 return\n{ 29 beta\ndash — here 30 fn()\nalpha 31 return\n  indent 32 “quoted”\nreplaced 0\nsecond\nthird\n{ 34 dash — here\ndelta 35 beta\ndelta 36 dash — here\ncafé 37   indent\n\ttab 38 “quoted”\ncafé 39 fn()",
+   "diff": {
+    "diff": "    ...\n 30 { 29 beta\n 31 dash — here 30 fn()\n 32 alpha 31 return\n 33   indent 32 “quoted”\n-34 fn() 33 trailing   \n+34 replaced 0\n+35 second\n+36 third\n 35 { 34 dash — here\n 36 delta 35 beta\n 37 delta 36 dash — here\n 38 café 37   indent\n    ...",
+    "firstChangedLine": 34
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -30,9 +30,11 @@\n { 29 beta\n dash — here 30 fn()\n alpha 31 return\n   indent 32 “quoted”\n-fn() 33 trailing   \n+replaced 0\n+second\n+third\n { 34 dash — here\n delta 35 beta\n delta 36 dash — here\n café 37   indent\n"
+  },
+  {
+   "content": "beta 0 delta\n\ttab 1 }\n} 2 beta\n\ttab 3 return\ndash — here 4 gamma\nalpha 5   indent\ncafé 6 }",
+   "edits": [
+    {
+     "oldText": "beta 0 delta",
+     "newText": "beta 0 delta\nextra line 0"
+    },
+    {
+     "oldText": "dash — here 4 gamma",
+     "newText": "dash — here 4 gamma\nextra line 1"
+    }
+   ],
+   "newContent": "beta 0 delta\nextra line 0\n\ttab 1 }\n} 2 beta\n\ttab 3 return\ndash — here 4 gamma\nextra line 1\nalpha 5   indent\ncafé 6 }",
+   "diff": {
+    "diff": " 1 beta 0 delta\n+2 extra line 0\n 2 \ttab 1 }\n 3 } 2 beta\n 4 \ttab 3 return\n 5 dash — here 4 gamma\n+7 extra line 1\n 6 alpha 5   indent\n 7 café 6 }",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,7 +1,9 @@\n beta 0 delta\n+extra line 0\n \ttab 1 }\n } 2 beta\n \ttab 3 return\n dash — here 4 gamma\n+extra line 1\n alpha 5   indent\n café 6 }\n\\ No newline at end of file\n"
+  },
+  {
+   "content": " 0 {\ncafé 1 x = 1;\nalpha 2 trailing   \ncafé 3 café\ndelta 4 delta",
+   "edits": [
+    {
+     "oldText": "alpha 2 trailing   ",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "café 3 café",
+     "newText": "café 3 café\nextra line 2"
+    }
+   ],
+   "newContent": " 0 {\ncafé 1 x = 1;\nreplaced 0\ncafé 3 café\nextra line 2\ndelta 4 delta",
+   "diff": {
+    "diff": " 1  0 {\n 2 café 1 x = 1;\n-3 alpha 2 trailing   \n+3 replaced 0\n 4 café 3 café\n+5 extra line 2\n 5 delta 4 delta",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,5 +1,6 @@\n  0 {\n café 1 x = 1;\n-alpha 2 trailing   \n+replaced 0\n café 3 café\n+extra line 2\n delta 4 delta\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "fn() 0   indent\n  indent 1 alpha\ngamma 2 “quoted”\n} 3 \ttab\nalpha 4 beta\ntrailing    5 café\n 6 trailing   \ncafé 7 fn()\n“quoted” 8 trailing   \nreturn 9 return\ngamma 10 café\n\ttab 11 return\n} 12 dash — here\n} 13 alpha\nreturn 14 beta\ngamma 15 trailing   \nx = 1; 16 }\nalpha 17 dash — here\n} 18 return\ntrailing    19 café\ncafé 20 x = 1;\ndelta 21 fn()\nalpha 22 alpha\n“quoted” 23 x = 1;\n“quoted” 24 return\n  indent 25 gamma\nbeta 26 \n 27 return\nbeta 28   indent\n",
+   "edits": [
+    {
+     "oldText": "trailing    5 café",
+     "newText": ""
+    }
+   ],
+   "newContent": "fn() 0   indent\n  indent 1 alpha\ngamma 2 “quoted”\n} 3 \ttab\nalpha 4 beta\n\n 6 trailing   \ncafé 7 fn()\n“quoted” 8 trailing   \nreturn 9 return\ngamma 10 café\n\ttab 11 return\n} 12 dash — here\n} 13 alpha\nreturn 14 beta\ngamma 15 trailing   \nx = 1; 16 }\nalpha 17 dash — here\n} 18 return\ntrailing    19 café\ncafé 20 x = 1;\ndelta 21 fn()\nalpha 22 alpha\n“quoted” 23 x = 1;\n“quoted” 24 return\n  indent 25 gamma\nbeta 26 \n 27 return\nbeta 28   indent\n",
+   "diff": {
+    "diff": "    ...\n  2   indent 1 alpha\n  3 gamma 2 “quoted”\n  4 } 3 \ttab\n  5 alpha 4 beta\n- 6 trailing    5 café\n+ 6 \n  7  6 trailing   \n  8 café 7 fn()\n  9 “quoted” 8 trailing   \n 10 return 9 return\n    ...",
+    "firstChangedLine": 6
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -2,9 +2,9 @@\n   indent 1 alpha\n gamma 2 “quoted”\n } 3 \ttab\n alpha 4 beta\n-trailing    5 café\n+\n  6 trailing   \n café 7 fn()\n “quoted” 8 trailing   \n return 9 return\n"
+  },
+  {
+   "content": "beta 0 }\ndash — here 1 alpha\nfn() 2 return\nx = 1; 3 alpha\ngamma 4 delta\nfn() 5 “quoted”\nreturn 6 delta\n} 7 delta\ncafé 8 alpha\n  indent 9   indent\nx = 1; 10 x = 1;\nx = 1; 11 beta\nalpha 12 dash — here\nbeta 13 {\ndash — here 14 café\ndelta 15 beta\ndelta 16 dash — here\ncafé 17 \ttab\ntrailing    18   indent\nbeta 19 \ttab\nreturn 20 }\n} 21 }\nreturn 22 {\nalpha 23 \ndash — here 24 café\n“quoted” 25 \ttab\n} 26 gamma\n{ 27 \ttab\n} 28 café\n} 29 x = 1;\n“quoted” 30 trailing   \n} 31 x = 1;\nx = 1; 32 “quoted”\n{ 33 dash — here",
+   "edits": [
+    {
+     "oldText": "gamma 4 delta",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "delta 15 beta",
+     "newText": "replaced 1\nsecond\nthird"
+    },
+    {
+     "oldText": "fn() 2 return",
+     "newText": "replaced 2\nsecond\nthird"
+    }
+   ],
+   "newContent": "beta 0 }\ndash — here 1 alpha\nreplaced 2\nsecond\nthird\nx = 1; 3 alpha\nreplaced 0\nsecond\nthird\nfn() 5 “quoted”\nreturn 6 delta\n} 7 delta\ncafé 8 alpha\n  indent 9   indent\nx = 1; 10 x = 1;\nx = 1; 11 beta\nalpha 12 dash — here\nbeta 13 {\ndash — here 14 café\nreplaced 1\nsecond\nthird\ndelta 16 dash — here\ncafé 17 \ttab\ntrailing    18   indent\nbeta 19 \ttab\nreturn 20 }\n} 21 }\nreturn 22 {\nalpha 23 \ndash — here 24 café\n“quoted” 25 \ttab\n} 26 gamma\n{ 27 \ttab\n} 28 café\n} 29 x = 1;\n“quoted” 30 trailing   \n} 31 x = 1;\nx = 1; 32 “quoted”\n{ 33 dash — here",
+   "diff": {
+    "diff": "  1 beta 0 }\n  2 dash — here 1 alpha\n- 3 fn() 2 return\n+ 3 replaced 2\n+ 4 second\n+ 5 third\n  4 x = 1; 3 alpha\n- 5 gamma 4 delta\n+ 7 replaced 0\n+ 8 second\n+ 9 third\n  6 fn() 5 “quoted”\n  7 return 6 delta\n  8 } 7 delta\n  9 café 8 alpha\n    ...\n 12 x = 1; 11 beta\n 13 alpha 12 dash — here\n 14 beta 13 {\n 15 dash — here 14 café\n-16 delta 15 beta\n+20 replaced 1\n+21 second\n+22 third\n 17 delta 16 dash — here\n 18 café 17 \ttab\n 19 trailing    18   indent\n 20 beta 19 \ttab\n    ...",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,9 +1,13 @@\n beta 0 }\n dash — here 1 alpha\n-fn() 2 return\n+replaced 2\n+second\n+third\n x = 1; 3 alpha\n-gamma 4 delta\n+replaced 0\n+second\n+third\n fn() 5 “quoted”\n return 6 delta\n } 7 delta\n café 8 alpha\n@@ -12,9 +16,11 @@\n x = 1; 11 beta\n alpha 12 dash — here\n beta 13 {\n dash — here 14 café\n-delta 15 beta\n+replaced 1\n+second\n+third\n delta 16 dash — here\n café 17 \ttab\n trailing    18   indent\n beta 19 \ttab\n"
+  },
+  {
+   "content": "café 0   indent",
+   "edits": [
+    {
+     "oldText": "café 0   indent",
+     "newText": ""
+    }
+   ],
+   "newContent": "",
+   "diff": {
+    "diff": "-1 café 0   indent",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,1 +0,0 @@\n-café 0   indent\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "delta 0 x = 1;\nfn() 1 }\nfn() 2 return\nfn() 3 dash — here\ncafé 4 \ttab\nfn() 5 beta\n 6   indent\n} 7 alpha\ntrailing    8 {\ncafé 9 “quoted”\n} 10 fn()\n 11 alpha\ntrailing    12 gamma\nalpha 13 x = 1;\nx = 1; 14 beta\n\ttab 15 }\n 16 café\n{ 17 alpha",
+   "edits": [
+    {
+     "oldText": "} 10 fn()",
+     "newText": "} 10 fn()\nextra line 0"
+    }
+   ],
+   "newContent": "delta 0 x = 1;\nfn() 1 }\nfn() 2 return\nfn() 3 dash — here\ncafé 4 \ttab\nfn() 5 beta\n 6   indent\n} 7 alpha\ntrailing    8 {\ncafé 9 “quoted”\n} 10 fn()\nextra line 0\n 11 alpha\ntrailing    12 gamma\nalpha 13 x = 1;\nx = 1; 14 beta\n\ttab 15 }\n 16 café\n{ 17 alpha",
+   "diff": {
+    "diff": "    ...\n  8 } 7 alpha\n  9 trailing    8 {\n 10 café 9 “quoted”\n 11 } 10 fn()\n+12 extra line 0\n 12  11 alpha\n 13 trailing    12 gamma\n 14 alpha 13 x = 1;\n 15 x = 1; 14 beta\n    ...",
+    "firstChangedLine": 12
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -8,8 +8,9 @@\n } 7 alpha\n trailing    8 {\n café 9 “quoted”\n } 10 fn()\n+extra line 0\n  11 alpha\n trailing    12 gamma\n alpha 13 x = 1;\n x = 1; 14 beta\n"
+  },
+  {
+   "content": "beta 0 gamma\n\ttab 1 trailing   \n 2 dash — here\nx = 1; 3 dash — here\nbeta 4 café\n} 5 }\n  indent 6 café\ndash — here 7 \ttab\n 8 gamma\nreturn 9 }\n{ 10 alpha\n\ttab 11 \ttab\n“quoted” 12 delta\ngamma 13 ",
+   "edits": [
+    {
+     "oldText": " 8 gamma",
+     "newText": ""
+    },
+    {
+     "oldText": "\ttab 11 \ttab",
+     "newText": "replaced 1"
+    },
+    {
+     "oldText": "\ttab 1 trailing   ",
+     "newText": "\ttab 1 trailing   \nextra line 2"
+    }
+   ],
+   "newContent": "beta 0 gamma\n\ttab 1 trailing   \nextra line 2\n 2 dash — here\nx = 1; 3 dash — here\nbeta 4 café\n} 5 }\n  indent 6 café\ndash — here 7 \ttab\n\nreturn 9 }\n{ 10 alpha\nreplaced 1\n“quoted” 12 delta\ngamma 13 ",
+   "diff": {
+    "diff": "  1 beta 0 gamma\n  2 \ttab 1 trailing   \n+ 3 extra line 2\n  3  2 dash — here\n  4 x = 1; 3 dash — here\n  5 beta 4 café\n  6 } 5 }\n  7   indent 6 café\n  8 dash — here 7 \ttab\n- 9  8 gamma\n+10 \n 10 return 9 }\n 11 { 10 alpha\n-12 \ttab 11 \ttab\n+13 replaced 1\n 13 “quoted” 12 delta\n 14 gamma 13 ",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,14 +1,15 @@\n beta 0 gamma\n \ttab 1 trailing   \n+extra line 2\n  2 dash — here\n x = 1; 3 dash — here\n beta 4 café\n } 5 }\n   indent 6 café\n dash — here 7 \ttab\n- 8 gamma\n+\n return 9 }\n { 10 alpha\n-\ttab 11 \ttab\n+replaced 1\n “quoted” 12 delta\n gamma 13 \n\\ No newline at end of file\n"
+  },
+  {
+   "content": " 0 delta\n“quoted” 1   indent\ndash — here 2 return\n“quoted” 3 fn()\nalpha 4 dash — here\ntrailing    5 café\n  indent 6 gamma\ngamma 7 delta\n\ttab 8 dash — here\n\ttab 9 fn()\ndelta 10   indent\nreturn 11 \nx = 1; 12 }\nx = 1; 13   indent\n  indent 14 dash — here\nfn() 15 \ttab\nbeta 16 return\n“quoted” 17 }\nfn() 18 alpha\n  indent 19 }\ntrailing    20 dash — here\n“quoted” 21 gamma\nreturn 22 }\n} 23 trailing   \ntrailing    24 dash — here\nalpha 25 trailing   \nbeta 26 return\ncafé 27 dash — here\nreturn 28 \ttab\n  indent 29 trailing   \nreturn 30 fn()\nfn() 31 delta\n\ttab 32 fn()\ntrailing    33 return\nx = 1; 34 x = 1;\ndash — here 35 dash — here",
+   "edits": [
+    {
+     "oldText": "trailing    5 café",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "\"quoted\" 17 }",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": " 0 delta\n“quoted” 1   indent\ndash — here 2 return\n“quoted” 3 fn()\nalpha 4 dash — here\nreplaced 0\n  indent 6 gamma\ngamma 7 delta\n\ttab 8 dash — here\n\ttab 9 fn()\ndelta 10   indent\nreturn 11 \nx = 1; 12 }\nx = 1; 13   indent\n  indent 14 dash — here\nfn() 15 \ttab\nbeta 16 return\nreplaced 1\nfn() 18 alpha\n  indent 19 }\ntrailing    20 dash — here\n“quoted” 21 gamma\nreturn 22 }\n} 23 trailing   \ntrailing    24 dash — here\nalpha 25 trailing   \nbeta 26 return\ncafé 27 dash — here\nreturn 28 \ttab\n  indent 29 trailing   \nreturn 30 fn()\nfn() 31 delta\n\ttab 32 fn()\ntrailing    33 return\nx = 1; 34 x = 1;\ndash — here 35 dash — here",
+   "diff": {
+    "diff": "    ...\n  2 “quoted” 1   indent\n  3 dash — here 2 return\n  4 “quoted” 3 fn()\n  5 alpha 4 dash — here\n- 6 trailing    5 café\n+ 6 replaced 0\n  7   indent 6 gamma\n  8 gamma 7 delta\n  9 \ttab 8 dash — here\n 10 \ttab 9 fn()\n    ...\n 14 x = 1; 13   indent\n 15   indent 14 dash — here\n 16 fn() 15 \ttab\n 17 beta 16 return\n-18 “quoted” 17 }\n+18 replaced 1\n 19 fn() 18 alpha\n 20   indent 19 }\n 21 trailing    20 dash — here\n 22 “quoted” 21 gamma\n    ...",
+    "firstChangedLine": 6
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -2,9 +2,9 @@\n “quoted” 1   indent\n dash — here 2 return\n “quoted” 3 fn()\n alpha 4 dash — here\n-trailing    5 café\n+replaced 0\n   indent 6 gamma\n gamma 7 delta\n \ttab 8 dash — here\n \ttab 9 fn()\n@@ -14,9 +14,9 @@\n x = 1; 13   indent\n   indent 14 dash — here\n fn() 15 \ttab\n beta 16 return\n-“quoted” 17 }\n+replaced 1\n fn() 18 alpha\n   indent 19 }\n trailing    20 dash — here\n “quoted” 21 gamma\n"
+  },
+  {
+   "content": "  indent 0 café\nfn() 1 beta\n  indent 2 \n 3 x = 1;\nbeta 4 {\n} 5 \ttab\ndelta 6 {\ndash — here 7 alpha\nfn() 8 “quoted”\nbeta 9 return\ndash — here 10 café\ncafé 11 \ttab\n\ttab 12 x = 1;\n\ttab 13 x = 1;\n“quoted” 14 beta\ndash — here 15 delta\ndash — here 16 fn()\n{ 17 café\n{ 18 trailing   \ndash — here 19 \ttab\ndelta 20 beta\nbeta 21 gamma\ncafé 22   indent\nfn() 23 \ttab\nreturn 24   indent\nfn() 25 \ntrailing    26 delta\nreturn 27 }\ndelta 28 alpha\ntrailing    29 fn()\ncafé 30 x = 1;\ndash — here 31 “quoted”\ndash — here 32 fn()\n{ 33 dash — here\nreturn 34 café\ndash — here 35 alpha\nalpha 36 }\n",
+   "edits": [
+    {
+     "oldText": "delta 20 beta",
+     "newText": ""
+    }
+   ],
+   "newContent": "  indent 0 café\nfn() 1 beta\n  indent 2 \n 3 x = 1;\nbeta 4 {\n} 5 \ttab\ndelta 6 {\ndash — here 7 alpha\nfn() 8 “quoted”\nbeta 9 return\ndash — here 10 café\ncafé 11 \ttab\n\ttab 12 x = 1;\n\ttab 13 x = 1;\n“quoted” 14 beta\ndash — here 15 delta\ndash — here 16 fn()\n{ 17 café\n{ 18 trailing   \ndash — here 19 \ttab\n\nbeta 21 gamma\ncafé 22   indent\nfn() 23 \ttab\nreturn 24   indent\nfn() 25 \ntrailing    26 delta\nreturn 27 }\ndelta 28 alpha\ntrailing    29 fn()\ncafé 30 x = 1;\ndash — here 31 “quoted”\ndash — here 32 fn()\n{ 33 dash — here\nreturn 34 café\ndash — here 35 alpha\nalpha 36 }\n",
+   "diff": {
+    "diff": "    ...\n 17 dash — here 16 fn()\n 18 { 17 café\n 19 { 18 trailing   \n 20 dash — here 19 \ttab\n-21 delta 20 beta\n+21 \n 22 beta 21 gamma\n 23 café 22   indent\n 24 fn() 23 \ttab\n 25 return 24   indent\n    ...",
+    "firstChangedLine": 21
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -17,9 +17,9 @@\n dash — here 16 fn()\n { 17 café\n { 18 trailing   \n dash — here 19 \ttab\n-delta 20 beta\n+\n beta 21 gamma\n café 22   indent\n fn() 23 \ttab\n return 24   indent\n"
+  },
+  {
+   "content": "  indent 0 “quoted”\nbeta 1 {\nx = 1; 2 gamma\nx = 1; 3 fn()\nalpha 4 delta\n} 5   indent\n{ 6 return\n{ 7 gamma\n  indent 8 \n 9 }\n\ttab 10   indent\n  indent 11 \ndash — here 12 gamma\n 13 dash — here\n{ 14 \nbeta 15 {\nalpha 16 dash — here\nbeta 17   indent\nalpha 18 dash — here\nalpha 19 \ttab\nreturn 20 alpha\n 21 café\ngamma 22 fn()\ndash — here 23 beta\n} 24 \nalpha 25 \n{ 26 “quoted”\nfn() 27 gamma\nalpha 28 \ttab\n“quoted” 29 gamma\n 30 fn()\nreturn 31 return",
+   "edits": [
+    {
+     "oldText": "alpha 16 dash - here",
+     "newText": "alpha 16 dash - here\nextra line 0"
+    },
+    {
+     "oldText": "x = 1; 3 fn()",
+     "newText": ""
+    },
+    {
+     "oldText": "beta 15 {",
+     "newText": "replaced 2\nsecond\nthird"
+    }
+   ],
+   "newContent": "  indent 0 “quoted”\nbeta 1 {\nx = 1; 2 gamma\n\nalpha 4 delta\n} 5   indent\n{ 6 return\n{ 7 gamma\n  indent 8 \n 9 }\n\ttab 10   indent\n  indent 11 \ndash — here 12 gamma\n 13 dash — here\n{ 14 \nreplaced 2\nsecond\nthird\nalpha 16 dash - here\nextra line 0\nbeta 17   indent\nalpha 18 dash — here\nalpha 19 \ttab\nreturn 20 alpha\n 21 café\ngamma 22 fn()\ndash — here 23 beta\n} 24 \nalpha 25 \n{ 26 “quoted”\nfn() 27 gamma\nalpha 28 \ttab\n“quoted” 29 gamma\n 30 fn()\nreturn 31 return",
+   "diff": {
+    "diff": "  1   indent 0 “quoted”\n  2 beta 1 {\n  3 x = 1; 2 gamma\n- 4 x = 1; 3 fn()\n+ 4 \n  5 alpha 4 delta\n  6 } 5   indent\n  7 { 6 return\n  8 { 7 gamma\n    ...\n 12   indent 11 \n 13 dash — here 12 gamma\n 14  13 dash — here\n 15 { 14 \n-16 beta 15 {\n-17 alpha 16 dash — here\n+16 replaced 2\n+17 second\n+18 third\n+19 alpha 16 dash - here\n+20 extra line 0\n 18 beta 17   indent\n 19 alpha 18 dash — here\n 20 alpha 19 \ttab\n 21 return 20 alpha\n    ...",
+    "firstChangedLine": 4
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,8 +1,8 @@\n   indent 0 “quoted”\n beta 1 {\n x = 1; 2 gamma\n-x = 1; 3 fn()\n+\n alpha 4 delta\n } 5   indent\n { 6 return\n { 7 gamma\n@@ -12,10 +12,13 @@\n   indent 11 \n dash — here 12 gamma\n  13 dash — here\n { 14 \n-beta 15 {\n-alpha 16 dash — here\n+replaced 2\n+second\n+third\n+alpha 16 dash - here\n+extra line 0\n beta 17   indent\n alpha 18 dash — here\n alpha 19 \ttab\n return 20 alpha\n"
+  },
+  {
+   "content": "beta 0 beta",
+   "edits": [
+    {
+     "oldText": "beta 0 beta",
+     "newText": "beta 0 beta\nextra line 0"
+    }
+   ],
+   "newContent": "beta 0 beta\nextra line 0",
+   "diff": {
+    "diff": "-1 beta 0 beta\n+1 beta 0 beta\n+2 extra line 0",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,1 +1,2 @@\n-beta 0 beta\n\\ No newline at end of file\n+beta 0 beta\n+extra line 0\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "beta 0 fn()\ngamma 1   indent\nbeta 2 café\ndash — here 3   indent\nbeta 4 alpha\n  indent 5 dash — here\n} 6 delta\nx = 1; 7 return\n“quoted” 8 x = 1;\ntrailing    9 x = 1;",
+   "edits": [
+    {
+     "oldText": "gamma 1   indent",
+     "newText": "gamma 1   indent\nextra line 0"
+    }
+   ],
+   "newContent": "beta 0 fn()\ngamma 1   indent\nextra line 0\nbeta 2 café\ndash — here 3   indent\nbeta 4 alpha\n  indent 5 dash — here\n} 6 delta\nx = 1; 7 return\n“quoted” 8 x = 1;\ntrailing    9 x = 1;",
+   "diff": {
+    "diff": "  1 beta 0 fn()\n  2 gamma 1   indent\n+ 3 extra line 0\n  3 beta 2 café\n  4 dash — here 3   indent\n  5 beta 4 alpha\n  6   indent 5 dash — here\n    ...",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,6 +1,7 @@\n beta 0 fn()\n gamma 1   indent\n+extra line 0\n beta 2 café\n dash — here 3   indent\n beta 4 alpha\n   indent 5 dash — here\n"
+  },
+  {
+   "content": "return 0 dash — here\n  indent 1 {",
+   "edits": [
+    {
+     "oldText": "return 0 dash — here",
+     "newText": ""
+    },
+    {
+     "oldText": "  indent 1 {",
+     "newText": "replaced 1\nsecond\nthird"
+    }
+   ],
+   "newContent": "\nreplaced 1\nsecond\nthird",
+   "diff": {
+    "diff": "-1 return 0 dash — here\n-2   indent 1 {\n+1 \n+2 replaced 1\n+3 second\n+4 third",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,2 +1,4 @@\n-return 0 dash — here\n-  indent 1 {\n\\ No newline at end of file\n+\n+replaced 1\n+second\n+third\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "“quoted” 0 delta\ngamma 1 alpha\n} 2   indent\ndash — here 3 café\ndash — here 4 \ttab\ndelta 5 gamma\ncafé 6 trailing   \n“quoted” 7 return\ndelta 8 return\n} 9 fn()\nreturn 10 alpha\n 11 café\n 12 x = 1;\ndash — here 13   indent\n  indent 14 gamma\nalpha 15 café\nbeta 16 café\nreturn 17 dash — here\n 18 x = 1;\nalpha 19 beta\ngamma 20 gamma\nbeta 21 {\nx = 1; 22 \ttab\ncafé 23   indent\nreturn 24 \ngamma 25 beta\n  indent 26 {\n",
+   "edits": [
+    {
+     "oldText": "café 6 trailing   ",
+     "newText": ""
+    },
+    {
+     "oldText": "gamma 1 alpha",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "“quoted” 0 delta\nreplaced 1\n} 2   indent\ndash — here 3 café\ndash — here 4 \ttab\ndelta 5 gamma\n\n“quoted” 7 return\ndelta 8 return\n} 9 fn()\nreturn 10 alpha\n 11 café\n 12 x = 1;\ndash — here 13   indent\n  indent 14 gamma\nalpha 15 café\nbeta 16 café\nreturn 17 dash — here\n 18 x = 1;\nalpha 19 beta\ngamma 20 gamma\nbeta 21 {\nx = 1; 22 \ttab\ncafé 23   indent\nreturn 24 \ngamma 25 beta\n  indent 26 {\n",
+   "diff": {
+    "diff": "  1 “quoted” 0 delta\n- 2 gamma 1 alpha\n+ 2 replaced 1\n  3 } 2   indent\n  4 dash — here 3 café\n  5 dash — here 4 \ttab\n  6 delta 5 gamma\n- 7 café 6 trailing   \n+ 7 \n  8 “quoted” 7 return\n  9 delta 8 return\n 10 } 9 fn()\n 11 return 10 alpha\n    ...",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,11 +1,11 @@\n “quoted” 0 delta\n-gamma 1 alpha\n+replaced 1\n } 2   indent\n dash — here 3 café\n dash — here 4 \ttab\n delta 5 gamma\n-café 6 trailing   \n+\n “quoted” 7 return\n delta 8 return\n } 9 fn()\n return 10 alpha\n"
+  },
+  {
+   "content": "café 0 trailing   \ntrailing    1 \ndash — here 2 fn()\ncafé 3 café\nalpha 4 {\n  indent 5 \nbeta 6 \n  indent 7 trailing   \ngamma 8 \n 9 fn()\ntrailing    10 dash — here\n\ttab 11 }\nx = 1; 12 \n 13 trailing   \ncafé 14 x = 1;\ndelta 15 x = 1;\nreturn 16 alpha\ncafé 17 delta\ntrailing    18 trailing   \nreturn 19 beta\ncafé 20 trailing   \nbeta 21 {\nreturn 22 \n\ttab 23 }\n{ 24 beta\nalpha 25 delta\ntrailing    26 delta\nreturn 27 {\nreturn 28 \n} 29 fn()\nreturn 30 alpha\nreturn 31 return\n} 32 x = 1;\ndash — here 33 return\nx = 1; 34 return\nalpha 35 delta\n\ttab 36 “quoted”\n} 37 alpha\n 38 alpha\n{ 39 dash — here",
+   "edits": [
+    {
+     "oldText": " 9 fn()",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "beta 21 {",
+     "newText": "beta 21 {\nextra line 1"
+    }
+   ],
+   "newContent": "café 0 trailing   \ntrailing    1 \ndash — here 2 fn()\ncafé 3 café\nalpha 4 {\n  indent 5 \nbeta 6 \n  indent 7 trailing   \ngamma 8 \nreplaced 0\ntrailing    10 dash — here\n\ttab 11 }\nx = 1; 12 \n 13 trailing   \ncafé 14 x = 1;\ndelta 15 x = 1;\nreturn 16 alpha\ncafé 17 delta\ntrailing    18 trailing   \nreturn 19 beta\ncafé 20 trailing   \nbeta 21 {\nextra line 1\nreturn 22 \n\ttab 23 }\n{ 24 beta\nalpha 25 delta\ntrailing    26 delta\nreturn 27 {\nreturn 28 \n} 29 fn()\nreturn 30 alpha\nreturn 31 return\n} 32 x = 1;\ndash — here 33 return\nx = 1; 34 return\nalpha 35 delta\n\ttab 36 “quoted”\n} 37 alpha\n 38 alpha\n{ 39 dash — here",
+   "diff": {
+    "diff": "    ...\n  6   indent 5 \n  7 beta 6 \n  8   indent 7 trailing   \n  9 gamma 8 \n-10  9 fn()\n+10 replaced 0\n 11 trailing    10 dash — here\n 12 \ttab 11 }\n 13 x = 1; 12 \n 14  13 trailing   \n    ...\n 19 trailing    18 trailing   \n 20 return 19 beta\n 21 café 20 trailing   \n 22 beta 21 {\n+23 extra line 1\n 23 return 22 \n 24 \ttab 23 }\n 25 { 24 beta\n 26 alpha 25 delta\n    ...",
+    "firstChangedLine": 10
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -6,9 +6,9 @@\n   indent 5 \n beta 6 \n   indent 7 trailing   \n gamma 8 \n- 9 fn()\n+replaced 0\n trailing    10 dash — here\n \ttab 11 }\n x = 1; 12 \n  13 trailing   \n@@ -19,8 +19,9 @@\n trailing    18 trailing   \n return 19 beta\n café 20 trailing   \n beta 21 {\n+extra line 1\n return 22 \n \ttab 23 }\n { 24 beta\n alpha 25 delta\n"
+  },
+  {
+   "content": "café 0 \n{ 1 }\nbeta 2 dash — here\n\ttab 3 delta\ntrailing    4 \ndelta 5 \ttab\ncafé 6 {\n 7 \ttab\n{ 8 “quoted”\n 9 café\n} 10 \ncafé 11   indent\n  indent 12 beta\n\ttab 13 dash — here\n{ 14 delta\nalpha 15 dash — here\n\ttab 16 alpha\n“quoted” 17 return\n“quoted” 18 dash — here\nx = 1; 19 beta\n{ 20 dash — here\n 21 fn()\nx = 1; 22 gamma\n“quoted” 23 }\nreturn 24 return\ndelta 25 beta\n",
+   "edits": [
+    {
+     "oldText": " 21 fn()",
+     "newText": "replaced 0\nsecond\nthird"
+    }
+   ],
+   "newContent": "café 0 \n{ 1 }\nbeta 2 dash — here\n\ttab 3 delta\ntrailing    4 \ndelta 5 \ttab\ncafé 6 {\n 7 \ttab\n{ 8 “quoted”\n 9 café\n} 10 \ncafé 11   indent\n  indent 12 beta\n\ttab 13 dash — here\n{ 14 delta\nalpha 15 dash — here\n\ttab 16 alpha\n“quoted” 17 return\n“quoted” 18 dash — here\nx = 1; 19 beta\n{ 20 dash — here\nreplaced 0\nsecond\nthird\nx = 1; 22 gamma\n“quoted” 23 }\nreturn 24 return\ndelta 25 beta\n",
+   "diff": {
+    "diff": "    ...\n 18 “quoted” 17 return\n 19 “quoted” 18 dash — here\n 20 x = 1; 19 beta\n 21 { 20 dash — here\n-22  21 fn()\n+22 replaced 0\n+23 second\n+24 third\n 23 x = 1; 22 gamma\n 24 “quoted” 23 }\n 25 return 24 return\n 26 delta 25 beta",
+    "firstChangedLine": 22
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -18,9 +18,11 @@\n “quoted” 17 return\n “quoted” 18 dash — here\n x = 1; 19 beta\n { 20 dash — here\n- 21 fn()\n+replaced 0\n+second\n+third\n x = 1; 22 gamma\n “quoted” 23 }\n return 24 return\n delta 25 beta\n"
+  },
+  {
+   "content": "x = 1; 0 x = 1;\nalpha 1 {\nbeta 2 \ttab\nbeta 3 gamma\n 4 trailing   \nfn() 5   indent\nreturn 6 beta\n{ 7 “quoted”\n  indent 8 café\nreturn 9 beta\n} 10 delta\ndelta 11 delta\n\ttab 12 \ntrailing    13   indent\ntrailing    14 trailing   \ndash — here 15 x = 1;\n  indent 16 fn()\n} 17 {\ndash — here 18 {\ncafé 19 \ttab\ngamma 20 beta\n} 21 fn()\n  indent 22 fn()\ndash — here 23 alpha\n 24 }\ncafé 25 “quoted”\n{ 26 beta\nx = 1; 27 delta\n} 28 return\ntrailing    29 \n\ttab 30   indent\n} 31 x = 1;\ntrailing    32 café\nx = 1; 33 x = 1;\ngamma 34 }\ngamma 35 “quoted”\ndash — here 36 beta\n{ 37 dash — here",
+   "edits": [
+    {
+     "oldText": "gamma 34 }",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "x = 1; 0 x = 1;\nalpha 1 {\nbeta 2 \ttab\nbeta 3 gamma\n 4 trailing   \nfn() 5   indent\nreturn 6 beta\n{ 7 “quoted”\n  indent 8 café\nreturn 9 beta\n} 10 delta\ndelta 11 delta\n\ttab 12 \ntrailing    13   indent\ntrailing    14 trailing   \ndash — here 15 x = 1;\n  indent 16 fn()\n} 17 {\ndash — here 18 {\ncafé 19 \ttab\ngamma 20 beta\n} 21 fn()\n  indent 22 fn()\ndash — here 23 alpha\n 24 }\ncafé 25 “quoted”\n{ 26 beta\nx = 1; 27 delta\n} 28 return\ntrailing    29 \n\ttab 30   indent\n} 31 x = 1;\ntrailing    32 café\nx = 1; 33 x = 1;\nreplaced 0\ngamma 35 “quoted”\ndash — here 36 beta\n{ 37 dash — here",
+   "diff": {
+    "diff": "    ...\n 31 \ttab 30   indent\n 32 } 31 x = 1;\n 33 trailing    32 café\n 34 x = 1; 33 x = 1;\n-35 gamma 34 }\n+35 replaced 0\n 36 gamma 35 “quoted”\n 37 dash — here 36 beta\n 38 { 37 dash — here",
+    "firstChangedLine": 35
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -31,8 +31,8 @@\n \ttab 30   indent\n } 31 x = 1;\n trailing    32 café\n x = 1; 33 x = 1;\n-gamma 34 }\n+replaced 0\n gamma 35 “quoted”\n dash — here 36 beta\n { 37 dash — here\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "  indent 0 trailing   \ndelta 1 beta\n{ 2 gamma\n\ttab 3 dash — here",
+   "edits": [
+    {
+     "oldText": "delta 1 beta",
+     "newText": "delta 1 beta\nextra line 0"
+    },
+    {
+     "oldText": "\ttab 3 dash — here",
+     "newText": "replaced 2"
+    }
+   ],
+   "newContent": "  indent 0 trailing   \ndelta 1 beta\nextra line 0\n{ 2 gamma\nreplaced 2",
+   "diff": {
+    "diff": " 1   indent 0 trailing   \n 2 delta 1 beta\n+3 extra line 0\n 3 { 2 gamma\n-4 \ttab 3 dash — here\n+5 replaced 2",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,4 +1,5 @@\n   indent 0 trailing   \n delta 1 beta\n+extra line 0\n { 2 gamma\n-\ttab 3 dash — here\n\\ No newline at end of file\n+replaced 2\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "alpha 0 beta\nbeta 1 beta\nx = 1; 2 café\ngamma 3 return\n",
+   "edits": [
+    {
+     "oldText": "gamma 3 return",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "alpha 0 beta",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "replaced 1\nbeta 1 beta\nx = 1; 2 café\nreplaced 0\nsecond\nthird\n",
+   "diff": {
+    "diff": "-1 alpha 0 beta\n+1 replaced 1\n 2 beta 1 beta\n 3 x = 1; 2 café\n-4 gamma 3 return\n+4 replaced 0\n+5 second\n+6 third",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,4 +1,6 @@\n-alpha 0 beta\n+replaced 1\n beta 1 beta\n x = 1; 2 café\n-gamma 3 return\n+replaced 0\n+second\n+third\n"
+  },
+  {
+   "content": "  indent 0 \ttab\nalpha 1 {\n 2   indent\ndash — here 3 gamma\n  indent 4 }\n} 5 return\nbeta 6 gamma\n 7 {\nreturn 8 beta\ndash — here 9 café\n\ttab 10 return\nalpha 11 {\ndelta 12 dash — here\nalpha 13 return\ntrailing    14   indent\nx = 1; 15 \nbeta 16 dash — here\n  indent 17 fn()\nreturn 18 “quoted”\ntrailing    19 gamma\nx = 1; 20 {\nfn() 21   indent\ncafé 22 \ncafé 23 }\ndelta 24 }\nalpha 25 “quoted”\ndash — here 26 return\n  indent 27 “quoted”\ngamma 28 delta\n{ 29 dash — here\ncafé 30 “quoted”\n",
+   "edits": [
+    {
+     "oldText": "} 5 return",
+     "newText": ""
+    },
+    {
+     "oldText": "alpha 1 {",
+     "newText": ""
+    },
+    {
+     "oldText": "beta 16 dash - here",
+     "newText": ""
+    }
+   ],
+   "newContent": "  indent 0 \ttab\n\n 2   indent\ndash — here 3 gamma\n  indent 4 }\n\nbeta 6 gamma\n 7 {\nreturn 8 beta\ndash — here 9 café\n\ttab 10 return\nalpha 11 {\ndelta 12 dash — here\nalpha 13 return\ntrailing    14   indent\nx = 1; 15 \n\n  indent 17 fn()\nreturn 18 “quoted”\ntrailing    19 gamma\nx = 1; 20 {\nfn() 21   indent\ncafé 22 \ncafé 23 }\ndelta 24 }\nalpha 25 “quoted”\ndash — here 26 return\n  indent 27 “quoted”\ngamma 28 delta\n{ 29 dash — here\ncafé 30 “quoted”\n",
+   "diff": {
+    "diff": "  1   indent 0 \ttab\n- 2 alpha 1 {\n+ 2 \n  3  2   indent\n  4 dash — here 3 gamma\n  5   indent 4 }\n- 6 } 5 return\n+ 6 \n  7 beta 6 gamma\n  8  7 {\n  9 return 8 beta\n 10 dash — here 9 café\n    ...\n 13 delta 12 dash — here\n 14 alpha 13 return\n 15 trailing    14   indent\n 16 x = 1; 15 \n-17 beta 16 dash — here\n+17 \n 18   indent 17 fn()\n 19 return 18 “quoted”\n 20 trailing    19 gamma\n 21 x = 1; 20 {\n    ...",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,10 +1,10 @@\n   indent 0 \ttab\n-alpha 1 {\n+\n  2   indent\n dash — here 3 gamma\n   indent 4 }\n-} 5 return\n+\n beta 6 gamma\n  7 {\n return 8 beta\n dash — here 9 café\n@@ -13,9 +13,9 @@\n delta 12 dash — here\n alpha 13 return\n trailing    14   indent\n x = 1; 15 \n-beta 16 dash — here\n+\n   indent 17 fn()\n return 18 “quoted”\n trailing    19 gamma\n x = 1; 20 {\n"
+  },
+  {
+   "content": "fn() 0 “quoted”\ndelta 1 dash — here",
+   "edits": [
+    {
+     "oldText": "delta 1 dash - here",
+     "newText": ""
+    }
+   ],
+   "newContent": "fn() 0 “quoted”\n",
+   "diff": {
+    "diff": " 1 fn() 0 “quoted”\n-2 delta 1 dash — here",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,2 +1,1 @@\n fn() 0 “quoted”\n-delta 1 dash — here\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "alpha 0 return\n\ttab 1 alpha\ntrailing    2 alpha\n} 3 gamma\nalpha 4 dash — here\n“quoted” 5 return\n{ 6 x = 1;\n} 7 x = 1;\n 8 alpha\ngamma 9 }\n\ttab 10 beta\ndelta 11 x = 1;\n} 12 delta\n} 13 return\ngamma 14 “quoted”\nalpha 15 “quoted”\ntrailing    16 delta\n“quoted” 17   indent\ncafé 18 gamma\nalpha 19 café\ndash — here 20 {\ndash — here 21 “quoted”\nx = 1; 22 delta\ngamma 23 dash — here\n“quoted” 24 fn()\nbeta 25 trailing   \n",
+   "edits": [
+    {
+     "oldText": "beta 25 trailing   ",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "alpha 0 return\n\ttab 1 alpha\ntrailing    2 alpha\n} 3 gamma\nalpha 4 dash — here\n“quoted” 5 return\n{ 6 x = 1;\n} 7 x = 1;\n 8 alpha\ngamma 9 }\n\ttab 10 beta\ndelta 11 x = 1;\n} 12 delta\n} 13 return\ngamma 14 “quoted”\nalpha 15 “quoted”\ntrailing    16 delta\n“quoted” 17   indent\ncafé 18 gamma\nalpha 19 café\ndash — here 20 {\ndash — here 21 “quoted”\nx = 1; 22 delta\ngamma 23 dash — here\n“quoted” 24 fn()\nreplaced 0\n",
+   "diff": {
+    "diff": "    ...\n 22 dash — here 21 “quoted”\n 23 x = 1; 22 delta\n 24 gamma 23 dash — here\n 25 “quoted” 24 fn()\n-26 beta 25 trailing   \n+26 replaced 0",
+    "firstChangedLine": 26
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -22,5 +22,5 @@\n dash — here 21 “quoted”\n x = 1; 22 delta\n gamma 23 dash — here\n “quoted” 24 fn()\n-beta 25 trailing   \n+replaced 0\n"
+  },
+  {
+   "content": "fn() 0 \ttab\n  indent 1 trailing   \nbeta 2 {\ngamma 3 }\n} 4   indent\nreturn 5 beta\nfn() 6 \ttab\n 7 x = 1;\nbeta 8 return\nx = 1; 9 \nx = 1; 10 beta\nx = 1; 11   indent\nreturn 12 trailing   \ngamma 13 gamma\nreturn 14 }\ntrailing    15 \ttab\nbeta 16 “quoted”\nbeta 17 delta\ntrailing    18 gamma\nx = 1; 19 dash — here\nfn() 20 alpha\n“quoted” 21 beta\nbeta 22 \nfn() 23 x = 1;\nx = 1; 24 delta\ntrailing    25 gamma\ncafé 26 fn()\n“quoted” 27 \ttab\n} 28 alpha\nfn() 29 delta",
+   "edits": [
+    {
+     "oldText": "“quoted” 21 beta",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "fn() 0 \ttab\n  indent 1 trailing   \nbeta 2 {\ngamma 3 }\n} 4   indent\nreturn 5 beta\nfn() 6 \ttab\n 7 x = 1;\nbeta 8 return\nx = 1; 9 \nx = 1; 10 beta\nx = 1; 11   indent\nreturn 12 trailing   \ngamma 13 gamma\nreturn 14 }\ntrailing    15 \ttab\nbeta 16 “quoted”\nbeta 17 delta\ntrailing    18 gamma\nx = 1; 19 dash — here\nfn() 20 alpha\nreplaced 0\nbeta 22 \nfn() 23 x = 1;\nx = 1; 24 delta\ntrailing    25 gamma\ncafé 26 fn()\n“quoted” 27 \ttab\n} 28 alpha\nfn() 29 delta",
+   "diff": {
+    "diff": "    ...\n 18 beta 17 delta\n 19 trailing    18 gamma\n 20 x = 1; 19 dash — here\n 21 fn() 20 alpha\n-22 “quoted” 21 beta\n+22 replaced 0\n 23 beta 22 \n 24 fn() 23 x = 1;\n 25 x = 1; 24 delta\n 26 trailing    25 gamma\n    ...",
+    "firstChangedLine": 22
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -18,9 +18,9 @@\n beta 17 delta\n trailing    18 gamma\n x = 1; 19 dash — here\n fn() 20 alpha\n-“quoted” 21 beta\n+replaced 0\n beta 22 \n fn() 23 x = 1;\n x = 1; 24 delta\n trailing    25 gamma\n"
+  },
+  {
+   "content": " 0 “quoted”\ndash — here 1 fn()\nfn() 2 \ttab\n} 3 fn()\nalpha 4 gamma\nfn() 5 café\n 6 return\nreturn 7 {\n} 8 \ttab\ndash — here 9 café\ncafé 10 café\n  indent 11 café\nfn() 12 “quoted”\nx = 1; 13 delta\ndelta 14 dash — here\ndelta 15 trailing   \n 16 fn()\nalpha 17 return\n“quoted” 18 \ttab\n“quoted” 19 beta\n",
+   "edits": [
+    {
+     "oldText": "delta 14 dash — here",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "fn() 5 café",
+     "newText": "fn() 5 café\nextra line 1"
+    },
+    {
+     "oldText": "dash — here 1 fn()",
+     "newText": ""
+    }
+   ],
+   "newContent": " 0 “quoted”\n\nfn() 2 \ttab\n} 3 fn()\nalpha 4 gamma\nfn() 5 café\nextra line 1\n 6 return\nreturn 7 {\n} 8 \ttab\ndash — here 9 café\ncafé 10 café\n  indent 11 café\nfn() 12 “quoted”\nx = 1; 13 delta\nreplaced 0\ndelta 15 trailing   \n 16 fn()\nalpha 17 return\n“quoted” 18 \ttab\n“quoted” 19 beta\n",
+   "diff": {
+    "diff": "  1  0 “quoted”\n- 2 dash — here 1 fn()\n+ 2 \n  3 fn() 2 \ttab\n  4 } 3 fn()\n  5 alpha 4 gamma\n  6 fn() 5 café\n+ 7 extra line 1\n  7  6 return\n  8 return 7 {\n  9 } 8 \ttab\n 10 dash — here 9 café\n 11 café 10 café\n 12   indent 11 café\n 13 fn() 12 “quoted”\n 14 x = 1; 13 delta\n-15 delta 14 dash — here\n+16 replaced 0\n 16 delta 15 trailing   \n 17  16 fn()\n 18 alpha 17 return\n 19 “quoted” 18 \ttab\n    ...",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,19 +1,20 @@\n  0 “quoted”\n-dash — here 1 fn()\n+\n fn() 2 \ttab\n } 3 fn()\n alpha 4 gamma\n fn() 5 café\n+extra line 1\n  6 return\n return 7 {\n } 8 \ttab\n dash — here 9 café\n café 10 café\n   indent 11 café\n fn() 12 “quoted”\n x = 1; 13 delta\n-delta 14 dash — here\n+replaced 0\n delta 15 trailing   \n  16 fn()\n alpha 17 return\n “quoted” 18 \ttab\n"
+  },
+  {
+   "content": "fn() 0 “quoted”\n“quoted” 1 café\nbeta 2 {\ntrailing    3 \ttab\n} 4 beta\nreturn 5 return\n 6 \ttab\n“quoted” 7 dash — here\ntrailing    8 café\nfn() 9 fn()\n{ 10 x = 1;",
+   "edits": [
+    {
+     "oldText": " 6 \ttab",
+     "newText": " 6 \ttab\nextra line 0"
+    },
+    {
+     "oldText": "“quoted” 7 dash — here",
+     "newText": "“quoted” 7 dash — here\nextra line 1"
+    }
+   ],
+   "newContent": "fn() 0 “quoted”\n“quoted” 1 café\nbeta 2 {\ntrailing    3 \ttab\n} 4 beta\nreturn 5 return\n 6 \ttab\nextra line 0\n“quoted” 7 dash — here\nextra line 1\ntrailing    8 café\nfn() 9 fn()\n{ 10 x = 1;",
+   "diff": {
+    "diff": "    ...\n  4 trailing    3 \ttab\n  5 } 4 beta\n  6 return 5 return\n  7  6 \ttab\n+ 8 extra line 0\n  8 “quoted” 7 dash — here\n+10 extra line 1\n  9 trailing    8 café\n 10 fn() 9 fn()\n 11 { 10 x = 1;",
+    "firstChangedLine": 8
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -4,8 +4,10 @@\n trailing    3 \ttab\n } 4 beta\n return 5 return\n  6 \ttab\n+extra line 0\n “quoted” 7 dash — here\n+extra line 1\n trailing    8 café\n fn() 9 fn()\n { 10 x = 1;\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "“quoted” 0 x = 1;\ndash — here 1 café\ncafé 2 fn()\n\ttab 3 alpha\nalpha 4 gamma\n  indent 5   indent\nfn() 6 \ttab\ngamma 7 fn()\n 8 }\ndelta 9 \ttab\ndash — here 10   indent\n 11 {\n",
+   "edits": [
+    {
+     "oldText": "alpha 4 gamma",
+     "newText": ""
+    },
+    {
+     "oldText": "delta 9 \ttab",
+     "newText": "replaced 1\nsecond\nthird"
+    },
+    {
+     "oldText": "gamma 7 fn()",
+     "newText": ""
+    }
+   ],
+   "newContent": "“quoted” 0 x = 1;\ndash — here 1 café\ncafé 2 fn()\n\ttab 3 alpha\n\n  indent 5   indent\nfn() 6 \ttab\n\n 8 }\nreplaced 1\nsecond\nthird\ndash — here 10   indent\n 11 {\n",
+   "diff": {
+    "diff": "  1 “quoted” 0 x = 1;\n  2 dash — here 1 café\n  3 café 2 fn()\n  4 \ttab 3 alpha\n- 5 alpha 4 gamma\n+ 5 \n  6   indent 5   indent\n  7 fn() 6 \ttab\n- 8 gamma 7 fn()\n+ 8 \n  9  8 }\n-10 delta 9 \ttab\n+10 replaced 1\n+11 second\n+12 third\n 11 dash — here 10   indent\n 12  11 {",
+    "firstChangedLine": 5
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,12 +1,14 @@\n “quoted” 0 x = 1;\n dash — here 1 café\n café 2 fn()\n \ttab 3 alpha\n-alpha 4 gamma\n+\n   indent 5   indent\n fn() 6 \ttab\n-gamma 7 fn()\n+\n  8 }\n-delta 9 \ttab\n+replaced 1\n+second\n+third\n dash — here 10   indent\n  11 {\n"
+  },
+  {
+   "content": "gamma 0 café\n  indent 1 {\ntrailing    2 \ttab\ntrailing    3 \ttab\nx = 1; 4 return\ndelta 5 “quoted”\nx = 1; 6 beta\ngamma 7 gamma\nx = 1; 8 “quoted”\n",
+   "edits": [
+    {
+     "oldText": "gamma 7 gamma",
+     "newText": ""
+    },
+    {
+     "oldText": "gamma 0 café",
+     "newText": "gamma 0 café\nextra line 1"
+    }
+   ],
+   "newContent": "gamma 0 café\nextra line 1\n  indent 1 {\ntrailing    2 \ttab\ntrailing    3 \ttab\nx = 1; 4 return\ndelta 5 “quoted”\nx = 1; 6 beta\n\nx = 1; 8 “quoted”\n",
+   "diff": {
+    "diff": "  1 gamma 0 café\n+ 2 extra line 1\n  2   indent 1 {\n  3 trailing    2 \ttab\n  4 trailing    3 \ttab\n  5 x = 1; 4 return\n  6 delta 5 “quoted”\n  7 x = 1; 6 beta\n- 8 gamma 7 gamma\n+ 9 \n  9 x = 1; 8 “quoted”",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,9 +1,10 @@\n gamma 0 café\n+extra line 1\n   indent 1 {\n trailing    2 \ttab\n trailing    3 \ttab\n x = 1; 4 return\n delta 5 “quoted”\n x = 1; 6 beta\n-gamma 7 gamma\n+\n x = 1; 8 “quoted”\n"
+  },
+  {
+   "content": "“quoted” 0 \ttab\ncafé 1 gamma\nfn() 2 x = 1;\n\ttab 3 \ttab\nfn() 4 gamma\nbeta 5 delta\nalpha 6 gamma\n“quoted” 7 café\nx = 1; 8 \ttab\nbeta 9 dash — here\nx = 1; 10 gamma\nreturn 11 beta\n“quoted” 12 \ttab\ndelta 13 café\n\ttab 14 alpha\nfn() 15 dash — here\nalpha 16 \n  indent 17 {\nx = 1; 18 dash — here\n} 19 \nalpha 20 }\n“quoted” 21 trailing   \nbeta 22 gamma\ngamma 23 gamma\ngamma 24   indent\ntrailing    25 fn()\nalpha 26 gamma\nfn() 27 return\ndash — here 28 café\nalpha 29 “quoted”\ntrailing    30 x = 1;\ncafé 31 fn()\ntrailing    32 return\nbeta 33   indent\n  indent 34 “quoted”\n} 35 gamma\ntrailing    36 return\n} 37 \ttab\n} 38 “quoted”\nreturn 39 return",
+   "edits": [
+    {
+     "oldText": "fn() 4 gamma",
+     "newText": ""
+    },
+    {
+     "oldText": "beta 33   indent",
+     "newText": "replaced 1"
+    },
+    {
+     "oldText": "delta 13 café",
+     "newText": "delta 13 café\nextra line 2"
+    }
+   ],
+   "newContent": "“quoted” 0 \ttab\ncafé 1 gamma\nfn() 2 x = 1;\n\ttab 3 \ttab\n\nbeta 5 delta\nalpha 6 gamma\n“quoted” 7 café\nx = 1; 8 \ttab\nbeta 9 dash — here\nx = 1; 10 gamma\nreturn 11 beta\n“quoted” 12 \ttab\ndelta 13 café\nextra line 2\n\ttab 14 alpha\nfn() 15 dash — here\nalpha 16 \n  indent 17 {\nx = 1; 18 dash — here\n} 19 \nalpha 20 }\n“quoted” 21 trailing   \nbeta 22 gamma\ngamma 23 gamma\ngamma 24   indent\ntrailing    25 fn()\nalpha 26 gamma\nfn() 27 return\ndash — here 28 café\nalpha 29 “quoted”\ntrailing    30 x = 1;\ncafé 31 fn()\ntrailing    32 return\nreplaced 1\n  indent 34 “quoted”\n} 35 gamma\ntrailing    36 return\n} 37 \ttab\n} 38 “quoted”\nreturn 39 return",
+   "diff": {
+    "diff": "  1 “quoted” 0 \ttab\n  2 café 1 gamma\n  3 fn() 2 x = 1;\n  4 \ttab 3 \ttab\n- 5 fn() 4 gamma\n+ 5 \n  6 beta 5 delta\n  7 alpha 6 gamma\n  8 “quoted” 7 café\n  9 x = 1; 8 \ttab\n    ...\n 11 x = 1; 10 gamma\n 12 return 11 beta\n 13 “quoted” 12 \ttab\n 14 delta 13 café\n+15 extra line 2\n 15 \ttab 14 alpha\n 16 fn() 15 dash — here\n 17 alpha 16 \n 18   indent 17 {\n    ...\n 30 alpha 29 “quoted”\n 31 trailing    30 x = 1;\n 32 café 31 fn()\n 33 trailing    32 return\n-34 beta 33   indent\n+35 replaced 1\n 35   indent 34 “quoted”\n 36 } 35 gamma\n 37 trailing    36 return\n 38 } 37 \ttab\n    ...",
+    "firstChangedLine": 5
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,9 +1,9 @@\n “quoted” 0 \ttab\n café 1 gamma\n fn() 2 x = 1;\n \ttab 3 \ttab\n-fn() 4 gamma\n+\n beta 5 delta\n alpha 6 gamma\n “quoted” 7 café\n x = 1; 8 \ttab\n@@ -11,8 +11,9 @@\n x = 1; 10 gamma\n return 11 beta\n “quoted” 12 \ttab\n delta 13 café\n+extra line 2\n \ttab 14 alpha\n fn() 15 dash — here\n alpha 16 \n   indent 17 {\n@@ -30,9 +31,9 @@\n alpha 29 “quoted”\n trailing    30 x = 1;\n café 31 fn()\n trailing    32 return\n-beta 33   indent\n+replaced 1\n   indent 34 “quoted”\n } 35 gamma\n trailing    36 return\n } 37 \ttab\n"
+  },
+  {
+   "content": "dash — here 0 café\n",
+   "edits": [
+    {
+     "oldText": "dash — here 0 café",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "replaced 0\n",
+   "diff": {
+    "diff": "-1 dash — here 0 café\n+1 replaced 0",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,1 +1,1 @@\n-dash — here 0 café\n+replaced 0\n"
+  },
+  {
+   "content": "  indent 0 alpha\ncafé 1 delta\ndelta 2 gamma\ncafé 3 “quoted”\nbeta 4 return\nalpha 5 “quoted”\n\ttab 6 }\ntrailing    7 café\ngamma 8 fn()\n} 9 }\n“quoted” 10 gamma\nbeta 11   indent\ntrailing    12 \ttab\nalpha 13 gamma\n 14 fn()\n\ttab 15 beta\nalpha 16 dash — here\n“quoted” 17 {\n",
+   "edits": [
+    {
+     "oldText": "\ttab 6 }",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "} 9 }",
+     "newText": "} 9 }\nextra line 1"
+    }
+   ],
+   "newContent": "  indent 0 alpha\ncafé 1 delta\ndelta 2 gamma\ncafé 3 “quoted”\nbeta 4 return\nalpha 5 “quoted”\nreplaced 0\nsecond\nthird\ntrailing    7 café\ngamma 8 fn()\n} 9 }\nextra line 1\n“quoted” 10 gamma\nbeta 11   indent\ntrailing    12 \ttab\nalpha 13 gamma\n 14 fn()\n\ttab 15 beta\nalpha 16 dash — here\n“quoted” 17 {\n",
+   "diff": {
+    "diff": "    ...\n  3 delta 2 gamma\n  4 café 3 “quoted”\n  5 beta 4 return\n  6 alpha 5 “quoted”\n- 7 \ttab 6 }\n+ 7 replaced 0\n+ 8 second\n+ 9 third\n  8 trailing    7 café\n  9 gamma 8 fn()\n 10 } 9 }\n+13 extra line 1\n 11 “quoted” 10 gamma\n 12 beta 11   indent\n 13 trailing    12 \ttab\n 14 alpha 13 gamma\n    ...",
+    "firstChangedLine": 7
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -3,12 +3,15 @@\n delta 2 gamma\n café 3 “quoted”\n beta 4 return\n alpha 5 “quoted”\n-\ttab 6 }\n+replaced 0\n+second\n+third\n trailing    7 café\n gamma 8 fn()\n } 9 }\n+extra line 1\n “quoted” 10 gamma\n beta 11   indent\n trailing    12 \ttab\n alpha 13 gamma\n"
+  },
+  {
+   "content": "x = 1; 0 fn()\n“quoted” 1 return\ndash — here 2 delta\nreturn 3 fn()\n{ 4 trailing   \n{ 5 dash — here\n  indent 6 trailing   ",
+   "edits": [
+    {
+     "oldText": "x = 1; 0 fn()",
+     "newText": "x = 1; 0 fn()\nextra line 0"
+    },
+    {
+     "oldText": "dash — here 2 delta",
+     "newText": "dash — here 2 delta\nextra line 1"
+    },
+    {
+     "oldText": "{ 4 trailing   ",
+     "newText": ""
+    }
+   ],
+   "newContent": "x = 1; 0 fn()\nextra line 0\n“quoted” 1 return\ndash — here 2 delta\nextra line 1\nreturn 3 fn()\n\n{ 5 dash — here\n  indent 6 trailing   ",
+   "diff": {
+    "diff": " 1 x = 1; 0 fn()\n+2 extra line 0\n 2 “quoted” 1 return\n 3 dash — here 2 delta\n+5 extra line 1\n 4 return 3 fn()\n-5 { 4 trailing   \n+7 \n 6 { 5 dash — here\n 7   indent 6 trailing   ",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,7 +1,9 @@\n x = 1; 0 fn()\n+extra line 0\n “quoted” 1 return\n dash — here 2 delta\n+extra line 1\n return 3 fn()\n-{ 4 trailing   \n+\n { 5 dash — here\n   indent 6 trailing   \n\\ No newline at end of file\n"
+  },
+  {
+   "content": "\ttab 0 trailing   \n 1 gamma\nfn() 2 fn()\n  indent 3 trailing   \n{ 4   indent\ntrailing    5 \ttab\nalpha 6 return\ncafé 7 \ngamma 8 beta\n  indent 9 fn()\nalpha 10 }\ndash — here 11 gamma\n“quoted” 12 \nalpha 13 fn()\ntrailing    14 \nreturn 15 \ttab\nalpha 16 trailing   \n} 17 \ttab\nbeta 18   indent\nreturn 19 {\n 20 dash — here\n“quoted” 21 alpha\ntrailing    22 fn()\nalpha 23 \ttab\nalpha 24 }\nfn() 25 \ngamma 26 {\n\ttab 27 beta\ngamma 28 }\ndash — here 29 delta\nreturn 30   indent\nfn() 31 “quoted”\n} 32 {",
+   "edits": [
+    {
+     "oldText": "alpha 6 return",
+     "newText": "alpha 6 return\nextra line 0"
+    }
+   ],
+   "newContent": "\ttab 0 trailing   \n 1 gamma\nfn() 2 fn()\n  indent 3 trailing   \n{ 4   indent\ntrailing    5 \ttab\nalpha 6 return\nextra line 0\ncafé 7 \ngamma 8 beta\n  indent 9 fn()\nalpha 10 }\ndash — here 11 gamma\n“quoted” 12 \nalpha 13 fn()\ntrailing    14 \nreturn 15 \ttab\nalpha 16 trailing   \n} 17 \ttab\nbeta 18   indent\nreturn 19 {\n 20 dash — here\n“quoted” 21 alpha\ntrailing    22 fn()\nalpha 23 \ttab\nalpha 24 }\nfn() 25 \ngamma 26 {\n\ttab 27 beta\ngamma 28 }\ndash — here 29 delta\nreturn 30   indent\nfn() 31 “quoted”\n} 32 {",
+   "diff": {
+    "diff": "    ...\n  4   indent 3 trailing   \n  5 { 4   indent\n  6 trailing    5 \ttab\n  7 alpha 6 return\n+ 8 extra line 0\n  8 café 7 \n  9 gamma 8 beta\n 10   indent 9 fn()\n 11 alpha 10 }\n    ...",
+    "firstChangedLine": 8
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -4,8 +4,9 @@\n   indent 3 trailing   \n { 4   indent\n trailing    5 \ttab\n alpha 6 return\n+extra line 0\n café 7 \n gamma 8 beta\n   indent 9 fn()\n alpha 10 }\n"
+  },
+  {
+   "content": "\ttab 0 beta\n} 1 alpha\n 2 \nx = 1; 3 alpha\n  indent 4 }\n  indent 5   indent\ncafé 6 dash — here\ntrailing    7 delta\n  indent 8 fn()\n",
+   "edits": [
+    {
+     "oldText": "  indent 8 fn()",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "café 6 dash — here",
+     "newText": ""
+    }
+   ],
+   "newContent": "\ttab 0 beta\n} 1 alpha\n 2 \nx = 1; 3 alpha\n  indent 4 }\n  indent 5   indent\n\ntrailing    7 delta\nreplaced 0\n",
+   "diff": {
+    "diff": "    ...\n  3  2 \n  4 x = 1; 3 alpha\n  5   indent 4 }\n  6   indent 5   indent\n- 7 café 6 dash — here\n+ 7 \n  8 trailing    7 delta\n- 9   indent 8 fn()\n+ 9 replaced 0",
+    "firstChangedLine": 7
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -3,7 +3,7 @@\n  2 \n x = 1; 3 alpha\n   indent 4 }\n   indent 5   indent\n-café 6 dash — here\n+\n trailing    7 delta\n-  indent 8 fn()\n+replaced 0\n"
+  },
+  {
+   "content": "“quoted” 0 alpha\nbeta 1 {\n“quoted” 2 \n} 3 {\n  indent 4 \ntrailing    5 dash — here\n“quoted” 6 delta\nreturn 7 return\n“quoted” 8   indent\n} 9 {\n 10 {\nfn() 11 “quoted”\nalpha 12 beta\ncafé 13 café\n{ 14 {\n{ 15 gamma\ndelta 16 gamma\n\ttab 17 “quoted”\nfn() 18 return\ncafé 19 “quoted”\n} 20 }\n 21 delta\n} 22 dash — here\ncafé 23 x = 1;\nbeta 24   indent\nx = 1; 25 dash — here\n“quoted” 26   indent\ndash — here 27 dash — here\n“quoted” 28 alpha\n{ 29 \ttab\n“quoted” 30 beta\ncafé 31 \ttab\n{ 32 trailing   \ncafé 33 café\n“quoted” 34 {\nalpha 35 alpha\n“quoted” 36   indent\n",
+   "edits": [
+    {
+     "oldText": "“quoted” 0 alpha",
+     "newText": "“quoted” 0 alpha\nextra line 0"
+    },
+    {
+     "oldText": "\ttab 17 “quoted”",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "“quoted” 0 alpha\nextra line 0\nbeta 1 {\n“quoted” 2 \n} 3 {\n  indent 4 \ntrailing    5 dash — here\n“quoted” 6 delta\nreturn 7 return\n“quoted” 8   indent\n} 9 {\n 10 {\nfn() 11 “quoted”\nalpha 12 beta\ncafé 13 café\n{ 14 {\n{ 15 gamma\ndelta 16 gamma\nreplaced 1\nfn() 18 return\ncafé 19 “quoted”\n} 20 }\n 21 delta\n} 22 dash — here\ncafé 23 x = 1;\nbeta 24   indent\nx = 1; 25 dash — here\n“quoted” 26   indent\ndash — here 27 dash — here\n“quoted” 28 alpha\n{ 29 \ttab\n“quoted” 30 beta\ncafé 31 \ttab\n{ 32 trailing   \ncafé 33 café\n“quoted” 34 {\nalpha 35 alpha\n“quoted” 36   indent\n",
+   "diff": {
+    "diff": "  1 “quoted” 0 alpha\n+ 2 extra line 0\n  2 beta 1 {\n  3 “quoted” 2 \n  4 } 3 {\n  5   indent 4 \n    ...\n 14 café 13 café\n 15 { 14 {\n 16 { 15 gamma\n 17 delta 16 gamma\n-18 \ttab 17 “quoted”\n+19 replaced 1\n 19 fn() 18 return\n 20 café 19 “quoted”\n 21 } 20 }\n 22  21 delta\n    ...",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,5 +1,6 @@\n “quoted” 0 alpha\n+extra line 0\n beta 1 {\n “quoted” 2 \n } 3 {\n   indent 4 \n@@ -14,9 +15,9 @@\n café 13 café\n { 14 {\n { 15 gamma\n delta 16 gamma\n-\ttab 17 “quoted”\n+replaced 1\n fn() 18 return\n café 19 “quoted”\n } 20 }\n  21 delta\n"
+  },
+  {
+   "content": "{ 0 beta\nbeta 1 fn()\n} 2 {\nx = 1; 3 {\n\ttab 4 “quoted”\nfn() 5 beta\nreturn 6 x = 1;\ndelta 7 beta\n\ttab 8 gamma\ncafé 9 trailing   \n  indent 10 trailing   \ndelta 11 \ngamma 12 }\ntrailing    13 dash — here\nreturn 14   indent\n  indent 15 delta\n",
+   "edits": [
+    {
+     "oldText": "  indent 15 delta",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "  indent 10 trailing",
+     "newText": ""
+    }
+   ],
+   "newContent": "{ 0 beta\nbeta 1 fn()\n} 2 {\nx = 1; 3 {\n\ttab 4 “quoted”\nfn() 5 beta\nreturn 6 x = 1;\ndelta 7 beta\n\ttab 8 gamma\ncafé 9 trailing   \n   \ndelta 11 \ngamma 12 }\ntrailing    13 dash — here\nreturn 14   indent\nreplaced 0\n",
+   "diff": {
+    "diff": "    ...\n  7 return 6 x = 1;\n  8 delta 7 beta\n  9 \ttab 8 gamma\n 10 café 9 trailing   \n-11   indent 10 trailing   \n+11    \n 12 delta 11 \n 13 gamma 12 }\n 14 trailing    13 dash — here\n 15 return 14   indent\n-16   indent 15 delta\n+16 replaced 0",
+    "firstChangedLine": 11
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -7,10 +7,10 @@\n return 6 x = 1;\n delta 7 beta\n \ttab 8 gamma\n café 9 trailing   \n-  indent 10 trailing   \n+   \n delta 11 \n gamma 12 }\n trailing    13 dash — here\n return 14   indent\n-  indent 15 delta\n+replaced 0\n"
+  },
+  {
+   "content": "} 0 “quoted”\nfn() 1 gamma\ncafé 2 \ttab",
+   "edits": [
+    {
+     "oldText": "café 2 \ttab",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "} 0 “quoted”\nfn() 1 gamma\nreplaced 0",
+   "diff": {
+    "diff": " 1 } 0 “quoted”\n 2 fn() 1 gamma\n-3 café 2 \ttab\n+3 replaced 0",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,3 +1,3 @@\n } 0 “quoted”\n fn() 1 gamma\n-café 2 \ttab\n\\ No newline at end of file\n+replaced 0\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "beta 0 “quoted”\ngamma 1   indent\nalpha 2 return\nreturn 3 }\n",
+   "edits": [
+    {
+     "oldText": "beta 0 “quoted”",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "return 3 }",
+     "newText": ""
+    }
+   ],
+   "newContent": "replaced 0\ngamma 1   indent\nalpha 2 return\n\n",
+   "diff": {
+    "diff": "-1 beta 0 “quoted”\n+1 replaced 0\n 2 gamma 1   indent\n 3 alpha 2 return\n-4 return 3 }\n+4 ",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,4 +1,4 @@\n-beta 0 “quoted”\n+replaced 0\n gamma 1   indent\n alpha 2 return\n-return 3 }\n+\n"
+  },
+  {
+   "content": "“quoted” 0 trailing   \nalpha 1 gamma\nx = 1; 2 fn()\n 3 dash — here\ndash — here 4 return\nx = 1; 5 return\n{ 6 }\ncafé 7 \ttab\nfn() 8 \nfn() 9 delta\n“quoted” 10 “quoted”\ndelta 11 {\n{ 12 return\n\ttab 13 \ngamma 14 \nalpha 15 \ncafé 16 x = 1;\ncafé 17 \ttab\n  indent 18 beta\n{ 19 gamma\n{ 20 delta\n  indent 21 beta\ndash — here 22 beta\ndelta 23 beta\n  indent 24 \nbeta 25 {\n“quoted” 26 {\nbeta 27 beta\ndelta 28   indent\n“quoted” 29 beta\ncafé 30 }\nfn() 31 alpha\n",
+   "edits": [
+    {
+     "oldText": "{ 12 return",
+     "newText": "{ 12 return\nextra line 0"
+    },
+    {
+     "oldText": "  indent 24 ",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "“quoted” 0 trailing   \nalpha 1 gamma\nx = 1; 2 fn()\n 3 dash — here\ndash — here 4 return\nx = 1; 5 return\n{ 6 }\ncafé 7 \ttab\nfn() 8 \nfn() 9 delta\n“quoted” 10 “quoted”\ndelta 11 {\n{ 12 return\nextra line 0\n\ttab 13 \ngamma 14 \nalpha 15 \ncafé 16 x = 1;\ncafé 17 \ttab\n  indent 18 beta\n{ 19 gamma\n{ 20 delta\n  indent 21 beta\ndash — here 22 beta\ndelta 23 beta\nreplaced 1\nbeta 25 {\n“quoted” 26 {\nbeta 27 beta\ndelta 28   indent\n“quoted” 29 beta\ncafé 30 }\nfn() 31 alpha\n",
+   "diff": {
+    "diff": "    ...\n 10 fn() 9 delta\n 11 “quoted” 10 “quoted”\n 12 delta 11 {\n 13 { 12 return\n+14 extra line 0\n 14 \ttab 13 \n 15 gamma 14 \n 16 alpha 15 \n 17 café 16 x = 1;\n    ...\n 21 { 20 delta\n 22   indent 21 beta\n 23 dash — here 22 beta\n 24 delta 23 beta\n-25   indent 24 \n+26 replaced 1\n 26 beta 25 {\n 27 “quoted” 26 {\n 28 beta 27 beta\n 29 delta 28   indent\n    ...",
+    "firstChangedLine": 14
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -10,8 +10,9 @@\n fn() 9 delta\n “quoted” 10 “quoted”\n delta 11 {\n { 12 return\n+extra line 0\n \ttab 13 \n gamma 14 \n alpha 15 \n café 16 x = 1;\n@@ -21,9 +22,9 @@\n { 20 delta\n   indent 21 beta\n dash — here 22 beta\n delta 23 beta\n-  indent 24 \n+replaced 1\n beta 25 {\n “quoted” 26 {\n beta 27 beta\n delta 28   indent\n"
+  },
+  {
+   "content": "fn() 0 beta\nbeta 1 “quoted”\n} 2 “quoted”\nbeta 3 “quoted”\n\ttab 4   indent\ntrailing    5 beta\n“quoted” 6 \ncafé 7 alpha\ntrailing    8 café\ncafé 9 “quoted”\ngamma 10 fn()\nfn() 11 “quoted”\n{ 12 trailing   \nreturn 13 fn()\n} 14 \n",
+   "edits": [
+    {
+     "oldText": "beta 1 “quoted”",
+     "newText": "beta 1 “quoted”\nextra line 0"
+    }
+   ],
+   "newContent": "fn() 0 beta\nbeta 1 “quoted”\nextra line 0\n} 2 “quoted”\nbeta 3 “quoted”\n\ttab 4   indent\ntrailing    5 beta\n“quoted” 6 \ncafé 7 alpha\ntrailing    8 café\ncafé 9 “quoted”\ngamma 10 fn()\nfn() 11 “quoted”\n{ 12 trailing   \nreturn 13 fn()\n} 14 \n",
+   "diff": {
+    "diff": "  1 fn() 0 beta\n  2 beta 1 “quoted”\n+ 3 extra line 0\n  3 } 2 “quoted”\n  4 beta 3 “quoted”\n  5 \ttab 4   indent\n  6 trailing    5 beta\n    ...",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,6 +1,7 @@\n fn() 0 beta\n beta 1 “quoted”\n+extra line 0\n } 2 “quoted”\n beta 3 “quoted”\n \ttab 4   indent\n trailing    5 beta\n"
+  },
+  {
+   "content": "gamma 0 beta\nx = 1; 1 café\nalpha 2 {\n  indent 3 x = 1;\n{ 4 trailing   \n{ 5 alpha\nalpha 6 \ttab\n 7 gamma\n  indent 8 dash — here\nx = 1; 9 return\nalpha 10 }\nx = 1; 11 return\ncafé 12 dash — here\n 13 \nbeta 14 return\nx = 1; 15 “quoted”\ngamma 16 {\ncafé 17 trailing   \nfn() 18 café\nfn() 19 café\n\ttab 20 fn()\nalpha 21 {\ntrailing    22 delta\n} 23 return\nreturn 24 trailing   \nfn() 25 café\ntrailing    26 café\nalpha 27 alpha\ndelta 28 {\n{ 29 trailing   \n 30 return\ngamma 31 delta\n",
+   "edits": [
+    {
+     "oldText": "return 24 trailing   ",
+     "newText": "return 24 trailing   \nextra line 0"
+    }
+   ],
+   "newContent": "gamma 0 beta\nx = 1; 1 café\nalpha 2 {\n  indent 3 x = 1;\n{ 4 trailing   \n{ 5 alpha\nalpha 6 \ttab\n 7 gamma\n  indent 8 dash — here\nx = 1; 9 return\nalpha 10 }\nx = 1; 11 return\ncafé 12 dash — here\n 13 \nbeta 14 return\nx = 1; 15 “quoted”\ngamma 16 {\ncafé 17 trailing   \nfn() 18 café\nfn() 19 café\n\ttab 20 fn()\nalpha 21 {\ntrailing    22 delta\n} 23 return\nreturn 24 trailing   \nextra line 0\nfn() 25 café\ntrailing    26 café\nalpha 27 alpha\ndelta 28 {\n{ 29 trailing   \n 30 return\ngamma 31 delta\n",
+   "diff": {
+    "diff": "    ...\n 22 alpha 21 {\n 23 trailing    22 delta\n 24 } 23 return\n 25 return 24 trailing   \n+26 extra line 0\n 26 fn() 25 café\n 27 trailing    26 café\n 28 alpha 27 alpha\n 29 delta 28 {\n    ...",
+    "firstChangedLine": 26
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -22,8 +22,9 @@\n alpha 21 {\n trailing    22 delta\n } 23 return\n return 24 trailing   \n+extra line 0\n fn() 25 café\n trailing    26 café\n alpha 27 alpha\n delta 28 {\n"
+  },
+  {
+   "content": "beta 0 \ttab\n",
+   "edits": [
+    {
+     "oldText": "beta 0 \ttab",
+     "newText": ""
+    }
+   ],
+   "newContent": "\n",
+   "diff": {
+    "diff": "-1 beta 0 \ttab\n+1 ",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,1 +1,1 @@\n-beta 0 \ttab\n+\n"
+  },
+  {
+   "content": "“quoted” 0 gamma\nalpha 1 alpha\nfn() 2 trailing   \nbeta 3 fn()\n 4 delta\n\ttab 5 delta\n“quoted” 6 gamma\n“quoted” 7 dash — here\n\ttab 8 beta\ndelta 9 beta\n 10 “quoted”\nbeta 11 “quoted”\nfn() 12 \ttab\nreturn 13 trailing   \nbeta 14 delta\n} 15 trailing   \ndash — here 16 dash — here\n",
+   "edits": [
+    {
+     "oldText": "\ttab 5 delta",
+     "newText": ""
+    },
+    {
+     "oldText": "beta 11 “quoted”",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "“quoted” 0 gamma\nalpha 1 alpha\nfn() 2 trailing   \nbeta 3 fn()\n 4 delta\n\n“quoted” 6 gamma\n“quoted” 7 dash — here\n\ttab 8 beta\ndelta 9 beta\n 10 “quoted”\nreplaced 1\nfn() 12 \ttab\nreturn 13 trailing   \nbeta 14 delta\n} 15 trailing   \ndash — here 16 dash — here\n",
+   "diff": {
+    "diff": "    ...\n  2 alpha 1 alpha\n  3 fn() 2 trailing   \n  4 beta 3 fn()\n  5  4 delta\n- 6 \ttab 5 delta\n+ 6 \n  7 “quoted” 6 gamma\n  8 “quoted” 7 dash — here\n  9 \ttab 8 beta\n 10 delta 9 beta\n 11  10 “quoted”\n-12 beta 11 “quoted”\n+12 replaced 1\n 13 fn() 12 \ttab\n 14 return 13 trailing   \n 15 beta 14 delta\n 16 } 15 trailing   \n    ...",
+    "firstChangedLine": 6
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -2,15 +2,15 @@\n alpha 1 alpha\n fn() 2 trailing   \n beta 3 fn()\n  4 delta\n-\ttab 5 delta\n+\n “quoted” 6 gamma\n “quoted” 7 dash — here\n \ttab 8 beta\n delta 9 beta\n  10 “quoted”\n-beta 11 “quoted”\n+replaced 1\n fn() 12 \ttab\n return 13 trailing   \n beta 14 delta\n } 15 trailing   \n"
+  },
+  {
+   "content": "beta 0 “quoted”\nreturn 1 alpha\ncafé 2 \ttab\ndash — here 3 gamma\nalpha 4 fn()\ncafé 5 dash — here\nalpha 6 café\ncafé 7 {\ndash — here 8 }\ntrailing    9 \ttab\ndelta 10 trailing   \ngamma 11 return\ndelta 12 {\ngamma 13 dash — here",
+   "edits": [
+    {
+     "oldText": "café 7 {",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "dash — here 8 }",
+     "newText": "dash — here 8 }\nextra line 1"
+    }
+   ],
+   "newContent": "beta 0 “quoted”\nreturn 1 alpha\ncafé 2 \ttab\ndash — here 3 gamma\nalpha 4 fn()\ncafé 5 dash — here\nalpha 6 café\nreplaced 0\nsecond\nthird\ndash — here 8 }\nextra line 1\ntrailing    9 \ttab\ndelta 10 trailing   \ngamma 11 return\ndelta 12 {\ngamma 13 dash — here",
+   "diff": {
+    "diff": "    ...\n  4 dash — here 3 gamma\n  5 alpha 4 fn()\n  6 café 5 dash — here\n  7 alpha 6 café\n- 8 café 7 {\n+ 8 replaced 0\n+ 9 second\n+10 third\n  9 dash — here 8 }\n+12 extra line 1\n 10 trailing    9 \ttab\n 11 delta 10 trailing   \n 12 gamma 11 return\n 13 delta 12 {\n    ...",
+    "firstChangedLine": 8
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -4,10 +4,13 @@\n dash — here 3 gamma\n alpha 4 fn()\n café 5 dash — here\n alpha 6 café\n-café 7 {\n+replaced 0\n+second\n+third\n dash — here 8 }\n+extra line 1\n trailing    9 \ttab\n delta 10 trailing   \n gamma 11 return\n delta 12 {\n"
+  },
+  {
+   "content": "dash — here 0 \ttab\ndelta 1 {\n  indent 2 {\n\ttab 3 alpha\nx = 1; 4 alpha\ndash — here 5 beta\n} 6 “quoted”\nbeta 7 }\nreturn 8 x = 1;\ncafé 9 café\ncafé 10 café\ncafé 11 alpha\ntrailing    12 beta\ngamma 13 café\nbeta 14 alpha\nfn() 15 gamma\ndelta 16 beta\n",
+   "edits": [
+    {
+     "oldText": "gamma 13 café",
+     "newText": "gamma 13 café\nextra line 0"
+    },
+    {
+     "oldText": "  indent 2 {",
+     "newText": "  indent 2 {\nextra line 1"
+    },
+    {
+     "oldText": "beta 14 alpha",
+     "newText": "replaced 2"
+    }
+   ],
+   "newContent": "dash — here 0 \ttab\ndelta 1 {\n  indent 2 {\nextra line 1\n\ttab 3 alpha\nx = 1; 4 alpha\ndash — here 5 beta\n} 6 “quoted”\nbeta 7 }\nreturn 8 x = 1;\ncafé 9 café\ncafé 10 café\ncafé 11 alpha\ntrailing    12 beta\ngamma 13 café\nextra line 0\nreplaced 2\nfn() 15 gamma\ndelta 16 beta\n",
+   "diff": {
+    "diff": "  1 dash — here 0 \ttab\n  2 delta 1 {\n  3   indent 2 {\n+ 4 extra line 1\n  4 \ttab 3 alpha\n  5 x = 1; 4 alpha\n  6 dash — here 5 beta\n  7 } 6 “quoted”\n    ...\n 11 café 10 café\n 12 café 11 alpha\n 13 trailing    12 beta\n 14 gamma 13 café\n-15 beta 14 alpha\n+16 extra line 0\n+17 replaced 2\n 16 fn() 15 gamma\n 17 delta 16 beta",
+    "firstChangedLine": 4
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,7 +1,8 @@\n dash — here 0 \ttab\n delta 1 {\n   indent 2 {\n+extra line 1\n \ttab 3 alpha\n x = 1; 4 alpha\n dash — here 5 beta\n } 6 “quoted”\n@@ -11,7 +12,8 @@\n café 10 café\n café 11 alpha\n trailing    12 beta\n gamma 13 café\n-beta 14 alpha\n+extra line 0\n+replaced 2\n fn() 15 gamma\n delta 16 beta\n"
+  },
+  {
+   "content": "return 0 }\nx = 1; 1 gamma\n\ttab 2 beta\ntrailing    3 beta\nbeta 4 \nfn() 5 dash — here\ncafé 6 café\nbeta 7 x = 1;\n\ttab 8 dash — here\nfn() 9 return\n 10 trailing   \nfn() 11 \ttab\ntrailing    12 fn()\n“quoted” 13 {\n} 14 delta\n\ttab 15 \nalpha 16 dash — here\n 17 {\n{ 18 beta\ncafé 19 x = 1;\ncafé 20   indent\nbeta 21 trailing   \n 22 \ttab\ncafé 23 trailing   \nalpha 24   indent\ndelta 25 “quoted”\nalpha 26 trailing   \n",
+   "edits": [
+    {
+     "oldText": "alpha 24   indent",
+     "newText": ""
+    }
+   ],
+   "newContent": "return 0 }\nx = 1; 1 gamma\n\ttab 2 beta\ntrailing    3 beta\nbeta 4 \nfn() 5 dash — here\ncafé 6 café\nbeta 7 x = 1;\n\ttab 8 dash — here\nfn() 9 return\n 10 trailing   \nfn() 11 \ttab\ntrailing    12 fn()\n“quoted” 13 {\n} 14 delta\n\ttab 15 \nalpha 16 dash — here\n 17 {\n{ 18 beta\ncafé 19 x = 1;\ncafé 20   indent\nbeta 21 trailing   \n 22 \ttab\ncafé 23 trailing   \n\ndelta 25 “quoted”\nalpha 26 trailing   \n",
+   "diff": {
+    "diff": "    ...\n 21 café 20   indent\n 22 beta 21 trailing   \n 23  22 \ttab\n 24 café 23 trailing   \n-25 alpha 24   indent\n+25 \n 26 delta 25 “quoted”\n 27 alpha 26 trailing   ",
+    "firstChangedLine": 25
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -21,7 +21,7 @@\n café 20   indent\n beta 21 trailing   \n  22 \ttab\n café 23 trailing   \n-alpha 24   indent\n+\n delta 25 “quoted”\n alpha 26 trailing   \n"
+  },
+  {
+   "content": "trailing    0 alpha\nfn() 1 “quoted”\n\ttab 2   indent\ncafé 3 delta\ntrailing    4 fn()\n\ttab 5 gamma\nbeta 6 x = 1;\n“quoted” 7 trailing   \n{ 8 fn()\ngamma 9 “quoted”\ntrailing    10 {\ncafé 11 {\nbeta 12 beta\n{ 13 }\ndelta 14 “quoted”\ncafé 15 fn()\ncafé 16 café\n\ttab 17 {\ndash — here 18 delta\nfn() 19 x = 1;\ntrailing    20 delta\n“quoted” 21 \ttab\n  indent 22 gamma\ntrailing    23 }\nx = 1; 24 gamma\n\ttab 25 {\ntrailing    26 beta\n{ 27 return\nfn() 28 beta\nfn() 29 {\ndash — here 30 “quoted”\n} 31 }\ndelta 32   indent\ntrailing    33 }\ngamma 34 {\n“quoted” 35 dash — here\n\ttab 36 delta\n} 37 {\ntrailing    38   indent",
+   "edits": [
+    {
+     "oldText": "café 15 fn()",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "trailing    0 alpha\nfn() 1 “quoted”\n\ttab 2   indent\ncafé 3 delta\ntrailing    4 fn()\n\ttab 5 gamma\nbeta 6 x = 1;\n“quoted” 7 trailing   \n{ 8 fn()\ngamma 9 “quoted”\ntrailing    10 {\ncafé 11 {\nbeta 12 beta\n{ 13 }\ndelta 14 “quoted”\nreplaced 0\ncafé 16 café\n\ttab 17 {\ndash — here 18 delta\nfn() 19 x = 1;\ntrailing    20 delta\n“quoted” 21 \ttab\n  indent 22 gamma\ntrailing    23 }\nx = 1; 24 gamma\n\ttab 25 {\ntrailing    26 beta\n{ 27 return\nfn() 28 beta\nfn() 29 {\ndash — here 30 “quoted”\n} 31 }\ndelta 32   indent\ntrailing    33 }\ngamma 34 {\n“quoted” 35 dash — here\n\ttab 36 delta\n} 37 {\ntrailing    38   indent",
+   "diff": {
+    "diff": "    ...\n 12 café 11 {\n 13 beta 12 beta\n 14 { 13 }\n 15 delta 14 “quoted”\n-16 café 15 fn()\n+16 replaced 0\n 17 café 16 café\n 18 \ttab 17 {\n 19 dash — here 18 delta\n 20 fn() 19 x = 1;\n    ...",
+    "firstChangedLine": 16
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -12,9 +12,9 @@\n café 11 {\n beta 12 beta\n { 13 }\n delta 14 “quoted”\n-café 15 fn()\n+replaced 0\n café 16 café\n \ttab 17 {\n dash — here 18 delta\n fn() 19 x = 1;\n"
+  },
+  {
+   "content": "trailing    0 }\ntrailing    1   indent\ntrailing    2 delta\n 3 alpha\ndash — here 4   indent\n  indent 5 delta\nreturn 6 {\ntrailing    7 \ttab\ncafé 8 “quoted”\ntrailing    9 “quoted”\nfn() 10 fn()\ntrailing    11 {\ncafé 12 \ttab\n{ 13 dash — here\n“quoted” 14 \ttab\n 15 }\nalpha 16 “quoted”\ndash — here 17 x = 1;\n 18 fn()\ndash — here 19   indent\ntrailing    20 x = 1;\ncafé 21 beta\nbeta 22 fn()\ncafé 23 beta\nx = 1; 24 \n} 25 gamma\ndash — here 26 gamma\ndash — here 27 gamma\n{ 28   indent\ntrailing    29 {\nx = 1; 30 café\ncafé 31 \n“quoted” 32 alpha\n\ttab 33   indent\ngamma 34 beta\nreturn 35   indent\n\ttab 36 delta\n\ttab 37   indent\n",
+   "edits": [
+    {
+     "oldText": "return 35   indent",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "dash — here 27 gamma",
+     "newText": "replaced 1"
+    },
+    {
+     "oldText": " 3 alpha",
+     "newText": "replaced 2"
+    }
+   ],
+   "newContent": "trailing    0 }\ntrailing    1   indent\ntrailing    2 delta\nreplaced 2\ndash — here 4   indent\n  indent 5 delta\nreturn 6 {\ntrailing    7 \ttab\ncafé 8 “quoted”\ntrailing    9 “quoted”\nfn() 10 fn()\ntrailing    11 {\ncafé 12 \ttab\n{ 13 dash — here\n“quoted” 14 \ttab\n 15 }\nalpha 16 “quoted”\ndash — here 17 x = 1;\n 18 fn()\ndash — here 19   indent\ntrailing    20 x = 1;\ncafé 21 beta\nbeta 22 fn()\ncafé 23 beta\nx = 1; 24 \n} 25 gamma\ndash — here 26 gamma\nreplaced 1\n{ 28   indent\ntrailing    29 {\nx = 1; 30 café\ncafé 31 \n“quoted” 32 alpha\n\ttab 33   indent\ngamma 34 beta\nreplaced 0\nsecond\nthird\n\ttab 36 delta\n\ttab 37   indent\n",
+   "diff": {
+    "diff": "  1 trailing    0 }\n  2 trailing    1   indent\n  3 trailing    2 delta\n- 4  3 alpha\n+ 4 replaced 2\n  5 dash — here 4   indent\n  6   indent 5 delta\n  7 return 6 {\n  8 trailing    7 \ttab\n    ...\n 24 café 23 beta\n 25 x = 1; 24 \n 26 } 25 gamma\n 27 dash — here 26 gamma\n-28 dash — here 27 gamma\n+28 replaced 1\n 29 { 28   indent\n 30 trailing    29 {\n 31 x = 1; 30 café\n 32 café 31 \n 33 “quoted” 32 alpha\n 34 \ttab 33   indent\n 35 gamma 34 beta\n-36 return 35   indent\n+36 replaced 0\n+37 second\n+38 third\n 37 \ttab 36 delta\n 38 \ttab 37   indent",
+    "firstChangedLine": 4
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,8 +1,8 @@\n trailing    0 }\n trailing    1   indent\n trailing    2 delta\n- 3 alpha\n+replaced 2\n dash — here 4   indent\n   indent 5 delta\n return 6 {\n trailing    7 \ttab\n@@ -24,15 +24,17 @@\n café 23 beta\n x = 1; 24 \n } 25 gamma\n dash — here 26 gamma\n-dash — here 27 gamma\n+replaced 1\n { 28   indent\n trailing    29 {\n x = 1; 30 café\n café 31 \n “quoted” 32 alpha\n \ttab 33   indent\n gamma 34 beta\n-return 35   indent\n+replaced 0\n+second\n+third\n \ttab 36 delta\n \ttab 37   indent\n"
+  },
+  {
+   "content": "x = 1; 0 \n{ 1 }\ngamma 2 dash — here\nreturn 3 alpha\ncafé 4 }\n\ttab 5 {\n\ttab 6 “quoted”\n} 7 return\nbeta 8 café\n“quoted” 9 return\n 10 {\n  indent 11 dash — here\ndash — here 12 alpha\nx = 1; 13 \ttab\n\ttab 14 beta\n 15 x = 1;\nbeta 16 café\nreturn 17 }\ntrailing    18 “quoted”\n  indent 19 \ttab\n} 20 trailing   \n{ 21   indent\nx = 1; 22 {\ncafé 23 trailing   \ncafé 24 alpha\ndash — here 25 “quoted”\n",
+   "edits": [
+    {
+     "oldText": "café 4 }",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "café 24 alpha",
+     "newText": "café 24 alpha\nextra line 1"
+    }
+   ],
+   "newContent": "x = 1; 0 \n{ 1 }\ngamma 2 dash — here\nreturn 3 alpha\nreplaced 0\n\ttab 5 {\n\ttab 6 “quoted”\n} 7 return\nbeta 8 café\n“quoted” 9 return\n 10 {\n  indent 11 dash — here\ndash — here 12 alpha\nx = 1; 13 \ttab\n\ttab 14 beta\n 15 x = 1;\nbeta 16 café\nreturn 17 }\ntrailing    18 “quoted”\n  indent 19 \ttab\n} 20 trailing   \n{ 21   indent\nx = 1; 22 {\ncafé 23 trailing   \ncafé 24 alpha\nextra line 1\ndash — here 25 “quoted”\n",
+   "diff": {
+    "diff": "  1 x = 1; 0 \n  2 { 1 }\n  3 gamma 2 dash — here\n  4 return 3 alpha\n- 5 café 4 }\n+ 5 replaced 0\n  6 \ttab 5 {\n  7 \ttab 6 “quoted”\n  8 } 7 return\n  9 beta 8 café\n    ...\n 22 { 21   indent\n 23 x = 1; 22 {\n 24 café 23 trailing   \n 25 café 24 alpha\n+26 extra line 1\n 26 dash — here 25 “quoted”",
+    "firstChangedLine": 5
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,9 +1,9 @@\n x = 1; 0 \n { 1 }\n gamma 2 dash — here\n return 3 alpha\n-café 4 }\n+replaced 0\n \ttab 5 {\n \ttab 6 “quoted”\n } 7 return\n beta 8 café\n@@ -22,5 +22,6 @@\n { 21   indent\n x = 1; 22 {\n café 23 trailing   \n café 24 alpha\n+extra line 1\n dash — here 25 “quoted”\n"
+  },
+  {
+   "content": "fn() 0 trailing   \ntrailing    1 “quoted”\ngamma 2 \nbeta 3 }\n",
+   "edits": [
+    {
+     "oldText": "beta 3 }",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "fn() 0 trailing   \ntrailing    1 “quoted”\ngamma 2 \nreplaced 0\n",
+   "diff": {
+    "diff": " 1 fn() 0 trailing   \n 2 trailing    1 “quoted”\n 3 gamma 2 \n-4 beta 3 }\n+4 replaced 0",
+    "firstChangedLine": 4
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,4 +1,4 @@\n fn() 0 trailing   \n trailing    1 “quoted”\n gamma 2 \n-beta 3 }\n+replaced 0\n"
+  },
+  {
+   "content": "return 0 delta\n{ 1 beta\ngamma 2 fn()\nreturn 3 \ttab\n  indent 4 x = 1;\n{ 5 }",
+   "edits": [
+    {
+     "oldText": "{ 1 beta",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "return 0 delta\nreplaced 0\ngamma 2 fn()\nreturn 3 \ttab\n  indent 4 x = 1;\n{ 5 }",
+   "diff": {
+    "diff": " 1 return 0 delta\n-2 { 1 beta\n+2 replaced 0\n 3 gamma 2 fn()\n 4 return 3 \ttab\n 5   indent 4 x = 1;\n 6 { 5 }",
+    "firstChangedLine": 2
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,6 +1,6 @@\n return 0 delta\n-{ 1 beta\n+replaced 0\n gamma 2 fn()\n return 3 \ttab\n   indent 4 x = 1;\n { 5 }\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "x = 1; 0 \ttab\nreturn 1 alpha\ntrailing    2 dash — here\n\ttab 3 return\n} 4 {\nx = 1; 5 {\ndelta 6 “quoted”\ndelta 7 “quoted”\nalpha 8 fn()\ntrailing    9 return\n“quoted” 10 \nfn() 11 }\ncafé 12 fn()\nalpha 13 }\ndash — here 14 beta\n} 15 }",
+   "edits": [
+    {
+     "oldText": "“quoted” 10 ",
+     "newText": "replaced 0"
+    }
+   ],
+   "newContent": "x = 1; 0 \ttab\nreturn 1 alpha\ntrailing    2 dash — here\n\ttab 3 return\n} 4 {\nx = 1; 5 {\ndelta 6 “quoted”\ndelta 7 “quoted”\nalpha 8 fn()\ntrailing    9 return\nreplaced 0\nfn() 11 }\ncafé 12 fn()\nalpha 13 }\ndash — here 14 beta\n} 15 }",
+   "diff": {
+    "diff": "    ...\n  7 delta 6 “quoted”\n  8 delta 7 “quoted”\n  9 alpha 8 fn()\n 10 trailing    9 return\n-11 “quoted” 10 \n+11 replaced 0\n 12 fn() 11 }\n 13 café 12 fn()\n 14 alpha 13 }\n 15 dash — here 14 beta\n    ...",
+    "firstChangedLine": 11
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -7,9 +7,9 @@\n delta 6 “quoted”\n delta 7 “quoted”\n alpha 8 fn()\n trailing    9 return\n-“quoted” 10 \n+replaced 0\n fn() 11 }\n café 12 fn()\n alpha 13 }\n dash — here 14 beta\n"
+  },
+  {
+   "content": "beta 0 café\ncafé 1 trailing   \nalpha 2   indent\ntrailing    3 fn()\nalpha 4 return\ngamma 5 \ttab\nfn() 6 \ngamma 7 x = 1;\n\ttab 8 x = 1;\n 9 gamma\ncafé 10 \ttab\n\ttab 11 }\nfn() 12 }\n} 13 gamma\n 14 alpha\n  indent 15   indent\ndash — here 16 {\ndelta 17 trailing   \nbeta 18 dash — here\n\ttab 19 alpha\ncafé 20 \n  indent 21 gamma\ndash — here 22 “quoted”\n  indent 23 beta\ndash — here 24 dash — here\ndash — here 25 trailing   \nalpha 26 delta\nreturn 27 \ndash — here 28 alpha\nreturn 29 trailing   \ncafé 30 trailing   \n“quoted” 31 alpha\n  indent 32 {\ngamma 33 return\ngamma 34 x = 1;\ntrailing    35 café\nfn() 36 trailing   \ntrailing    37 return\n",
+   "edits": [
+    {
+     "oldText": "\ttab 19 alpha",
+     "newText": ""
+    },
+    {
+     "oldText": "beta 0 café",
+     "newText": "replaced 1\nsecond\nthird"
+    },
+    {
+     "oldText": "alpha 4 return",
+     "newText": "replaced 2"
+    }
+   ],
+   "newContent": "replaced 1\nsecond\nthird\ncafé 1 trailing   \nalpha 2   indent\ntrailing    3 fn()\nreplaced 2\ngamma 5 \ttab\nfn() 6 \ngamma 7 x = 1;\n\ttab 8 x = 1;\n 9 gamma\ncafé 10 \ttab\n\ttab 11 }\nfn() 12 }\n} 13 gamma\n 14 alpha\n  indent 15   indent\ndash — here 16 {\ndelta 17 trailing   \nbeta 18 dash — here\n\ncafé 20 \n  indent 21 gamma\ndash — here 22 “quoted”\n  indent 23 beta\ndash — here 24 dash — here\ndash — here 25 trailing   \nalpha 26 delta\nreturn 27 \ndash — here 28 alpha\nreturn 29 trailing   \ncafé 30 trailing   \n“quoted” 31 alpha\n  indent 32 {\ngamma 33 return\ngamma 34 x = 1;\ntrailing    35 café\nfn() 36 trailing   \ntrailing    37 return\n",
+   "diff": {
+    "diff": "- 1 beta 0 café\n+ 1 replaced 1\n+ 2 second\n+ 3 third\n  2 café 1 trailing   \n  3 alpha 2   indent\n  4 trailing    3 fn()\n- 5 alpha 4 return\n+ 7 replaced 2\n  6 gamma 5 \ttab\n  7 fn() 6 \n  8 gamma 7 x = 1;\n  9 \ttab 8 x = 1;\n    ...\n 16   indent 15   indent\n 17 dash — here 16 {\n 18 delta 17 trailing   \n 19 beta 18 dash — here\n-20 \ttab 19 alpha\n+22 \n 21 café 20 \n 22   indent 21 gamma\n 23 dash — here 22 “quoted”\n 24   indent 23 beta\n    ...",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,9 +1,11 @@\n-beta 0 café\n+replaced 1\n+second\n+third\n café 1 trailing   \n alpha 2   indent\n trailing    3 fn()\n-alpha 4 return\n+replaced 2\n gamma 5 \ttab\n fn() 6 \n gamma 7 x = 1;\n \ttab 8 x = 1;\n@@ -16,9 +18,9 @@\n   indent 15   indent\n dash — here 16 {\n delta 17 trailing   \n beta 18 dash — here\n-\ttab 19 alpha\n+\n café 20 \n   indent 21 gamma\n dash — here 22 “quoted”\n   indent 23 beta\n"
+  },
+  {
+   "content": "gamma 0 trailing   \nbeta 1 {\ndash — here 2   indent\ndelta 3 {\ngamma 4 delta\ntrailing    5 “quoted”\ncafé 6 return\ncafé 7   indent\ntrailing    8 {\n 9   indent\ntrailing    10 \ntrailing    11 delta\ncafé 12 return\n{ 13 beta\n} 14 {\nreturn 15   indent\ndash — here 16 trailing   \ngamma 17 “quoted”\n“quoted” 18 \ttab\nx = 1; 19 “quoted”\nreturn 20 “quoted”\n{ 21 return\nalpha 22 café\ngamma 23 x = 1;\nbeta 24 return\ntrailing    25 {\nreturn 26 delta\nreturn 27 \nreturn 28 return\ndash — here 29 \n} 30 return\nreturn 31 \ndelta 32 gamma\nfn() 33 x = 1;\ndash — here 34 \ttab\n{ 35 \n 36 x = 1;\n} 37 delta\n} 38 gamma",
+   "edits": [
+    {
+     "oldText": "} 30 return",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "delta 3 {",
+     "newText": ""
+    },
+    {
+     "oldText": "return 15   indent",
+     "newText": ""
+    }
+   ],
+   "newContent": "gamma 0 trailing   \nbeta 1 {\ndash — here 2   indent\n\ngamma 4 delta\ntrailing    5 “quoted”\ncafé 6 return\ncafé 7   indent\ntrailing    8 {\n 9   indent\ntrailing    10 \ntrailing    11 delta\ncafé 12 return\n{ 13 beta\n} 14 {\n\ndash — here 16 trailing   \ngamma 17 “quoted”\n“quoted” 18 \ttab\nx = 1; 19 “quoted”\nreturn 20 “quoted”\n{ 21 return\nalpha 22 café\ngamma 23 x = 1;\nbeta 24 return\ntrailing    25 {\nreturn 26 delta\nreturn 27 \nreturn 28 return\ndash — here 29 \nreplaced 0\nsecond\nthird\nreturn 31 \ndelta 32 gamma\nfn() 33 x = 1;\ndash — here 34 \ttab\n{ 35 \n 36 x = 1;\n} 37 delta\n} 38 gamma",
+   "diff": {
+    "diff": "  1 gamma 0 trailing   \n  2 beta 1 {\n  3 dash — here 2   indent\n- 4 delta 3 {\n+ 4 \n  5 gamma 4 delta\n  6 trailing    5 “quoted”\n  7 café 6 return\n  8 café 7   indent\n    ...\n 12 trailing    11 delta\n 13 café 12 return\n 14 { 13 beta\n 15 } 14 {\n-16 return 15   indent\n+16 \n 17 dash — here 16 trailing   \n 18 gamma 17 “quoted”\n 19 “quoted” 18 \ttab\n 20 x = 1; 19 “quoted”\n    ...\n 27 return 26 delta\n 28 return 27 \n 29 return 28 return\n 30 dash — here 29 \n-31 } 30 return\n+31 replaced 0\n+32 second\n+33 third\n 32 return 31 \n 33 delta 32 gamma\n 34 fn() 33 x = 1;\n 35 dash — here 34 \ttab\n    ...",
+    "firstChangedLine": 4
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,8 +1,8 @@\n gamma 0 trailing   \n beta 1 {\n dash — here 2   indent\n-delta 3 {\n+\n gamma 4 delta\n trailing    5 “quoted”\n café 6 return\n café 7   indent\n@@ -12,9 +12,9 @@\n trailing    11 delta\n café 12 return\n { 13 beta\n } 14 {\n-return 15   indent\n+\n dash — here 16 trailing   \n gamma 17 “quoted”\n “quoted” 18 \ttab\n x = 1; 19 “quoted”\n@@ -27,9 +27,11 @@\n return 26 delta\n return 27 \n return 28 return\n dash — here 29 \n-} 30 return\n+replaced 0\n+second\n+third\n return 31 \n delta 32 gamma\n fn() 33 x = 1;\n dash — here 34 \ttab\n"
+  },
+  {
+   "content": "alpha 0 x = 1;\n  indent 1 x = 1;\ntrailing    2 alpha",
+   "edits": [
+    {
+     "oldText": "trailing    2 alpha",
+     "newText": "replaced 0\nsecond\nthird"
+    },
+    {
+     "oldText": "  indent 1 x = 1;",
+     "newText": "  indent 1 x = 1;\nextra line 1"
+    }
+   ],
+   "newContent": "alpha 0 x = 1;\n  indent 1 x = 1;\nextra line 1\nreplaced 0\nsecond\nthird",
+   "diff": {
+    "diff": " 1 alpha 0 x = 1;\n 2   indent 1 x = 1;\n-3 trailing    2 alpha\n+3 extra line 1\n+4 replaced 0\n+5 second\n+6 third",
+    "firstChangedLine": 3
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,3 +1,6 @@\n alpha 0 x = 1;\n   indent 1 x = 1;\n-trailing    2 alpha\n\\ No newline at end of file\n+extra line 1\n+replaced 0\n+second\n+third\n\\ No newline at end of file\n"
+  },
+  {
+   "content": "beta 0 alpha\nfn() 1 alpha\nreturn 2 fn()\nx = 1; 3 \ngamma 4 {\n\ttab 5 }\nbeta 6 fn()\nbeta 7 fn()\n  indent 8 x = 1;\n 9 alpha\n{ 10 {\n} 11 “quoted”\nalpha 12 {\nx = 1; 13 beta\ntrailing    14   indent\n 15 trailing   \ngamma 16 x = 1;\nbeta 17 x = 1;\nfn() 18 “quoted”\nbeta 19 \n“quoted” 20 dash — here\nreturn 21 }\nreturn 22 trailing   \ndelta 23 x = 1;\ntrailing    24 fn()",
+   "edits": [
+    {
+     "oldText": " 9 alpha",
+     "newText": " 9 alpha\nextra line 0"
+    },
+    {
+     "oldText": "} 11 “quoted”",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "beta 0 alpha\nfn() 1 alpha\nreturn 2 fn()\nx = 1; 3 \ngamma 4 {\n\ttab 5 }\nbeta 6 fn()\nbeta 7 fn()\n  indent 8 x = 1;\n 9 alpha\nextra line 0\n{ 10 {\nreplaced 1\nalpha 12 {\nx = 1; 13 beta\ntrailing    14   indent\n 15 trailing   \ngamma 16 x = 1;\nbeta 17 x = 1;\nfn() 18 “quoted”\nbeta 19 \n“quoted” 20 dash — here\nreturn 21 }\nreturn 22 trailing   \ndelta 23 x = 1;\ntrailing    24 fn()",
+   "diff": {
+    "diff": "    ...\n  7 beta 6 fn()\n  8 beta 7 fn()\n  9   indent 8 x = 1;\n 10  9 alpha\n+11 extra line 0\n 11 { 10 {\n-12 } 11 “quoted”\n+13 replaced 1\n 13 alpha 12 {\n 14 x = 1; 13 beta\n 15 trailing    14   indent\n 16  15 trailing   \n    ...",
+    "firstChangedLine": 11
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -7,10 +7,11 @@\n beta 6 fn()\n beta 7 fn()\n   indent 8 x = 1;\n  9 alpha\n+extra line 0\n { 10 {\n-} 11 “quoted”\n+replaced 1\n alpha 12 {\n x = 1; 13 beta\n trailing    14   indent\n  15 trailing   \n"
+  },
+  {
+   "content": "trailing    0 {\nreturn 1 {\ncafé 2 beta\nreturn 3 gamma\nreturn 4 return\n{ 5 café\n 6 \ttab\nbeta 7 x = 1;",
+   "edits": [
+    {
+     "oldText": "trailing    0 {",
+     "newText": "replaced 0"
+    },
+    {
+     "oldText": "café 2 beta",
+     "newText": "replaced 1"
+    }
+   ],
+   "newContent": "replaced 0\nreturn 1 {\nreplaced 1\nreturn 3 gamma\nreturn 4 return\n{ 5 café\n 6 \ttab\nbeta 7 x = 1;",
+   "diff": {
+    "diff": "-1 trailing    0 {\n+1 replaced 0\n 2 return 1 {\n-3 café 2 beta\n+3 replaced 1\n 4 return 3 gamma\n 5 return 4 return\n 6 { 5 café\n 7  6 \ttab\n   ...",
+    "firstChangedLine": 1
+   },
+   "patch": "--- f.txt\n+++ f.txt\n@@ -1,7 +1,7 @@\n-trailing    0 {\n+replaced 0\n return 1 {\n-café 2 beta\n+replaced 1\n return 3 gamma\n return 4 return\n { 5 café\n  6 \ttab\n"
+  }
+ ],
+ "truncation": [
+  {
+   "content": "xxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxé中1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+   "maxLines": 19,
+   "maxBytes": 157,
+   "head": {
+    "content": "xxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxé中1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 3,
+    "totalBytes": 82,
+    "outputLines": 3,
+    "outputBytes": 82,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 19,
+    "maxBytes": 157
+   },
+   "tail": {
+    "content": "xxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxé中1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 3,
+    "totalBytes": 82,
+    "outputLines": 3,
+    "outputBytes": 82,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 19,
+    "maxBytes": 157
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxx3\nxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxé中5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中6\n",
+   "maxLines": 40,
+   "maxBytes": 418,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxx3\nxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxé中5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中6\n",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 7,
+    "totalBytes": 166,
+    "outputLines": 7,
+    "outputBytes": 166,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 40,
+    "maxBytes": 418
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxx3\nxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxé中5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中6\n",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 7,
+    "totalBytes": 166,
+    "outputLines": 7,
+    "outputBytes": 166,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 40,
+    "maxBytes": 418
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxé中1\nxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxé中14\nxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxx16\nxxxxxxxx17\nxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxxxé中22\nxxxx23\nxxxxxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxxxxxxxxxx31\nxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxx34\nx35\nxxx36\nxx37\nxxxxxxxxxxxxxxxxx38\n39\nx40\nx41\nxxxxxxxxxxxxxxxxxxxxx42\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx43\nxxxxxxxxxxx44\nx45\nxxxxxxx46\nxxxx47\nxxxxxxxxxxxxxxxxxx48\nxxxxxxé中49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中50\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51\nxxé中52\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx53\n",
+   "maxLines": 9,
+   "maxBytes": 696,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxé中1\nxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 54,
+    "totalBytes": 1163,
+    "outputLines": 9,
+    "outputBytes": 250,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 9,
+    "maxBytes": 696
+   },
+   "tail": {
+    "content": "x45\nxxxxxxx46\nxxxx47\nxxxxxxxxxxxxxxxxxx48\nxxxxxxé中49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中50\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51\nxxé中52\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx53",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 54,
+    "totalBytes": 1163,
+    "outputLines": 9,
+    "outputBytes": 180,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 9,
+    "maxBytes": 696
+   }
+  },
+  {
+   "content": "xxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxx2\nxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxx5\nxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxx14\nxxx15\nxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxé中26\nxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxx30\nxxxxxxx31\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx32\nxxxxxxx33\nxxxxxx34\nxxxxxxxxxxxxxx35\nxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxx38\nxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxx40\nxxxxxxxxxx41\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx42\nxxxxxxxxx43\nxxxxx44\nxxxx45\nxxxxxxxxxxxxxxxxxx46\nxxxxxxxxxxxxxxxxxxxxxx47\nxxxxxxxxxxxxxxxxxxx48\nxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxx51\nxxxxxxxx52\nxxxxx53\nxx54\nxxxxxxxxxxxxxxxxxxxxxxxxé中55\nxxxxxxxx56\nxxxxxxxxxxxx57\nxxxxxxxxxxxxxxxxxxxxxxx58\n",
+   "maxLines": 25,
+   "maxBytes": 380,
+   "head": {
+    "content": "xxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxx2\nxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxx5\nxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxx14\nxxx15\nxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxx17",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 59,
+    "totalBytes": 1189,
+    "outputLines": 18,
+    "outputBytes": 365,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 25,
+    "maxBytes": 380
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxx38\nxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxx40\nxxxxxxxxxx41\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx42\nxxxxxxxxx43\nxxxxx44\nxxxx45\nxxxxxxxxxxxxxxxxxx46\nxxxxxxxxxxxxxxxxxxxxxx47\nxxxxxxxxxxxxxxxxxxx48\nxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxx51\nxxxxxxxx52\nxxxxx53\nxx54\nxxxxxxxxxxxxxxxxxxxxxxxxé中55\nxxxxxxxx56\nxxxxxxxxxxxx57\nxxxxxxxxxxxxxxxxxxxxxxx58",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 59,
+    "totalBytes": 1189,
+    "outputLines": 22,
+    "outputBytes": 378,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 25,
+    "maxBytes": 380
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxé中1",
+   "maxLines": 49,
+   "maxBytes": 341,
+   "head": {
+    "content": "xxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxé中1",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 2,
+    "totalBytes": 36,
+    "outputLines": 2,
+    "outputBytes": 36,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 49,
+    "maxBytes": 341
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxé中1",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 2,
+    "totalBytes": 36,
+    "outputLines": 2,
+    "outputBytes": 36,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 49,
+    "maxBytes": 341
+   }
+  },
+  {
+   "content": "xxxxxx0\nxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxx10\nx11\nxxxxxxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx14\n",
+   "maxLines": 7,
+   "maxBytes": 295,
+   "head": {
+    "content": "xxxxxx0\nxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 15,
+    "totalBytes": 324,
+    "outputLines": 7,
+    "outputBytes": 132,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 7,
+    "maxBytes": 295
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxx10\nx11\nxxxxxxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx14",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 15,
+    "totalBytes": 324,
+    "outputLines": 7,
+    "outputBytes": 157,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 7,
+    "maxBytes": 295
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxx6\nxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxx8\nxxxxxxxxxxxxxxxx9\nxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中12\nxxxxxxxxxxxxxxé中13\nxxxxxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxx17\nxxxx18\nxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxx20\nxxxxxxx21\nxxxxxxxxxxxxxé中22\nxxxxxxxxxxxxxxxxx23\nxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxx29\n30\nxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxx32\nxxxxxxxxxxxxxxxxxxxxx33",
+   "maxLines": 24,
+   "maxBytes": 450,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxx6\nxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxx8\nxxxxxxxxxxxxxxxx9\nxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中12\nxxxxxxxxxxxxxxé中13\nxxxxxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxx17\nxxxx18\nxxxxxxxxxxxxxxxxxxxx19",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 34,
+    "totalBytes": 739,
+    "outputLines": 20,
+    "outputBytes": 449,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 24,
+    "maxBytes": 450
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxé中13\nxxxxxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxx17\nxxxx18\nxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxx20\nxxxxxxx21\nxxxxxxxxxxxxxé中22\nxxxxxxxxxxxxxxxxx23\nxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxx29\n30\nxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxx32\nxxxxxxxxxxxxxxxxxxxxx33",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 34,
+    "totalBytes": 739,
+    "outputLines": 21,
+    "outputBytes": 429,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 24,
+    "maxBytes": 450
+   }
+  },
+  {
+   "content": "xxxxxx0\nxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxx2\nxxx3\nxxxxxxxxxxxxé中4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxx6\nxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxé中14\nxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxé中18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxx20\nxxxxé中21\nxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxx26\nxxxxx27\nxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxx31\nxxxxxxx32\nxxxxxxxx33\nxxxxxxxxxxxxxxxx34",
+   "maxLines": 49,
+   "maxBytes": 768,
+   "head": {
+    "content": "xxxxxx0\nxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxx2\nxxx3\nxxxxxxxxxxxxé中4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxx6\nxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxé中14\nxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxé中18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxx20\nxxxxé中21\nxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxx26\nxxxxx27\nxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxx31\nxxxxxxx32\nxxxxxxxx33\nxxxxxxxxxxxxxxxx34",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 35,
+    "totalBytes": 749,
+    "outputLines": 35,
+    "outputBytes": 749,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 49,
+    "maxBytes": 768
+   },
+   "tail": {
+    "content": "xxxxxx0\nxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxx2\nxxx3\nxxxxxxxxxxxxé中4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxx6\nxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxé中14\nxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxé中18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxx20\nxxxxé中21\nxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxx26\nxxxxx27\nxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxx31\nxxxxxxx32\nxxxxxxxx33\nxxxxxxxxxxxxxxxx34",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 35,
+    "totalBytes": 749,
+    "outputLines": 35,
+    "outputBytes": 749,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 49,
+    "maxBytes": 768
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxx14\nxxxxxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxé中16\nxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxé中19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxx23\nxxxxx24\n25\nxxxxx26\nxxxxxxxx27\n28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中31\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxx38",
+   "maxLines": 23,
+   "maxBytes": 220,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxx7",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 39,
+    "totalBytes": 974,
+    "outputLines": 8,
+    "outputBytes": 214,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 23,
+    "maxBytes": 220
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxx38",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 39,
+    "totalBytes": 974,
+    "outputLines": 6,
+    "outputBytes": 188,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 23,
+    "maxBytes": 220
+   }
+  },
+  {
+   "content": "",
+   "maxLines": 9,
+   "maxBytes": 445,
+   "head": {
+    "content": "",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 0,
+    "totalBytes": 0,
+    "outputLines": 0,
+    "outputBytes": 0,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 9,
+    "maxBytes": 445
+   },
+   "tail": {
+    "content": "",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 0,
+    "totalBytes": 0,
+    "outputLines": 0,
+    "outputBytes": 0,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 9,
+    "maxBytes": 445
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxx0\nxxxxxxxxxxx1\nxxx2\nxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxx7\nxx8\nxxxxxxxxx9\nxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxx13\nxx14\nxxxxxé中15\nxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxx24\nxxxx25\nxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxx31\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxx36",
+   "maxLines": 3,
+   "maxBytes": 51,
+   "head": {
+    "content": "xxxxxxxxxxxxxxx0\nxxxxxxxxxxx1\nxxx2",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 37,
+    "totalBytes": 833,
+    "outputLines": 3,
+    "outputBytes": 34,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 3,
+    "maxBytes": 51
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxx36",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 37,
+    "totalBytes": 833,
+    "outputLines": 2,
+    "outputBytes": 49,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 3,
+    "maxBytes": 51
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1",
+   "maxLines": 16,
+   "maxBytes": 97,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 2,
+    "totalBytes": 55,
+    "outputLines": 2,
+    "outputBytes": 55,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 16,
+    "maxBytes": 97
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 2,
+    "totalBytes": 55,
+    "outputLines": 2,
+    "outputBytes": 55,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 16,
+    "maxBytes": 97
+   }
+  },
+  {
+   "content": "xxxx0\nxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxé中3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxx7\nxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxx14\nxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxé中19\nxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxé中24\nxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxx36\nxxxxxx37\nxxxxxxx38\nx39\nxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxxxxxxxxxxxxx41\nxxxxxxxx42\nxxxxx43\nxxxxxxxxxxxxxxxx44\nxxxxxxxxxxxxxxxx45\nx46\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx47\nxxxxxxxxxxxxxxxxxxx48",
+   "maxLines": 49,
+   "maxBytes": 672,
+   "head": {
+    "content": "xxxx0\nxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxé中3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxx7\nxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxx14\nxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxé中19\nxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxé中24\nxxxxxxxxxxx25",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 49,
+    "totalBytes": 1164,
+    "outputLines": 26,
+    "outputBytes": 643,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 49,
+    "maxBytes": 672
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxé中24\nxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxx36\nxxxxxx37\nxxxxxxx38\nx39\nxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxxxxxxxxxxxxx41\nxxxxxxxx42\nxxxxx43\nxxxxxxxxxxxxxxxx44\nxxxxxxxxxxxxxxxx45\nx46\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx47\nxxxxxxxxxxxxxxxxxxx48",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 49,
+    "totalBytes": 1164,
+    "outputLines": 28,
+    "outputBytes": 665,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 49,
+    "maxBytes": 672
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxx2\nxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7\nxx8\nxxxxxxxxxx9\nxxxxxxxxxxxxxxxxx10\nxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxxxxx14\nxé中15\nxxxxxxxxxxxx16\n17\nxxxxxxxé中18\nxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中20\nxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxx23\nxxxxxxxx24\nxxxxxxxx25\nxxx26\nxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxx30\nx31\nxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中34\nxx35\nxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxx38\nxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxxx41\nxxxxxxxxxxxxxxxxxxxxxxxxxxx42\nxxxxxxxxxxxxxxxxxxxxxxé中43\nxxxx44\nxxxxxxxxxxxxx45\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx46\nxxxxxxxxxxxxx47\nxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxxxxxxxxxxxxxx51\nxxxxxxxxxxx52\nxxxxxxxxxxxxxxxxxxxxxxxxé中53\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx54\nxxx55\nxxxxxx56\n",
+   "maxLines": 45,
+   "maxBytes": 124,
+   "head": {
+    "content": "xxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxx2\nxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 57,
+    "totalBytes": 1197,
+    "outputLines": 5,
+    "outputBytes": 102,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 45,
+    "maxBytes": 124
+   },
+   "tail": {
+    "content": "xxxxxxxxxxx52\nxxxxxxxxxxxxxxxxxxxxxxxxé中53\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx54\nxxx55\nxxxxxx56",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 57,
+    "totalBytes": 1197,
+    "outputLines": 5,
+    "outputBytes": 100,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 45,
+    "maxBytes": 124
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxx0\nxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxx8\nxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxx11\nxxxxxxxxx12\nxxxxxxxx13\n14\nxxxxxxxxx15\nxx16\nxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxx18",
+   "maxLines": 11,
+   "maxBytes": 166,
+   "head": {
+    "content": "xxxxxxxxxxxxxx0\nxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 19,
+    "totalBytes": 372,
+    "outputLines": 6,
+    "outputBytes": 143,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 11,
+    "maxBytes": 166
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxx11\nxxxxxxxxx12\nxxxxxxxx13\n14\nxxxxxxxxx15\nxx16\nxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxx18",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 19,
+    "totalBytes": 372,
+    "outputLines": 10,
+    "outputBytes": 163,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 11,
+    "maxBytes": 166
+   }
+  },
+  {
+   "content": "xxxxx0\nxxxxxxxxxxxxxxx1\nxxxx2\nxxxxx3\nxxx4\nxx5\nxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中7\nxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxx15\nxxxxx16\nxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxx21\nxx22\nxxxxxxxxxxxxxxxxxxxxxxx23\nxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxx26\nxxxxxx27\nxxxxxxxxxxxxé中28\nxxxxxxxxxx29\nxxxxé中30\nxxxxxx31\nxxxxxxxxxxxxxxxxxxxxxxxxxx32\n33\nxxxxxxxx34\nxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx38\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxx41\nxxxxxxxxxxxxxxxxxxxxxxxx42\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx43\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx44\nxxxxxxxxxxxx45\nxé中46\nxxxxxxxxxxxxxxxxxé中47\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中49\nxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51\n52\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中53\nx54\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55",
+   "maxLines": 40,
+   "maxBytes": 330,
+   "head": {
+    "content": "xxxxx0\nxxxxxxxxxxxxxxx1\nxxxx2\nxxxxx3\nxxx4\nxx5\nxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中7\nxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxx15\nxxxxx16\nxxxxxxxxx17",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 56,
+    "totalBytes": 1200,
+    "outputLines": 18,
+    "outputBytes": 322,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 40,
+    "maxBytes": 330
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx44\nxxxxxxxxxxxx45\nxé中46\nxxxxxxxxxxxxxxxxxé中47\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中49\nxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51\n52\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中53\nx54\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 56,
+    "totalBytes": 1200,
+    "outputLines": 12,
+    "outputBytes": 318,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 40,
+    "maxBytes": 330
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxx4\nx5\nxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxx10\n11",
+   "maxLines": 40,
+   "maxBytes": 497,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxx4\nx5\nxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxx10\n11",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 12,
+    "totalBytes": 270,
+    "outputLines": 12,
+    "outputBytes": 270,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 40,
+    "maxBytes": 497
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxx4\nx5\nxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxx10\n11",
+    "truncated": false,
+    "truncatedBy": null,
+    "totalLines": 12,
+    "totalBytes": 270,
+    "outputLines": 12,
+    "outputBytes": 270,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 40,
+    "maxBytes": 497
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxé中0\nxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxx7\nxxxx8\nxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中12\n13\nxxxxxxxxxx14\nxxxxxxxxxxxx15\nxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxxxxxxxxx22\n23\nxxxxxx24\nxxxxxxxxx25\n26\nxxx27\nxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxx30\nxxxxxé中31\nxxxxxxx32\nxxxxxxxxxxxé中33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxx36\n",
+   "maxLines": 24,
+   "maxBytes": 221,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxé中0\nxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxx7\nxxxx8",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 37,
+    "totalBytes": 806,
+    "outputLines": 9,
+    "outputBytes": 202,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 24,
+    "maxBytes": 221
+   },
+   "tail": {
+    "content": "xxxxxxxxx25\n26\nxxx27\nxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxx30\nxxxxxé中31\nxxxxxxx32\nxxxxxxxxxxxé中33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxx36",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 37,
+    "totalBytes": 806,
+    "outputLines": 12,
+    "outputBytes": 214,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 24,
+    "maxBytes": 221
+   }
+  },
+  {
+   "content": "xx0\nxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\n6\nxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxé中8\nxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxxxxxxx14\n15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中19\nxxxxxxxxxxx20\nxxxxxxxx21\nxxxxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxé中24\nxxxxxxxxxé中25\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxx27",
+   "maxLines": 3,
+   "maxBytes": 266,
+   "head": {
+    "content": "xx0\nxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 28,
+    "totalBytes": 664,
+    "outputLines": 3,
+    "outputBytes": 47,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 3,
+    "maxBytes": 266
+   },
+   "tail": {
+    "content": "xxxxxxxxxé中25\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxx27",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 28,
+    "totalBytes": 664,
+    "outputLines": 3,
+    "outputBytes": 73,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 3,
+    "maxBytes": 266
+   }
+  },
+  {
+   "content": "x0\nxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxx4\nxxxx5\nxxxxxxxxxxx6\nxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxx11\nxxx12\nxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxx20\nxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx24\n25\nxxxxxxxxx26\nxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx38\nxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxx40\n",
+   "maxLines": 32,
+   "maxBytes": 164,
+   "head": {
+    "content": "x0\nxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxx4\nxxxx5\nxxxxxxxxxxx6\nxxxxxxxxxxxx7",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 41,
+    "totalBytes": 954,
+    "outputLines": 8,
+    "outputBytes": 139,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 32,
+    "maxBytes": 164
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx38\nxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxx40",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 41,
+    "totalBytes": 954,
+    "outputLines": 5,
+    "outputBytes": 144,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 32,
+    "maxBytes": 164
+   }
+  },
+  {
+   "content": "0\nxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\n13\nxxxxxxxxxxxxxx14\n15\nxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中18\nxxxxxxxxxxxxxxxxxé中19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxxé中22\nxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxé中27\nxxxxxxxxxxxxxx28\nx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxx31\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxx34\nxxxxxxxxxxxxxxxé中35\nxxxxxxxxxxxxxxx36\nxxxxx37\nxxxxxxxxxxxxxxxxxxxxxxxxxxé中38\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxx41\nxxx42\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中43\n44\nxxxxxxxx45\nxxxxxxxxxxxxxxxxxxxx46\nxxxxxxxxxxxxxxxxxxxx47\nxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxx51\nxxxxxxx52",
+   "maxLines": 6,
+   "maxBytes": 434,
+   "head": {
+    "content": "0\nxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 53,
+    "totalBytes": 1271,
+    "outputLines": 6,
+    "outputBytes": 157,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 6,
+    "maxBytes": 434
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxx47\nxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxx51\nxxxxxxx52",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 53,
+    "totalBytes": 1271,
+    "outputLines": 6,
+    "outputBytes": 128,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 6,
+    "maxBytes": 434
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxx0\nxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxé中3\nxxxxxxxxxxx4\n5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxé中8\nxxxxxx9\nxxxxxxxxxxxxxxxxxxxé中10\nxxxxxxxxxxxxxxxxx11\nxxxx12\nxxx13\nxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx22\nxé中23\nxxxxxxxxxxxxxxxxxx24\nxxxxx25\nxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nxxxxxxxxxxxxxxxxxxxxxxxxé中30\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxx33\nxxxxxxx34\nxxxxxxx35",
+   "maxLines": 2,
+   "maxBytes": 123,
+   "head": {
+    "content": "xxxxxxxxxxxxxx0\nxxxxxxx1",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 36,
+    "totalBytes": 770,
+    "outputLines": 2,
+    "outputBytes": 24,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 2,
+    "maxBytes": 123
+   },
+   "tail": {
+    "content": "xxxxxxx34\nxxxxxxx35",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 36,
+    "totalBytes": 770,
+    "outputLines": 2,
+    "outputBytes": 19,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 2,
+    "maxBytes": 123
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxé中1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\n",
+   "maxLines": 25,
+   "maxBytes": 33,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxx0",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 4,
+    "totalBytes": 120,
+    "outputLines": 1,
+    "outputBytes": 25,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 25,
+    "maxBytes": 33
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 4,
+    "totalBytes": 120,
+    "outputLines": 1,
+    "outputBytes": 33,
+    "lastLinePartial": true,
+    "firstLineExceedsLimit": false,
+    "maxLines": 25,
+    "maxBytes": 33
+   }
+  },
+  {
+   "content": "xxxxxxxx0\nxxxxxxxxxxxxxxxxx1\nxxx2\nxxxxxxxx3\nxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxx5\nxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxx13\nxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx15\nx16\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx17\nxxxx18\nx19\nxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxx21\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中22\nxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxx26\nxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxé中28\nxxxxxxxxxxxxx29\nxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxx31\nxxxxxxx32\nxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxx34",
+   "maxLines": 35,
+   "maxBytes": 271,
+   "head": {
+    "content": "xxxxxxxx0\nxxxxxxxxxxxxxxxxx1\nxxx2\nxxxxxxxx3\nxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxx5\nxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxxxxxx7\nxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxx9\nxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxx13\nxxxxxxxxxxxxxx14",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 35,
+    "totalBytes": 664,
+    "outputLines": 15,
+    "outputBytes": 253,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 35,
+    "maxBytes": 271
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxx26\nxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxé中28\nxxxxxxxxxxxxx29\nxxxxxxxxxxx30\nxxxxxxxxxxxxxxxxx31\nxxxxxxx32\nxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxxxxxxx34",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 35,
+    "totalBytes": 664,
+    "outputLines": 12,
+    "outputBytes": 250,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 35,
+    "maxBytes": 271
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxé中1\nxxxxxxxxxxxxxxxxxxxxx2\nxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxx5\nxxxxxxxxx6\nxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxé中9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxx16\nxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxx22\nxxxxxxxxxxxxxx23\nxxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxé中29\nxxxxx30\n31\nxxxxxxxxxxxxxxxxxxxx32\nxxxxxxxxxxxxxxxxxxxxxxxxx33\nxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxx35\nxxxxxxxxxxxxxxxx36\nxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxx38\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxxxx41\nxxxx42\nxxxxxxxxxxxxxxxxxxxxxxxx43\nxxxé中44\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx45\nxxxxxxxxxxxxxxxx46\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中47\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxx50",
+   "maxLines": 48,
+   "maxBytes": 305,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxé中1\nxxxxxxxxxxxxxxxxxxxxx2\nxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxx5\nxxxxxxxxx6\nxxx7\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxé中9\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 51,
+    "totalBytes": 1180,
+    "outputLines": 13,
+    "outputBytes": 304,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 48,
+    "maxBytes": 305
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxxxx41\nxxxx42\nxxxxxxxxxxxxxxxxxxxxxxxx43\nxxxé中44\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx45\nxxxxxxxxxxxxxxxx46\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中47\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxx50",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 51,
+    "totalBytes": 1180,
+    "outputLines": 11,
+    "outputBytes": 278,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 48,
+    "maxBytes": 305
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxé中2\nxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxx5\nxxx6\nxxxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中9\nxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxx12\nx13\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxxxxxxxxxxxxxxxxxxxxxxxx21\nxxxxxxxxxxxxxxxxx22\nxxxxxxxxx23\nxxxxxxxxxxxxxxé中24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nx29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxx31\nxxxxxxxxxxxxé中32\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中33\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中34\nxxxxxxxxxxxx35\nxxxxxxxxxxxxxxxxxxxxxxxx36\nxxxxxxé中37\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx38\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxx41\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx42\né中43\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx44\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中45\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx46\nxxxxxxxxxxx47\nx48\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx49\nx50\nxxxxxxxxxxxxxxxé中51\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx53\nx54\nxxxxxxxxxxxxxxxxxx55\n",
+   "maxLines": 15,
+   "maxBytes": 181,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxé中2\nxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxx5\nxxx6",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 56,
+    "totalBytes": 1424,
+    "outputLines": 7,
+    "outputBytes": 172,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 15,
+    "maxBytes": 181
+   },
+   "tail": {
+    "content": "xxxxxxxxxxx47\nx48\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx49\nx50\nxxxxxxxxxxxxxxxé中51\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx53\nx54\nxxxxxxxxxxxxxxxxxx55",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 56,
+    "totalBytes": 1424,
+    "outputLines": 9,
+    "outputBytes": 178,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 15,
+    "maxBytes": 181
+   }
+  },
+  {
+   "content": "xxxxx0\nxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxx4\n",
+   "maxLines": 47,
+   "maxBytes": 56,
+   "head": {
+    "content": "xxxxx0\nxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 5,
+    "totalBytes": 88,
+    "outputLines": 3,
+    "outputBytes": 49,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 47,
+    "maxBytes": 56
+   },
+   "tail": {
+    "content": "xxxxxxxxx3\nxxxxxxxxxxxxxxxxxxxxxxxxx4",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 5,
+    "totalBytes": 88,
+    "outputLines": 2,
+    "outputBytes": 37,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 47,
+    "maxBytes": 56
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxx3\nxx4\nxxxxxxxxxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxx7",
+   "maxLines": 2,
+   "maxBytes": 368,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxxxxxxx1",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 8,
+    "totalBytes": 171,
+    "outputLines": 2,
+    "outputBytes": 46,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 2,
+    "maxBytes": 368
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxx7",
+    "truncated": true,
+    "truncatedBy": "lines",
+    "totalLines": 8,
+    "totalBytes": 171,
+    "outputLines": 2,
+    "outputBytes": 51,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 2,
+    "maxBytes": 368
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxx3\nxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxx7\nxxxxx8\nxx9\nxxxx10\nxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\n13\nxxx14\nxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxx17\nxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxxx21\nxxxxxxxxxxxxé中22\nxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\nxxxxxxxxxxxxxxxxxxxxxxxx26\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx28\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx29\nx30\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx31\nxxxxxxxx32\nxx33\nxxxxxxxxxxxxxxxxxxxxxxx34\nxxxxxxxxxxxé中35\nxxxxxxx36\nxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxxé中38\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx39\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx40\nxxxxxxxxxxxxxxxxxxxx41\nxxxxxxxxxxxx42\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx43\nxxxxxxxxxxx44\nxxxxxxx45\nxxxxxxxxxxxxé中46\nxxxxxxxxx47\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中51\nxxxxxxxxxxxxxxxxxxxxx52\nxxxxxxxxxxx53\né中54",
+   "maxLines": 29,
+   "maxBytes": 323,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxxxxx1\nxxxxxxxxxxxxxxxxxxxxxxxxxxx2\nxxxxx3\nxxxxxxxxxxxxxxxxxx4\nxxxxxxxxxxxx5\nxxxxxxxxxxxxxxxxxxxxxxxxx6\nxxxxxxxxxxxxxxxxxxxxx7\nxxxxx8\nxx9\nxxxx10\nxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx12\n13\nxxx14\nxxxxx15\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx16\nxxxxxxxxx17\nxxxxxx18",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 55,
+    "totalBytes": 1142,
+    "outputLines": 19,
+    "outputBytes": 297,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 29,
+    "maxBytes": 323
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxx41\nxxxxxxxxxxxx42\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxx43\nxxxxxxxxxxx44\nxxxxxxx45\nxxxxxxxxxxxxé中46\nxxxxxxxxx47\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx48\nxxxxxxxxxxxxxxxxx49\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx50\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中51\nxxxxxxxxxxxxxxxxxxxxx52\nxxxxxxxxxxx53\né中54",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 55,
+    "totalBytes": 1142,
+    "outputLines": 14,
+    "outputBytes": 308,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 29,
+    "maxBytes": 323
+   }
+  },
+  {
+   "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxx1\nxxxxxxxxxxxxxx2\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3\nxxxxxxxxxxxxxxx4\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx5\nxxxxxx6\nxxxxxxxxxxxxxxxxxx7\nxxxxxxxxxxxxxxxxxxxxx8\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxé中9\nxxxxxxxxxxxxxxxxxxxx10\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx11\nxxxxxxxxxxxxxxxxxxxxxx12\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx13\nxxxxxxxxxxxxxxxxxxxxxx14\nxxxxxxxxxxxxxxxxxxxxxxxx15\nx16\nxxxxxxxxxxxxxxxxxxxxxx17\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx18\nxxxxxxxxxxxxxxxxxxxxxxxx19\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx20\nxxx21\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx22\nxxxxxxxxxxxxxxxxxxxx23\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx24\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx25\n26\nxxxxxxxxxxxxxxxx27\nxxxxxxxxxxxxxxx28\nxxé中29\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx30\nxxxxxxxxxxxxx31\nx32\nxxxxxxxxxx33\nxxxxxxxxxxxxxxx34\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx35\nxx36\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx37\nxxxxxxxxxxxxxxxxxxxxxxxxxx38",
+   "maxLines": 38,
+   "maxBytes": 50,
+   "head": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0\nxxxxxxxxxxx1",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 39,
+    "totalBytes": 940,
+    "outputLines": 2,
+    "outputBytes": 45,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 38,
+    "maxBytes": 50
+   },
+   "tail": {
+    "content": "xxxxxxxxxxxxxxxxxxxxxxxxxx38",
+    "truncated": true,
+    "truncatedBy": "bytes",
+    "totalLines": 39,
+    "totalBytes": 940,
+    "outputLines": 1,
+    "outputBytes": 28,
+    "lastLinePartial": false,
+    "firstLineExceedsLimit": false,
+    "maxLines": 38,
+    "maxBytes": 50
+   }
+  }
+ ],
+ "sizes": [
+  [
+   0,
+   "0B"
+  ],
+  [
+   1,
+   "1B"
+  ],
+  [
+   1023,
+   "1023B"
+  ],
+  [
+   1024,
+   "1.0KB"
+  ],
+  [
+   1536,
+   "1.5KB"
+  ],
+  [
+   51200,
+   "50.0KB"
+  ],
+  [
+   1048575,
+   "1024.0KB"
+  ],
+  [
+   1048576,
+   "1.0MB"
+  ],
+  [
+   5255225,
+   "5.0MB"
+  ]
+ ]
+}
