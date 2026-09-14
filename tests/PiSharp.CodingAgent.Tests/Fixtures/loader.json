@@ -1,0 +1,237 @@
+{
+ "configDirName": ".pi",
+ "files": {
+  "home/.agents/skills/home-skill/SKILL.md": "---\nname: home-skill\ndescription: from ~/.agents\n---\n",
+  "home/.agents/skills/top.md": "---\ndescription: top-level md in agents root is not a skill\n---\n",
+  "agent/settings.json": "{\"skills\":[\"../shared-skills\",\"!**/excluded-skill\"],\"prompts\":[\"../shared-prompts/p1.md\",\"!**/p2.md\"],\"themes\":[\"-themes/bad.json\"]}",
+  "agent/AGENTS.md": "global agents",
+  "agent/SYSTEM.md": "﻿global system",
+  "agent/skills/a-skill/SKILL.md": "---\nname: a-skill\ndescription: user skill\n---\n",
+  "agent/skills/excluded-skill/SKILL.md": "---\nname: excluded-skill\ndescription: excluded by settings\n---\n",
+  "agent/prompts/hello.md": "Say hello to $1",
+  "agent/prompts/p2.md": "excluded prompt",
+  "agent/themes/mine.json": "{\"name\":\"mine\",\"colors\":{}}",
+  "agent/themes/bad.json": "{ not json",
+  "shared-skills/shared/SKILL.md": "---\nname: shared\ndescription: shared skill\n---\n",
+  "shared-skills/a-skill/SKILL.md": "---\nname: a-skill\ndescription: duplicate name\n---\n",
+  "shared-prompts/p1.md": "---\ndescription: shared p1\n---\nP1",
+  "repo/.git/HEAD": "ref: refs/heads/main\n",
+  "repo/CLAUDE.md": "repo claude",
+  "repo/.agents/skills/repo-skill/SKILL.md": "---\nname: repo-skill\ndescription: repo agents skill\n---\n",
+  "repo/work/.pi/settings.json": "{\"prompts\":[\"!**/hello.md\"]}",
+  "repo/work/.pi/APPEND_SYSTEM.md": "project append",
+  "repo/work/.pi/skills/proj/SKILL.md": "---\nname: proj\ndescription: project skill\n---\n",
+  "repo/work/.pi/prompts/hello.md": "project hello",
+  "repo/work/AGENTS.override.md": "override wins",
+  "repo/work/AGENTS.md": "not loaded"
+ },
+ "cases": [
+  {
+   "name": "default",
+   "options": {},
+   "result": {
+    "skills": [
+     {
+      "name": "proj",
+      "filePath": "repo/work/.pi/skills/proj/SKILL.md",
+      "sourceInfo": {
+       "path": "repo/work/.pi/skills/proj/SKILL.md",
+       "source": "auto",
+       "scope": "project",
+       "origin": "top-level",
+       "baseDir": "repo/work/.pi"
+      }
+     },
+     {
+      "name": "repo-skill",
+      "filePath": "repo/.agents/skills/repo-skill/SKILL.md",
+      "sourceInfo": {
+       "path": "repo/.agents/skills/repo-skill/SKILL.md",
+       "source": "auto",
+       "scope": "project",
+       "origin": "top-level",
+       "baseDir": "repo/.agents"
+      }
+     },
+     {
+      "name": "a-skill",
+      "filePath": "shared-skills/a-skill/SKILL.md",
+      "sourceInfo": {
+       "path": "shared-skills/a-skill/SKILL.md",
+       "source": "local",
+       "scope": "user",
+       "origin": "top-level"
+      }
+     },
+     {
+      "name": "shared",
+      "filePath": "shared-skills/shared/SKILL.md",
+      "sourceInfo": {
+       "path": "shared-skills/shared/SKILL.md",
+       "source": "local",
+       "scope": "user",
+       "origin": "top-level"
+      }
+     },
+     {
+      "name": "home-skill",
+      "filePath": "home/.agents/skills/home-skill/SKILL.md",
+      "sourceInfo": {
+       "path": "home/.agents/skills/home-skill/SKILL.md",
+       "source": "auto",
+       "scope": "user",
+       "origin": "top-level",
+       "baseDir": "home/.agents"
+      }
+     }
+    ],
+    "skillDiagnostics": [
+     {
+      "type": "collision",
+      "message": "name \"a-skill\" collision",
+      "path": "agent/skills/a-skill/SKILL.md",
+      "collision": {
+       "resourceType": "skill",
+       "name": "a-skill",
+       "winnerPath": "shared-skills/a-skill/SKILL.md",
+       "loserPath": "agent/skills/a-skill/SKILL.md"
+      }
+     }
+    ],
+    "prompts": [
+     {
+      "name": "p1",
+      "filePath": "shared-prompts/p1.md",
+      "content": "P1",
+      "sourceInfo": {
+       "path": "shared-prompts/p1.md",
+       "source": "local",
+       "scope": "user",
+       "origin": "top-level"
+      }
+     },
+     {
+      "name": "hello",
+      "filePath": "agent/prompts/hello.md",
+      "content": "Say hello to $1",
+      "sourceInfo": {
+       "path": "agent/prompts/hello.md",
+       "source": "auto",
+       "scope": "user",
+       "origin": "top-level",
+       "baseDir": "agent"
+      }
+     }
+    ],
+    "promptDiagnostics": [],
+    "themes": [],
+    "themeDiagnostics": [
+     {
+      "type": "warning",
+      "path": "agent/themes/mine.json"
+     }
+    ],
+    "agentsFiles": [
+     {
+      "path": "agent/AGENTS.md",
+      "content": "global agents"
+     },
+     {
+      "path": "repo/CLAUDE.md",
+      "content": "repo claude"
+     },
+     {
+      "path": "repo/work/AGENTS.override.md",
+      "content": "override wins"
+     }
+    ],
+    "systemPrompt": "global system",
+    "systemPromptSource": "agent/SYSTEM.md",
+    "appendSystemPrompt": [
+     "project append"
+    ],
+    "appendSources": [
+     "repo/work/.pi/APPEND_SYSTEM.md"
+    ]
+   }
+  },
+  {
+   "name": "flags",
+   "options": {
+    "noSkills": true,
+    "noContextFiles": true,
+    "additionalSkillPaths": [
+     "shared-skills/shared",
+     "nope"
+    ],
+    "systemPrompt": "inline system",
+    "appendSystemPrompt": [
+     "agent/AGENTS.md"
+    ]
+   },
+   "result": {
+    "skills": [
+     {
+      "name": "shared",
+      "filePath": "shared-skills/shared/SKILL.md",
+      "sourceInfo": {
+       "path": "shared-skills/shared/SKILL.md",
+       "source": "local",
+       "scope": "user",
+       "origin": "top-level"
+      }
+     }
+    ],
+    "skillDiagnostics": [
+     {
+      "type": "warning",
+      "message": "skill path does not exist",
+      "path": "nope"
+     }
+    ],
+    "prompts": [
+     {
+      "name": "p1",
+      "filePath": "shared-prompts/p1.md",
+      "content": "P1",
+      "sourceInfo": {
+       "path": "shared-prompts/p1.md",
+       "source": "local",
+       "scope": "user",
+       "origin": "top-level"
+      }
+     },
+     {
+      "name": "hello",
+      "filePath": "agent/prompts/hello.md",
+      "content": "Say hello to $1",
+      "sourceInfo": {
+       "path": "agent/prompts/hello.md",
+       "source": "auto",
+       "scope": "user",
+       "origin": "top-level",
+       "baseDir": "agent"
+      }
+     }
+    ],
+    "promptDiagnostics": [],
+    "themes": [],
+    "themeDiagnostics": [
+     {
+      "type": "warning",
+      "path": "agent/themes/mine.json"
+     }
+    ],
+    "agentsFiles": [],
+    "systemPrompt": "inline system",
+    "systemPromptSource": null,
+    "appendSystemPrompt": [
+     "global agents"
+    ],
+    "appendSources": [
+     "agent/AGENTS.md"
+    ]
+   }
+  }
+ ]
+}
