@@ -272,8 +272,12 @@ public sealed partial class InteractiveMode
         var session = Session;
         var defaultModelId = ModelResolver.DefaultModelPerProvider.FirstOrDefault(kv => kv.Key == providerId).Value;
         var unknownPrevious = previousModel is null;
-        var deferSelection = unknownPrevious && defaultModelId is not null
-            && !session.ModelRuntime.AvailableSnapshot.Any(m => m.Provider == providerId && m.Id == defaultModelId);
+        // Deviation from pi: llama.cpp catalogs are always empty before the first refresh after login, so pi reports
+        // "no models are loaded" even when the server has loaded models. Wait for the refresh before giving guidance.
+        var deferSelection = unknownPrevious
+            && (providerId == LlamaProvider.ProviderId
+                || (defaultModelId is not null && !session.ModelRuntime.AvailableSnapshot.Any(m => m.Provider == providerId && m.Id == defaultModelId)));
+        string? guidance = null;
 
         async Task FinishAuthenticationAsync()
         {
@@ -284,7 +288,9 @@ public sealed partial class InteractiveMode
                 var providerModels = Session.ModelRuntime.AvailableSnapshot.Where(m => m.Provider == providerId).ToList();
                 if (providerId == LlamaProvider.ProviderId)
                 {
-                    selectionError = LlamaCppPostLoginGuidance(actionLabel, providerModels.Count);
+                    // With loaded models this is guidance, not a failure.
+                    if (providerModels.Count == 0) selectionError = LlamaCppPostLoginGuidance(actionLabel, 0);
+                    else guidance = LlamaCppPostLoginGuidance(actionLabel, providerModels.Count);
                 }
                 else if (defaultModelId is null)
                 {
@@ -326,7 +332,7 @@ public sealed partial class InteractiveMode
             }
             else
             {
-                ShowStatus($"{actionLabel}. Credentials saved to {authPath}");
+                ShowStatus(guidance is not null ? $"{guidance} Credentials saved to {authPath}" : $"{actionLabel}. Credentials saved to {authPath}");
                 if (selectionError is not null) ShowError(selectionError);
                 else _ = MaybeWarnAboutAnthropicSubscriptionAuthAsync();
             }
@@ -350,6 +356,7 @@ public sealed partial class InteractiveMode
         catch (Exception ex)
         {
             ShowWarning($"{actionLabel}, but its model catalog could not be refreshed: {ex.Message}");
+            if (deferSelection && ReferenceEquals(Session, session) && ReferenceEquals(session.Model, previousModel)) await FinishAuthenticationAsync();
         }
     }
 
