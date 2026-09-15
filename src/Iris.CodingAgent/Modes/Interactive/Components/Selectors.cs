@@ -8,12 +8,12 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Opens content in an external editor. Port of external-editor.ts.</summary>
+/// <summary>Opens content in an external editor.</summary>
 public static class ExternalEditor
 {
     public static async Task<string?> EditAsync(string command, string content)
     {
-        var directory = Directory.CreateTempSubdirectory("pi-editor-").FullName;
+        var directory = Directory.CreateTempSubdirectory("iris-editor-").FullName;
         var filePath = Path.Combine(directory, "prompt.md");
         try
         {
@@ -64,7 +64,7 @@ public static class ExternalEditor
     }
 }
 
-/// <summary>Shares concurrent catalog refreshes per runtime. Port of model-catalog-refresh.ts.</summary>
+/// <summary>Shares concurrent catalog refreshes per runtime.</summary>
 public static class ModelCatalogRefresh
 {
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ModelRuntime, Active> ActiveByRuntime = new();
@@ -123,7 +123,7 @@ public static class ModelCatalogRefresh
     }
 }
 
-/// <summary>Thinking level selector. Port of thinking-selector.ts.</summary>
+/// <summary>Thinking level selector.</summary>
 public sealed class ThinkingSelectorComponent : Container, IInputComponent, IFocusable
 {
     private static readonly SelectListLayoutOptions Layout = new() { MinPrimaryColumnWidth = 12, MaxPrimaryColumnWidth = 32 };
@@ -236,7 +236,7 @@ internal static class ThinkingLevelNames
     };
 }
 
-/// <summary>Fork-from-message selector. Port of user-message-selector.ts.</summary>
+/// <summary>Fork-from-message selector.</summary>
 public sealed class UserMessageSelectorComponent : Container
 {
     public sealed class UserMessageList(List<(string Id, string Text)> messages, string? initialSelectedId) : IInputComponent
@@ -310,7 +310,7 @@ public sealed class UserMessageSelectorComponent : Container
     public UserMessageList GetMessageList() => _messageList;
 }
 
-/// <summary>Generic option selector dialog. Port of extension-selector.ts.</summary>
+/// <summary>Generic option selector dialog.</summary>
 public sealed class ExtensionSelectorComponent : Container, IInputComponent, IDisposable
 {
     private readonly List<string> _options;
@@ -385,7 +385,7 @@ public sealed class ExtensionSelectorComponent : Container, IInputComponent, IDi
     }
 }
 
-/// <summary>Single-line input dialog. Port of extension-input.ts.</summary>
+/// <summary>Single-line input dialog.</summary>
 public sealed class ExtensionInputComponent : Container, IInputComponent, IFocusable, IDisposable
 {
     private readonly Input _input = new();
@@ -440,7 +440,7 @@ public sealed class ExtensionInputComponent : Container, IInputComponent, IFocus
     }
 }
 
-/// <summary>Multi-line editor dialog. Port of extension-editor.ts.</summary>
+/// <summary>Multi-line editor dialog.</summary>
 public sealed class ExtensionEditorComponent : Container, IInputComponent, IFocusable
 {
     private readonly Editor _editor;
@@ -515,7 +515,7 @@ public sealed class ExtensionEditorComponent : Container, IInputComponent, IFocu
     }
 }
 
-/// <summary>Model selector with search and scope toggle. Port of model-selector.ts.</summary>
+/// <summary>Model selector with search and scope toggle.</summary>
 public sealed class ModelSelectorComponent : Container, IInputComponent, IFocusable, IDisposable
 {
     private sealed record ModelItem(string Provider, string Id, Model Model);
@@ -819,7 +819,7 @@ public sealed class ModelSelectorComponent : Container, IInputComponent, IFocusa
     }
 }
 
-/// <summary>Project trust selector. Port of trust-selector.ts.</summary>
+/// <summary>Project trust selector.</summary>
 public sealed class TrustSelectorComponent : Container, IInputComponent
 {
     private int _selectedIndex;

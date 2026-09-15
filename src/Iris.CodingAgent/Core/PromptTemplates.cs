@@ -8,7 +8,7 @@ namespace Iris.CodingAgent.Core;
 
 public sealed record PromptTemplate(string Name, string Description, string? ArgumentHint, string Content, SourceInfo SourceInfo, string FilePath);
 
-/// <summary>Markdown prompt templates invoked as /name. Port of core/prompt-templates.ts.</summary>
+/// <summary>Markdown prompt templates invoked as /name.</summary>
 public static partial class PromptTemplates
 {
     [GeneratedRegex(@"\$\{([0-9]+|ARGUMENTS|@):-([^}]*)\}|\$\{@:([0-9]+)(?::([0-9]+))?\}|\$(ARGUMENTS|@|[0-9]+)")]

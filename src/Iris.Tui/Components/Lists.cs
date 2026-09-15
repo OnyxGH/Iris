@@ -22,7 +22,7 @@ public sealed class SelectListLayoutOptions
     public Func<SelectListTruncateContext, string>? TruncatePrimary { get; init; }
 }
 
-/// <summary>Scrollable selection list with optional descriptions. Port of pi-tui SelectList.</summary>
+/// <summary>Scrollable selection list with optional descriptions.</summary>
 public sealed partial class SelectList : IInputComponent, IMouseComponent
 {
     private int? _mousePressedIndex;
@@ -228,7 +228,7 @@ public sealed class SettingsListTheme
     public required Func<string, string> Hint { get; init; }
 }
 
-/// <summary>Settings list with value cycling, submenus and optional search. Port of pi-tui SettingsList.</summary>
+/// <summary>Settings list with value cycling, submenus and optional search.</summary>
 public sealed class SettingsList : IInputComponent, IMouseComponent
 {
     private int? _mousePressedIndex;

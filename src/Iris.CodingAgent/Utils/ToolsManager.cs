@@ -6,7 +6,7 @@ namespace Iris.CodingAgent.Utils;
 
 public sealed record ToolStatus(string Type, string Message);
 
-/// <summary>Locates or downloads fd and ripgrep. Port of utils/tools-manager.ts.</summary>
+/// <summary>Locates or downloads fd and ripgrep.</summary>
 public static class ToolsManager
 {
     private const int NetworkTimeoutMs = 10_000;
@@ -49,7 +49,7 @@ public static class ToolsManager
 
     private static bool IsOfflineModeEnabled()
     {
-        var value = Environment.GetEnvironmentVariable("PI_OFFLINE");
+        var value = Environment.GetEnvironmentVariable("IRIS_OFFLINE");
         if (string.IsNullOrEmpty(value)) return false;
         return value == "1" || value.Equals("true", StringComparison.OrdinalIgnoreCase) || value.Equals("yes", StringComparison.OrdinalIgnoreCase);
     }

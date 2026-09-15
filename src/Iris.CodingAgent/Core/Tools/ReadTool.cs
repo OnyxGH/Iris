@@ -32,7 +32,6 @@ public sealed class ReadToolOptions
     public ReadOperations? Operations { get; init; }
 }
 
-/// <summary>Port of core/tools/read.ts.</summary>
 public static class ReadTool
 {
     public const string Snippet = "Read file contents";

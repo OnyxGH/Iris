@@ -38,7 +38,7 @@ public sealed class ProviderConfigInput
 
 public sealed record AuthStatus(bool Configured, string? Source = null, string? Label = null);
 
-/// <summary>Compose built-in, models.json and extension provider layers. Port of core/provider-composer.ts.</summary>
+/// <summary>Compose built-in, models.json and extension provider layers.</summary>
 public static class ProviderComposer
 {
     private static readonly string[] NestedCompatKeys = ["openRouterRouting", "vercelGatewayRouting", "chatTemplateKwargs", "chatTemplateArgs"];
@@ -63,17 +63,17 @@ public static class ProviderComposer
     private static Dictionary<string, string?>? ThinkingMapFromJson(JsonNode? node)
     {
         if (node is not JsonObject obj) return null;
-        return obj.ToDictionary(kv => kv.Key, kv => PiJson.GetString(kv.Value));
+        return obj.ToDictionary(kv => kv.Key, kv => IrisJson.GetString(kv.Value));
     }
 
     private static List<string>? StringList(JsonNode? node) =>
-        node is JsonArray arr ? arr.Select(PiJson.GetString).Where(s => s is not null).Select(s => s!).ToList() : null;
+        node is JsonArray arr ? arr.Select(IrisJson.GetString).Where(s => s is not null).Select(s => s!).ToList() : null;
 
     public static Model ApplyModelOverride(Model model, JsonObject over)
     {
         var result = model.Clone();
-        if (PiJson.GetString(over["name"]) is { } name) result.Name = name;
-        if (PiJson.GetBool(over["reasoning"]) is { } reasoning) result.Reasoning = reasoning;
+        if (IrisJson.GetString(over["name"]) is { } name) result.Name = name;
+        if (IrisJson.GetBool(over["reasoning"]) is { } reasoning) result.Reasoning = reasoning;
         if (ThinkingMapFromJson(over["thinkingLevelMap"]) is { } map)
         {
             var mergedMap = new Dictionary<string, string?>(model.ThinkingLevelMap ?? []);
@@ -85,15 +85,15 @@ public static class ProviderComposer
         {
             result.Cost = new ModelCost
             {
-                Input = PiJson.GetNumber(cost["input"]) ?? model.Cost.Input,
-                Output = PiJson.GetNumber(cost["output"]) ?? model.Cost.Output,
-                CacheRead = PiJson.GetNumber(cost["cacheRead"]) ?? model.Cost.CacheRead,
-                CacheWrite = PiJson.GetNumber(cost["cacheWrite"]) ?? model.Cost.CacheWrite,
-                Tiers = cost["tiers"] is JsonArray tiers ? PiJson.Deserialize<List<ModelCostTier>>(tiers) : model.Cost.Tiers,
+                Input = IrisJson.GetNumber(cost["input"]) ?? model.Cost.Input,
+                Output = IrisJson.GetNumber(cost["output"]) ?? model.Cost.Output,
+                CacheRead = IrisJson.GetNumber(cost["cacheRead"]) ?? model.Cost.CacheRead,
+                CacheWrite = IrisJson.GetNumber(cost["cacheWrite"]) ?? model.Cost.CacheWrite,
+                Tiers = cost["tiers"] is JsonArray tiers ? IrisJson.Deserialize<List<ModelCostTier>>(tiers) : model.Cost.Tiers,
             };
         }
-        if (PiJson.GetLong(over["contextWindow"]) is { } contextWindow) result.ContextWindow = contextWindow;
-        if (PiJson.GetLong(over["maxTokens"]) is { } maxTokens) result.MaxTokens = maxTokens;
+        if (IrisJson.GetLong(over["contextWindow"]) is { } contextWindow) result.ContextWindow = contextWindow;
+        if (IrisJson.GetLong(over["maxTokens"]) is { } maxTokens) result.MaxTokens = maxTokens;
         if (over["samplingParams"] is JsonObject sampling)
         {
             var merged = (JsonObject?)model.SamplingParams?.DeepClone() ?? new JsonObject();
@@ -106,26 +106,26 @@ public static class ProviderComposer
 
     private static Model ModelFromJson(string providerId, JsonObject definition, JsonObject providerConfig, Model? defaults)
     {
-        var id = PiJson.GetString(definition["id"]) ?? "";
-        var api = PiJson.GetString(definition["api"]) ?? PiJson.GetString(providerConfig["api"]) ?? defaults?.Api
+        var id = IrisJson.GetString(definition["id"]) ?? "";
+        var api = IrisJson.GetString(definition["api"]) ?? IrisJson.GetString(providerConfig["api"]) ?? defaults?.Api
             ?? throw new InvalidOperationException($"Provider {providerId}, model {id}: no \"api\" specified. Set at provider or model level.");
-        var baseUrl = PiJson.GetString(definition["baseUrl"]) ?? PiJson.GetString(providerConfig["baseUrl"]) ?? defaults?.BaseUrl
+        var baseUrl = IrisJson.GetString(definition["baseUrl"]) ?? IrisJson.GetString(providerConfig["baseUrl"]) ?? defaults?.BaseUrl
             ?? throw new InvalidOperationException($"Provider {providerId}: \"baseUrl\" is required when defining custom models.");
-        if (PiJson.GetNumber(definition["contextWindow"]) is <= 0) throw new InvalidOperationException($"Provider {providerId}, model {id}: invalid contextWindow");
-        if (PiJson.GetNumber(definition["maxTokens"]) is <= 0) throw new InvalidOperationException($"Provider {providerId}, model {id}: invalid maxTokens");
+        if (IrisJson.GetNumber(definition["contextWindow"]) is <= 0) throw new InvalidOperationException($"Provider {providerId}, model {id}: invalid contextWindow");
+        if (IrisJson.GetNumber(definition["maxTokens"]) is <= 0) throw new InvalidOperationException($"Provider {providerId}, model {id}: invalid maxTokens");
         return new Model
         {
             Id = id,
-            Name = PiJson.GetString(definition["name"]) ?? id,
+            Name = IrisJson.GetString(definition["name"]) ?? id,
             Api = api,
             Provider = providerId,
             BaseUrl = baseUrl,
-            Reasoning = PiJson.GetBool(definition["reasoning"]) ?? false,
+            Reasoning = IrisJson.GetBool(definition["reasoning"]) ?? false,
             ThinkingLevelMap = ThinkingMapFromJson(definition["thinkingLevelMap"]),
             Input = StringList(definition["input"]) ?? ["text"],
-            Cost = definition["cost"] is JsonObject cost ? PiJson.Deserialize<ModelCost>(cost)! : new ModelCost(),
-            ContextWindow = PiJson.GetLong(definition["contextWindow"]) ?? 128000,
-            MaxTokens = PiJson.GetLong(definition["maxTokens"]) ?? 16384,
+            Cost = definition["cost"] is JsonObject cost ? IrisJson.Deserialize<ModelCost>(cost)! : new ModelCost(),
+            ContextWindow = IrisJson.GetLong(definition["contextWindow"]) ?? 128000,
+            MaxTokens = IrisJson.GetLong(definition["maxTokens"]) ?? 16384,
             SamplingParams = (JsonObject?)(definition["samplingParams"] as JsonObject)?.DeepClone(),
             Headers = null,
             Compat = MergeCompat(providerConfig["compat"] as JsonObject, definition["compat"] as JsonObject),
@@ -141,8 +141,8 @@ public static class ProviderComposer
     public static List<Model> ApplyModelsJson(string providerId, IReadOnlyList<Model> baseModels, JsonObject? config)
     {
         if (config is null) return baseModels.ToList();
-        var oauth = PiJson.GetString(config["oauth"]);
-        var baseUrl = PiJson.GetString(config["baseUrl"]);
+        var oauth = IrisJson.GetString(config["oauth"]);
+        var baseUrl = IrisJson.GetString(config["baseUrl"]);
         if (oauth is not null && baseUrl is null) throw new InvalidOperationException($"Provider {providerId}: \"baseUrl\" is required when \"oauth\" is set.");
         var hasOverrides = config["modelOverrides"] is JsonObject { Count: > 0 };
         var hasModels = config["models"] is JsonArray { Count: > 0 };
@@ -162,9 +162,9 @@ public static class ProviderComposer
 
         foreach (var definition in (config["models"] as JsonArray)?.OfType<JsonObject>() ?? [])
         {
-            var id = PiJson.GetString(definition["id"]) ?? "";
+            var id = IrisJson.GetString(definition["id"]) ?? "";
             var existingIndex = models.FindIndex(m => m.Id == id);
-            var defaults = FindModelDefaults(models, id, PiJson.GetString(definition["api"]) ?? PiJson.GetString(config["api"]));
+            var defaults = FindModelDefaults(models, id, IrisJson.GetString(definition["api"]) ?? IrisJson.GetString(config["api"]));
             var model = ModelFromJson(providerId, definition, config, defaults);
             if (existingIndex >= 0) models[existingIndex] = model;
             else models.Add(model);
@@ -225,14 +225,14 @@ public static class ProviderComposer
     }
 
     private static string? ConfiguredApiKey(JsonObject? config, ProviderConfigInput? extension) =>
-        extension?.ApiKey ?? PiJson.GetString(config?["apiKey"]);
+        extension?.ApiKey ?? IrisJson.GetString(config?["apiKey"]);
 
     private static Dictionary<string, string>? ConfiguredHeaders(JsonObject? config, ProviderConfigInput? extension)
     {
         var configHeaders = config?["headers"] as JsonObject;
         if (configHeaders is null && extension?.Headers is null) return null;
         var result = new Dictionary<string, string>();
-        foreach (var (k, v) in configHeaders ?? []) if (PiJson.GetString(v) is { } s) result[k] = s;
+        foreach (var (k, v) in configHeaders ?? []) if (IrisJson.GetString(v) is { } s) result[k] = s;
         foreach (var (k, v) in extension?.Headers ?? []) result[k] = v;
         return result;
     }
@@ -256,7 +256,7 @@ public static class ProviderComposer
         var oauth = extension?.OAuth is not null ? (object)extension.OAuth : baseProvider?.Auth.OAuth;
         if (inherited is null && rawKey is null && oauth is not null) return null;
         var rawHeaders = ConfiguredHeaders(config, extension);
-        var authHeader = extension?.AuthHeader ?? PiJson.GetBool(config?["authHeader"]) ?? false;
+        var authHeader = extension?.AuthHeader ?? IrisJson.GetBool(config?["authHeader"]) ?? false;
 
         return new ApiKeyAuth
         {
@@ -325,7 +325,7 @@ public static class ProviderComposer
         var oauth = extension?.OAuth is not null ? AdaptOAuth(extension.OAuth) : baseProvider?.Auth.OAuth;
         if (oauth is null) return null;
         var rawHeaders = ConfiguredHeaders(config, extension);
-        var authHeader = extension?.AuthHeader ?? PiJson.GetBool(config?["authHeader"]) ?? false;
+        var authHeader = extension?.AuthHeader ?? IrisJson.GetBool(config?["authHeader"]) ?? false;
         return new OAuthAuth
         {
             Name = oauth.Name,
@@ -337,7 +337,7 @@ public static class ProviderComposer
             {
                 var auth = await oauth.ToAuth(credential);
                 var env = credential.Extra["env"] is JsonObject envObj
-                    ? envObj.Where(kv => PiJson.GetString(kv.Value) is not null).ToDictionary(kv => kv.Key, kv => PiJson.GetString(kv.Value)!)
+                    ? envObj.Where(kv => IrisJson.GetString(kv.Value) is not null).ToDictionary(kv => kv.Key, kv => IrisJson.GetString(kv.Value)!)
                     : null;
                 var headers = ConfigValueResolver.ResolveHeadersOrThrow(rawHeaders, $"provider \"{providerId}\"", env);
                 return WithConfiguredAuth(auth, headers, authHeader);
@@ -350,10 +350,10 @@ public static class ProviderComposer
         var result = new Dictionary<string, string>();
         void Add(JsonNode? node)
         {
-            foreach (var (k, v) in node as JsonObject ?? []) if (PiJson.GetString(v) is { } s) result[k] = s;
+            foreach (var (k, v) in node as JsonObject ?? []) if (IrisJson.GetString(v) is { } s) result[k] = s;
         }
         Add((config?["modelOverrides"] as JsonObject)?[model.Id]?["headers"]);
-        Add((config?["models"] as JsonArray)?.OfType<JsonObject>().FirstOrDefault(m => PiJson.GetString(m["id"]) == model.Id)?["headers"]);
+        Add((config?["models"] as JsonArray)?.OfType<JsonObject>().FirstOrDefault(m => IrisJson.GetString(m["id"]) == model.Id)?["headers"]);
         foreach (var (k, v) in extension?.Models?.FirstOrDefault(m => m.Id == model.Id)?.Headers ?? []) result[k] = v;
         return result.Count > 0 ? result : null;
     }
@@ -460,8 +460,8 @@ public static class ProviderComposer
         return new ComposedModelProvider
         {
             Id = providerId,
-            Name = extension?.Name ?? PiJson.GetString(config?["name"]) ?? baseProvider?.Name ?? extension?.OAuth?.Name ?? providerId,
-            BaseUrl = extension?.BaseUrl ?? PiJson.GetString(config?["baseUrl"]) ?? baseProvider?.BaseUrl,
+            Name = extension?.Name ?? IrisJson.GetString(config?["name"]) ?? baseProvider?.Name ?? extension?.OAuth?.Name ?? providerId,
+            BaseUrl = extension?.BaseUrl ?? IrisJson.GetString(config?["baseUrl"]) ?? baseProvider?.BaseUrl,
             Headers = baseProvider?.Headers,
             Auth = new ProviderAuth { ApiKey = apiKey, OAuth = oauth },
             ModelsFactory = GetModels,
@@ -488,7 +488,7 @@ public static class ProviderComposer
             foreach (var (k, v) in model.Headers ?? []) headers[k] = v;
             foreach (var (k, v) in configured ?? []) headers[k] = v;
         }
-        return new CompatibilityRequestConfig(headers, extension?.AuthHeader ?? PiJson.GetBool(config?["authHeader"]) ?? false);
+        return new CompatibilityRequestConfig(headers, extension?.AuthHeader ?? IrisJson.GetBool(config?["authHeader"]) ?? false);
     }
 
     public static AuthStatus? ConfiguredRequestAuthStatus(JsonObject? config, ProviderConfigInput? extension)

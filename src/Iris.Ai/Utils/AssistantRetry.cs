@@ -23,7 +23,7 @@ public sealed class RetryCallbacks
     public Func<bool, int, string?, Task>? OnRetryFinished { get; set; }
 }
 
-/// <summary>Transient-error classification and retry loop. Port of pi-ai utils/retry.ts.</summary>
+/// <summary>Transient-error classification and retry loop.</summary>
 public static class AssistantRetry
 {
     public const long DefaultMaxAgentRetryDelayMs = 60_000;

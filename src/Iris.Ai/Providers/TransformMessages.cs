@@ -1,6 +1,6 @@
 namespace Iris.Ai.Providers;
 
-/// <summary>Cross-provider message normalization. Port of api/transform-messages.ts.</summary>
+/// <summary>Cross-provider message normalization.</summary>
 public static class MessageTransformer
 {
     private const string NonVisionUserImagePlaceholder = "(image omitted: model does not support images)";

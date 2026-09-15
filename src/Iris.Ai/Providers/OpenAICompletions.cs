@@ -47,7 +47,7 @@ internal sealed record ResolvedCompletionsCompat
     public double? VllmPriority { get; init; }
 }
 
-/// <summary>OpenAI Chat Completions streaming adapter. Port of api/openai-completions.ts.</summary>
+/// <summary>OpenAI Chat Completions streaming adapter.</summary>
 public sealed class OpenAICompletionsApi : IApiStreams
 {
     public static readonly OpenAICompletionsApi Instance = new();
@@ -114,7 +114,7 @@ public sealed class OpenAICompletionsApi : IApiStreams
 
         void ApplyStreamedReasoningDetails(ThinkingContent block)
         {
-            if (streamedReasoningDetails is not null) block.ThinkingSignature = PiJson.Stringify(new JsonArray(streamedReasoningDetails.Select(d => (JsonNode)d.DeepClone()).ToArray()));
+            if (streamedReasoningDetails is not null) block.ThinkingSignature = IrisJson.Stringify(new JsonArray(streamedReasoningDetails.Select(d => (JsonNode)d.DeepClone()).ToArray()));
         }
 
         try
@@ -284,12 +284,12 @@ public sealed class OpenAICompletionsApi : IApiStreams
                     throw new InvalidOperationException($"Could not parse message into JSON: {sse.Data}");
                 }
                 if (chunkNode is not JsonObject chunk) continue;
-                if (PiJson.IsTruthy(chunk["error"]))
+                if (IrisJson.IsTruthy(chunk["error"]))
                 {
                     var errorNode = chunk["error"]!;
                     var message = errorNode is JsonObject eo && eo["message"] is JsonValue mv && mv.TryGetValue<string>(out var ms)
                         ? ms
-                        : PiJson.Stringify(errorNode);
+                        : IrisJson.Stringify(errorNode);
                     throw new ProviderHttpException(null, null, message, errorNode);
                 }
 
@@ -419,7 +419,7 @@ public sealed class OpenAICompletionsApi : IApiStreams
                 : ProviderErrors.FormatException(error);
             if (error is ProviderHttpException { Error: JsonObject eo } && eo["metadata"] is JsonObject meta && meta["raw"] is { } raw)
             {
-                var rawText = raw is JsonValue rv && rv.TryGetValue<string>(out var rs) ? rs : PiJson.Stringify(raw);
+                var rawText = raw is JsonValue rv && rv.TryGetValue<string>(out var rs) ? rs : IrisJson.Stringify(raw);
                 if (!output.ErrorMessage.Contains(rawText, StringComparison.Ordinal)) output.ErrorMessage += "\n" + rawText;
             }
             stream.Push(new ErrorEvent(output.StopReason, output));
@@ -435,7 +435,7 @@ public sealed class OpenAICompletionsApi : IApiStreams
         var headers = new List<KeyValuePair<string, string?>>
         {
             new("Authorization", $"Bearer {apiKey}"),
-            new("User-Agent", PiUserAgent.Get()),
+            new("User-Agent", IrisUserAgent.Get()),
             new("Accept", "application/json"),
         };
         if (model.Headers is not null) headers.AddRange(ProviderHttp.AsNullable(model.Headers)!);
@@ -908,7 +908,7 @@ public sealed class OpenAICompletionsApi : IApiStreams
                                 {
                                     ["id"] = tc.Id,
                                     ["type"] = "function",
-                                    ["function"] = new JsonObject { ["name"] = tc.Name, ["arguments"] = PiJson.Stringify(tc.Arguments) },
+                                    ["function"] = new JsonObject { ["name"] = tc.Name, ["arguments"] = IrisJson.Stringify(tc.Arguments) },
                                 });
                             }
                         }
@@ -1043,10 +1043,10 @@ public sealed class OpenAICompletionsApi : IApiStreams
     }
 
     private static long GetLong(JsonObject? obj, string name) =>
-        obj?[name] is JsonValue v && PiJson.TryGetNumber(v, out var d) ? (long)d : 0;
+        obj?[name] is JsonValue v && IrisJson.TryGetNumber(v, out var d) ? (long)d : 0;
 
     private static long? GetLongOrNull(JsonObject? obj, string name) =>
-        obj?[name] is JsonValue v && PiJson.TryGetNumber(v, out var d) ? (long)d : null;
+        obj?[name] is JsonValue v && IrisJson.TryGetNumber(v, out var d) ? (long)d : null;
 
     internal static Usage ParseChunkUsage(JsonObject raw, Model model)
     {

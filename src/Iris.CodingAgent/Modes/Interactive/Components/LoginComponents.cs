@@ -6,7 +6,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Opens URLs in the default browser. Port of utils/open-browser.ts.</summary>
+/// <summary>Opens URLs in the default browser.</summary>
 public static class BrowserLauncher
 {
     public static void Open(string url)
@@ -28,7 +28,7 @@ public static class BrowserLauncher
     }
 }
 
-/// <summary>Replaces the editor during login flows. Port of components/login-dialog.ts.</summary>
+/// <summary>Replaces the editor during login flows.</summary>
 public sealed class LoginDialogComponent : Container, IInputComponent, IFocusable
 {
     private readonly Container _contentContainer = new();
@@ -208,7 +208,7 @@ public sealed record AuthSelectorProvider(string Id, string Name, string AuthTyp
     public static string FormatType(string authType) => authType == AuthTypes.OAuth ? "subscription" : "API key";
 }
 
-/// <summary>Provider selector for /login and /logout. Port of components/oauth-selector.ts.</summary>
+/// <summary>Provider selector for /login and /logout.</summary>
 public sealed partial class OAuthSelectorComponent : Container, IInputComponent, IFocusable
 {
     private readonly Input _searchInput = new();

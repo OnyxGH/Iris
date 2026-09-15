@@ -1,6 +1,6 @@
 namespace Iris.Tui.Components;
 
-/// <summary>Single-line text input with horizontal scrolling. Port of pi-tui Input.</summary>
+/// <summary>Single-line text input with horizontal scrolling.</summary>
 public sealed class Input : IInputComponent, IFocusable, IMouseComponent
 {
     private int _renderedStartColumn;

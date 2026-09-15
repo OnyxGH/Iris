@@ -13,7 +13,7 @@ public sealed class StackEntryOptions
     public Func<LayoutViewport, bool>? Visible { get; init; }
 }
 
-/// <summary>Flex-like stack of components. Port of pi-tui Stack.</summary>
+/// <summary>Flex-like stack of components.</summary>
 public abstract class Stack : Container, ILayoutComponent
 {
     protected readonly List<StackLayoutEntry> Entries = [];
@@ -118,7 +118,7 @@ public abstract class Stack : Container, ILayoutComponent
     }
 }
 
-/// <summary>Vertical stack. Port of pi-tui VStack.</summary>
+/// <summary>Vertical stack.</summary>
 public sealed class VStack : Stack
 {
     public VStack(IEnumerable<(IComponent Component, StackEntryOptions? Options)>? children = null, int gap = 0, StackAlign align = StackAlign.Stretch)
@@ -149,7 +149,7 @@ public sealed class VStack : Stack
     }
 }
 
-/// <summary>Horizontal stack. Port of pi-tui HStack.</summary>
+/// <summary>Horizontal stack.</summary>
 public sealed class HStack : Stack
 {
     public HStack(IEnumerable<(IComponent Component, StackEntryOptions? Options)>? children = null, int gap = 0, StackAlign align = StackAlign.Stretch)

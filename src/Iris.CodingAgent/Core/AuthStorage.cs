@@ -64,7 +64,7 @@ public sealed class LockedJsonFile
     }
 }
 
-/// <summary>Credential storage backed by auth.json. Port of core/auth-storage.ts.</summary>
+/// <summary>Credential storage backed by auth.json.</summary>
 public sealed class AuthStorage : ICredentialStore
 {
     private readonly LockedJsonFile? _file;
@@ -133,7 +133,7 @@ public sealed class AuthStorage : ICredentialStore
     {
         var entries = ReadLatest()
             .Where(kv => kv.Value is JsonObject)
-            .Select(kv => new CredentialInfo(kv.Key, PiJson.GetString(kv.Value!["type"]) ?? "api_key"))
+            .Select(kv => new CredentialInfo(kv.Key, IrisJson.GetString(kv.Value!["type"]) ?? "api_key"))
             .ToList();
         return Task.FromResult<IReadOnlyList<CredentialInfo>>(entries);
     }
@@ -157,7 +157,7 @@ public sealed class AuthStorage : ICredentialStore
             var next = await fn(current).ConfigureAwait(false);
             if (next is null) return (current, null);
             data[providerId] = CredentialJsonConverter.ToJson(next);
-            return (next, PiJson.SerializeIndentedTwoSpaces(data));
+            return (next, IrisJson.SerializeIndentedTwoSpaces(data));
         }, cancellationToken).ConfigureAwait(false);
         Reload();
         return result;
@@ -174,7 +174,7 @@ public sealed class AuthStorage : ICredentialStore
         {
             var data = Parse(content);
             data.Remove(providerId);
-            return Task.FromResult((true, (string?)PiJson.SerializeIndentedTwoSpaces(data)));
+            return Task.FromResult((true, (string?)IrisJson.SerializeIndentedTwoSpaces(data)));
         }, cancellationToken).ConfigureAwait(false);
         Reload();
     }
@@ -265,15 +265,15 @@ public sealed class FileModelsStore : IModelsStore
     {
         cancellationToken.ThrowIfCancellationRequested();
         var node = ReadAll()[providerId];
-        return Task.FromResult(node is JsonObject ? PiJson.Deserialize<ModelsStoreEntry>(node) : null);
+        return Task.FromResult(node is JsonObject ? IrisJson.Deserialize<ModelsStoreEntry>(node) : null);
     }
 
     public Task WriteAsync(string providerId, ModelsStoreEntry entry, CancellationToken cancellationToken = default) =>
         _file.WithLockAsync<bool>(content =>
         {
             var data = string.IsNullOrEmpty(content) ? new JsonObject() : JsonNode.Parse(TextHelpers.StripBom(content)) as JsonObject ?? new JsonObject();
-            data[providerId] = PiJson.ToNode(entry);
-            return Task.FromResult((true, (string?)PiJson.SerializeIndentedTwoSpaces(data)));
+            data[providerId] = IrisJson.ToNode(entry);
+            return Task.FromResult((true, (string?)IrisJson.SerializeIndentedTwoSpaces(data)));
         }, cancellationToken);
 
     public Task DeleteAsync(string providerId, CancellationToken cancellationToken = default) =>
@@ -281,6 +281,6 @@ public sealed class FileModelsStore : IModelsStore
         {
             var data = string.IsNullOrEmpty(content) ? new JsonObject() : JsonNode.Parse(TextHelpers.StripBom(content)) as JsonObject ?? new JsonObject();
             data.Remove(providerId);
-            return Task.FromResult((true, (string?)PiJson.SerializeIndentedTwoSpaces(data)));
+            return Task.FromResult((true, (string?)IrisJson.SerializeIndentedTwoSpaces(data)));
         }, cancellationToken);
 }

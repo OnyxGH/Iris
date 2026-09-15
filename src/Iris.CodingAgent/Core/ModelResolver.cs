@@ -15,7 +15,7 @@ public sealed record ResolveCliModelResult(Model? Model, ThinkingLevel? Thinking
 
 public sealed record InitialModelResult(Model? Model, ThinkingLevel ThinkingLevel, string? FallbackMessage);
 
-/// <summary>Model resolution, scoping and initial selection. Port of core/model-resolver.ts.</summary>
+/// <summary>Model resolution, scoping and initial selection.</summary>
 public static partial class ModelResolver
 {
     public const ThinkingLevel DefaultThinkingLevel = ThinkingLevel.Medium;

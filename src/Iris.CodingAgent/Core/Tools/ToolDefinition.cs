@@ -5,7 +5,7 @@ using Iris.Ai;
 namespace Iris.CodingAgent.Core.Tools;
 
 /// <summary>
-/// Context passed to tool and extension handlers. Port of the ExtensionContext interface; UI-related members will be
+/// Context passed to tool and extension handlers.
 /// added together with the extension runtime.
 /// </summary>
 public class ExtensionContext
@@ -56,8 +56,8 @@ public delegate Task<AgentToolResult> ToolDefinitionExecute(
     ExtensionContext? ctx);
 
 /// <summary>
-/// Definition-first tool description used by the coding agent (built-in tools and extension tools). Port of
-/// ToolDefinition; renderers are attached separately by the TUI.
+/// Definition-first tool description used by the coding agent (built-in tools and extension tools).
+/// Renderers are attached separately by the TUI.
 /// </summary>
 public sealed class ToolDefinition
 {
@@ -89,7 +89,7 @@ public sealed class ToolDefinition
     /// <summary>Opaque renderer hooks (renderCall / renderResult) provided by extensions or the TUI.</summary>
     public object? Renderers { get; set; }
 
-    /// <summary>Wrap into an AgentTool for the core runtime. Port of wrapToolDefinition.</summary>
+    /// <summary>Wrap into an AgentTool for the core runtime.</summary>
     public AgentTool ToAgentTool(Func<ExtensionContext>? ctxFactory = null) => new()
     {
         Name = Name,
@@ -102,7 +102,7 @@ public sealed class ToolDefinition
         Execute = (id, args, ct, onUpdate) => Execute(id, args, ct, onUpdate, ctxFactory?.Invoke()),
     };
 
-    /// <summary>Synthesize a minimal definition from a plain AgentTool. Port of createToolDefinitionFromAgentTool.</summary>
+    /// <summary>Synthesize a minimal definition from a plain AgentTool.</summary>
     public static ToolDefinition FromAgentTool(AgentTool tool) => new()
     {
         Name = tool.Name,
@@ -146,7 +146,7 @@ public static class ToolSchema
         args[name] is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
     public static double? GetNumber(JsonObject args, string name) =>
-        args[name] is JsonNode node && Iris.Ai.Json.PiJson.TryGetNumber(node, out var d) ? d : null;
+        args[name] is JsonNode node && Iris.Ai.Json.IrisJson.TryGetNumber(node, out var d) ? d : null;
 
     public static bool GetBool(JsonObject args, string name) =>
         args[name] is JsonValue v && v.TryGetValue<bool>(out var b) && b;
@@ -157,10 +157,10 @@ public static class ToolSchema
     }
 }
 
-/// <summary>Error thrown when a tool operation is aborted. Message matches pi's "Operation aborted".</summary>
+/// <summary>Error thrown when a tool operation is aborted.</summary>
 public sealed class OperationAbortedException(string message = "Operation aborted") : Exception(message);
 
-/// <summary>Node-style formatting and error helpers so tool output matches pi.</summary>
+/// <summary>JavaScript-style number formatting and error helpers for tool output.</summary>
 public static class NodeCompat
 {
     /// <summary>Format a double the way JavaScript's String(number) does for common values.</summary>

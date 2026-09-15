@@ -20,7 +20,7 @@ public sealed class BashResult
     public string? FullOutputPath { get; init; }
 }
 
-/// <summary>User-initiated bash execution (the "!" prompt prefix) with streaming. Port of core/bash-executor.ts.</summary>
+/// <summary>User-initiated bash execution (the "!" prompt prefix) with streaming.</summary>
 public static class BashExecutor
 {
     public static async Task<BashResult> ExecuteWithOperationsAsync(
@@ -38,7 +38,7 @@ public static class BashExecutor
         void EnsureTempFile()
         {
             if (tempFilePath is not null) return;
-            tempFilePath = Path.Combine(Path.GetTempPath(), $"pi-bash-{Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(8))}.log");
+            tempFilePath = Path.Combine(Path.GetTempPath(), $"iris-bash-{Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(8))}.log");
             tempFile = new StreamWriter(tempFilePath, false, new UTF8Encoding(false));
             foreach (var chunk in chunks) tempFile.Write(chunk);
         }

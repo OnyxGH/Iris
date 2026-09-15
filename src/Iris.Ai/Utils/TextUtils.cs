@@ -39,7 +39,7 @@ public static class TextUtils
         return sb.ToString();
     }
 
-    /// <summary>Fast deterministic hash to shorten long strings (cyrb53-style, identical to pi-ai shortHash).</summary>
+    /// <summary>Fast deterministic hash to shorten long strings (cyrb53-style).</summary>
     public static string ShortHash(string str)
     {
         uint h1 = 0xdeadbeef;
@@ -86,7 +86,7 @@ public static class TextUtils
     }
 }
 
-/// <summary>Time-ordered UUIDv7 generator, equivalent to pi-ai uuidv7().</summary>
+/// <summary>Time-ordered UUIDv7 generator.</summary>
 public static class UuidV7
 {
     private const long MaxTimestamp = 0xffffffffffff;
@@ -151,7 +151,7 @@ public static class ProviderEnv
     }
 }
 
-public static class PiUserAgent
+public static class IrisUserAgent
 {
     private static readonly Lazy<string> Value = new(() =>
     {

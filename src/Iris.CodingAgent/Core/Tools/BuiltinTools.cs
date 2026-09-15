@@ -14,7 +14,7 @@ public sealed class ToolsOptions
     public LsOperations? Ls { get; init; }
 }
 
-/// <summary>Factory for the built-in tools. Port of core/tools/index.ts.</summary>
+/// <summary>Factory for the built-in tools.</summary>
 public static class BuiltinTools
 {
     public static readonly IReadOnlyList<string> AllToolNames = ["read", "bash", "powershell", "edit", "write", "grep", "find", "ls"];

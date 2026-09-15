@@ -30,14 +30,14 @@ public sealed class InteractiveModeOptions
     public string? TuiMode { get; init; }
 }
 
-/// <summary>Text toggling between collapsed and expanded content. Port of interactive-mode.ts ExpandableText.</summary>
+/// <summary>Text toggling between collapsed and expanded content.</summary>
 internal sealed class ExpandableText(Func<string> collapsed, Func<string> expanded, bool isExpanded = false, int paddingX = 0, int paddingY = 0)
     : Text(isExpanded ? expanded() : collapsed(), paddingX, paddingY), IExpandable
 {
     public void SetExpanded(bool value) => SetText(value ? expanded() : collapsed());
 }
 
-/// <summary>Interactive TUI mode. Port of modes/interactive/interactive-mode.ts (regular main-screen mode).</summary>
+/// <summary>Interactive TUI mode.</summary>
 public sealed partial class InteractiveMode
 {
     private const string AnthropicSubscriptionAuthWarning =
@@ -162,7 +162,6 @@ public sealed partial class InteractiveMode
         _outputPad = SettingsManager.OutputPad;
     }
 
-    /// <summary>Port of modes/interactive/tui-renderer.ts createInteractiveTui.</summary>
     private TuiBase CreateInteractiveTui(string tuiMode)
     {
         var terminal = new ProcessTerminal();
@@ -204,7 +203,7 @@ public sealed partial class InteractiveMode
         _ => ScrollViewScrollbar.Auto,
     };
 
-    /// <summary>Shared fullscreen transcript and fixed input dock. Port of modes/interactive/chat-viewport.ts.</summary>
+    /// <summary>Shared fullscreen transcript and fixed input dock.</summary>
     private IComponent CreateChatViewport()
     {
         var transcript = new ScrollView(_documentContainer, new ScrollViewOptions
@@ -253,10 +252,10 @@ public sealed partial class InteractiveMode
     {
         var overrides = SettingsManager.TerminalCapabilityOverrides;
         TerminalImage.SetCapabilityOverrides(
-            PiJson.GetBool(overrides["trueColor"]),
-            PiJson.GetBool(overrides["hyperlinks"]),
+            IrisJson.GetBool(overrides["trueColor"]),
+            IrisJson.GetBool(overrides["hyperlinks"]),
             overrides.ContainsKey("images"),
-            PiJson.GetString(overrides["images"]));
+            IrisJson.GetString(overrides["images"]));
     }
 
     // ----- Autocomplete -----
@@ -310,7 +309,7 @@ public sealed partial class InteractiveMode
         var extensionCommands = Session.ExtensionRunner.GetRegisteredCommands()
             .Where(c => !builtinNames.Contains(c.InvocationName))
             .Select(c => (object)new SlashCommand { Name = c.InvocationName, Description = PrefixAutocompleteDescription(c.Description, c.SourceInfo) })
-            // pi registers /llama through its hidden built-in llama.cpp extension.
+            // /llama comes from the built-in llama.cpp provider rather than a loaded extension.
             .Prepend(new SlashCommand { Name = "llama", Description = "Manage llama.cpp router models" });
 
         _skillCommands.Clear();
@@ -432,7 +431,6 @@ public sealed partial class InteractiveMode
                 () => $"{expandedInstructions}\n\n{onboarding}",
                 GetStartupExpansionState(), 1, 0);
             _headerContainer.AddChild(new Spacer(1));
-            // Iris: gradient banner instead of the one-line pi logo.
             _headerContainer.AddChild(new IrisBanner(_version));
             _headerContainer.AddChild(new Spacer(1));
             _headerContainer.AddChild(_builtInHeader);
@@ -480,7 +478,7 @@ public sealed partial class InteractiveMode
     {
         await InitAsync();
 
-        if (Environment.GetEnvironmentVariable("PI_OFFLINE") is not { Length: > 0 })
+        if (Environment.GetEnvironmentVariable("IRIS_OFFLINE") is not { Length: > 0 })
         {
             _ = RefreshModelCatalogsInBackgroundAsync();
         }
@@ -588,7 +586,7 @@ public sealed partial class InteractiveMode
         var newEntries = Changelog.GetNewEntries(entries, lastVersion);
         if (newEntries.Count == 0) return null;
         SettingsManager.SetLastChangelogVersion(_version);
-        return string.Join("\n\n", newEntries.Select(e => Changelog.NormalizeLinks(e.Content, e)));
+        return string.Join("\n\n", newEntries.Select(e => e.Content));
     }
 
     private MarkdownTheme GetMarkdownThemeWithSettings()
@@ -1183,7 +1181,7 @@ public sealed partial class InteractiveMode
             if (await Clipboard.ReadImageAsync() is { } image)
             {
                 var ext = Clipboard.ExtensionForImageMimeType(image.MimeType) ?? "png";
-                var filePath = Path.Combine(Path.GetTempPath(), $"pi-clipboard-{Guid.NewGuid()}.{ext}");
+                var filePath = Path.Combine(Path.GetTempPath(), $"iris-clipboard-{Guid.NewGuid()}.{ext}");
                 await File.WriteAllBytesAsync(filePath, image.Bytes);
                 _editor.InsertTextAtCursor(filePath);
                 _ui.RequestRender();
@@ -1682,9 +1680,9 @@ public sealed partial class InteractiveMode
             var dropped = new List<string>();
             foreach (var t in transformations.OfType<JsonObject>())
             {
-                if (PiJson.GetString(t["type"]) != "thinking_dropped") continue;
-                var reason = PiJson.GetString(t["reason"]) ?? "unknown reason";
-                var location = PiJson.GetString(t["path"]) is { } p ? $" at {p}" : "";
+                if (IrisJson.GetString(t["type"]) != "thinking_dropped") continue;
+                var reason = IrisJson.GetString(t["reason"]) ?? "unknown reason";
+                var location = IrisJson.GetString(t["path"]) is { } p ? $" at {p}" : "";
                 dropped.Add(reason + location);
             }
             if (dropped.Count == 0) continue;

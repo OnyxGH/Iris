@@ -5,7 +5,7 @@ using Iris.Tui;
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
 /// <summary>
-/// Iris: startup banner shown in place of pi's one-line logo. Block letters get a violet-to-cyan gradient (the
+/// Startup banner. Block letters get a violet-to-cyan gradient (the
 /// iris flower's colors), their box-drawing shadows a muted tint of the same hue. Falls back to the plain
 /// "iris vX" logo when the terminal is too narrow.
 /// </summary>

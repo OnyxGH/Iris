@@ -7,7 +7,7 @@ namespace Iris.CodingAgent.Core;
 
 /// <summary>
 /// Resolve configuration values that may be shell commands ("!cmd"), environment references ("$VAR", "${VAR}") or
-/// literals. Port of core/resolve-config-value.ts.
+/// literals.
 /// </summary>
 public static partial class ConfigValueResolver
 {

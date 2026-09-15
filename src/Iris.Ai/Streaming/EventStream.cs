@@ -4,7 +4,7 @@ using System.Threading.Channels;
 namespace Iris.Ai;
 
 /// <summary>
-/// Push-based async event stream with a final result, equivalent to pi-ai's EventStream.
+/// Push-based async event stream with a final result.
 /// Producers call <see cref="Push"/> and <see cref="End"/>; consumers iterate with await foreach
 /// and/or await <see cref="Result"/>.
 /// </summary>
@@ -107,7 +107,7 @@ public sealed class AssistantMessageEventStream : EventStream<AssistantMessageEv
     }
 
     /// <summary>
-    /// Returns a stream synchronously while running async setup behind it (lazyStream in pi-ai).
+    /// Returns a stream synchronously while running async setup behind it.
     /// Setup failures terminate the stream with an error event.
     /// </summary>
     public static AssistantMessageEventStream Lazy(Model model, Func<Task<AssistantMessageEventStream>> setup)

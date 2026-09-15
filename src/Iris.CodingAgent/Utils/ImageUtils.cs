@@ -1,6 +1,6 @@
 namespace Iris.CodingAgent.Utils;
 
-/// <summary>Image MIME sniffing. Port of utils/mime.ts.</summary>
+/// <summary>Image MIME sniffing.</summary>
 public static class MimeDetect
 {
     private const int ImageTypeSniffBytes = 4100;
@@ -121,8 +121,8 @@ public sealed class ResizedImage
 }
 
 /// <summary>
-/// Pluggable image codec. pi uses Photon (WASM) for conversion and resizing; Iris has no bundled codec yet, so the
-/// default implementation passes supported images through unchanged when they fit the inline size limit.
+/// Pluggable image codec. The pass-through implementation keeps supported images unchanged when they fit the inline
+/// size limit.
 /// </summary>
 public interface IImageCodec
 {
@@ -145,7 +145,6 @@ public sealed class PassThroughImageCodec : IImageCodec
     }
 }
 
-/// <summary>Port of utils/image-process.ts.</summary>
 public static class ImageProcessor
 {
     public static IImageCodec Codec { get; set; } = SkiaImageCodec.IsAvailable ? new SkiaImageCodec() : new PassThroughImageCodec();
@@ -169,7 +168,6 @@ public static class ImageProcessor
     private static string? ConversionHint(string? from, string to) =>
         from is null || from == to ? null : $"[Image converted from {from} to {to}.]";
 
-    /// <summary>Port of formatDimensionNote from utils/image-resize.ts.</summary>
     public static string? FormatDimensionNote(ResizedImage result)
     {
         if (!result.WasResized) return null;
@@ -178,7 +176,7 @@ public static class ImageProcessor
     }
 
     /// <summary>
-    /// Normalize image blocks returned by tool results (port of utils/tool-result-images.ts). Images that fail processing are
+    /// Normalize image blocks returned by tool results. Images that fail processing are
     /// kept as-is. Returns the original list when nothing changed.
     /// </summary>
     public static async Task<List<Iris.Ai.ContentBlock>> NormalizeToolResultImagesAsync(List<Iris.Ai.ContentBlock> content, bool autoResizeImages = true)

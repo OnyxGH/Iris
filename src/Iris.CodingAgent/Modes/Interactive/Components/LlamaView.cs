@@ -60,7 +60,7 @@ internal static class LlamaFrames
     }
 }
 
-/// <summary>The /llama manager view shown in place of the editor. Port of LlamaView in extensions/llama/ui.ts.</summary>
+/// <summary>The /llama manager view shown in place of the editor.</summary>
 public sealed class LlamaView : IInputComponent, IFocusable
 {
     private readonly TuiBase _tui;
@@ -219,7 +219,7 @@ public sealed class LlamaView : IInputComponent, IFocusable
 
     public void Invalidate() => _content.Invalidate();
 
-    /// <summary>Run a long operation with a progress view that the user can stop. Port of runWithProgress.</summary>
+    /// <summary>Run a long operation with a progress view that the user can stop.</summary>
     public async Task<(bool Cancelled, T? Value)> RunWithProgressAsync<T>(string title, string model, string initialMessage, string cancelTitle, string cancelMessage,
         Func<CancellationToken, Action<LlamaProgress>, Task<T>> run, Func<Task> cancel)
     {

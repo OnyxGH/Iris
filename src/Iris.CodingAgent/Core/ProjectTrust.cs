@@ -9,7 +9,7 @@ public sealed record ProjectTrustUpdate(string Path, bool? Decision);
 
 public sealed record ProjectTrustOption(string Label, bool Trusted, List<ProjectTrustUpdate> Updates, string? SavedPath = null);
 
-/// <summary>Persistent per-directory trust decisions in agentDir/trust.json. Port of core/trust-manager.ts.</summary>
+/// <summary>Persistent per-directory trust decisions in agentDir/trust.json.</summary>
 public sealed class ProjectTrustStore(string agentDir)
 {
     private static readonly string[] TrustRequiringProjectConfigResources = ["settings.json", "extensions", "skills", "prompts", "themes", "SYSTEM.md", "APPEND_SYSTEM.md"];
@@ -97,7 +97,7 @@ public sealed class ProjectTrustStore(string agentDir)
         var sorted = new JsonObject();
         foreach (var key in data.Keys.Order(StringComparer.Ordinal)) sorted[key] = data[key];
         Directory.CreateDirectory(Path.GetDirectoryName(_trustPath)!);
-        File.WriteAllText(_trustPath, Iris.Ai.Json.PiJson.SerializeIndentedTwoSpaces(sorted) + "\n");
+        File.WriteAllText(_trustPath, Iris.Ai.Json.IrisJson.SerializeIndentedTwoSpaces(sorted) + "\n");
     }
 
     private T WithLock<T>(Func<T> fn)
@@ -151,7 +151,7 @@ public sealed class ProjectTrustStore(string agentDir)
     });
 
     /// <summary>
-    /// Resolve whether project-local resources may load (port of resolveProjectTrusted). Interactive prompting is supplied by
+    /// Resolve whether project-local resources may load. Interactive prompting is supplied by
     /// the caller; non-interactive modes pass null and untrusted projects stay untrusted.
     /// </summary>
     public async Task<bool> ResolveProjectTrustedAsync(string cwd, bool? trustOverride, string defaultProjectTrust, Func<string, List<ProjectTrustOption>, Task<ProjectTrustOption?>>? prompt)

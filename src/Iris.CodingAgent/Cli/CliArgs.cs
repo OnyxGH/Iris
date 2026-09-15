@@ -7,7 +7,7 @@ namespace Iris.CodingAgent.Cli;
 
 public sealed record ArgsDiagnostic(string Type, string Message);
 
-/// <summary>Parsed command line. Port of cli/args.ts.</summary>
+/// <summary>Parsed command line.</summary>
 public sealed class CliArgs
 {
     public string? Provider { get; set; }
@@ -350,7 +350,7 @@ public sealed class CliArgs
               --tui-mode <mode>              TUI mode: fullscreen (default) or regular
               --approve, -a                  Trust project-local files for this run
               --no-approve, -na              Ignore project-local files for this run
-              --offline                      Disable startup network operations (same as PI_OFFLINE=1)
+              --offline                      Disable startup network operations (same as IRIS_OFFLINE=1)
               --                             End option parsing; treat remaining arguments as messages/files
               --help, -h                     Show this help
               --version, -v                  Show version number
@@ -367,9 +367,9 @@ public sealed class CliArgs
         sb.AppendLine(Chalk.Bold("Environment Variables:"));
         sb.AppendLine($"  {AppConfig.EnvAgentDir.PadRight(32)} - Config directory (default: ~/{AppConfig.ConfigDirName}/agent)");
         sb.AppendLine($"  {AppConfig.EnvSessionDir.PadRight(32)} - Session storage directory (overridden by --session-dir)");
-        sb.AppendLine("  PI_OFFLINE                       - Disable startup network operations when set to 1/true/yes");
-        sb.AppendLine("  PI_TELEMETRY                     - Override install telemetry when set to 1/true/yes or 0/false/no");
-        sb.AppendLine("  Provider API keys use the same variables as pi (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, ...)");
+        sb.AppendLine("  IRIS_OFFLINE                       - Disable startup network operations when set to 1/true/yes");
+        sb.AppendLine("  IRIS_TELEMETRY                     - Override install telemetry when set to 1/true/yes or 0/false/no");
+        sb.AppendLine("  Provider API keys use the standard variables (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, ...)");
         sb.AppendLine();
         sb.AppendLine(Chalk.Bold("Built-in Tool Names:"));
         sb.AppendLine("""

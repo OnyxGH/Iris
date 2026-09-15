@@ -4,7 +4,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Enable/disable and reorder models for cycling. Port of scoped-models-selector.ts.</summary>
+/// <summary>Enable/disable and reorder models for cycling.</summary>
 public sealed class ScopedModelsSelectorComponent : Container, IInputComponent, IFocusable
 {
     private sealed record ModelItem(string FullId, Model? Model, bool Enabled);

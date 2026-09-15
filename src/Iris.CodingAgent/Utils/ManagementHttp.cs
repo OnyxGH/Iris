@@ -2,7 +2,7 @@ using Iris.Ai.Utils;
 
 namespace Iris.CodingAgent.Utils;
 
-/// <summary>Bounded immediate retry for idempotent management requests. Port of utils/management-http.ts.</summary>
+/// <summary>Bounded immediate retry for idempotent management requests.</summary>
 public static class ManagementHttp
 {
     private static readonly HashSet<int> RetryableStatusCodes = [408, 425, 429, 500, 502, 503, 504];

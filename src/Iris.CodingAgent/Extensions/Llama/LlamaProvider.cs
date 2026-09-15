@@ -10,8 +10,8 @@ using Iris.CodingAgent.Core;
 namespace Iris.CodingAgent.Extensions.Llama;
 
 /// <summary>
-/// Built-in llama.cpp provider: dynamic catalog from a router-mode llama-server. Port of extensions/llama/provider.ts.
-/// pi registers it through its hidden built-in extension; Iris registers it directly on each model runtime.
+/// Built-in llama.cpp provider: dynamic catalog from a router-mode llama-server.
+/// Registered directly on each model runtime.
 /// </summary>
 public sealed class LlamaProvider : IProvider
 {

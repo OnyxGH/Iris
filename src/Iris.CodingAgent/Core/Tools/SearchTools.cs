@@ -62,7 +62,6 @@ internal static class ExternalProcess
     }
 }
 
-/// <summary>Port of core/tools/grep.ts.</summary>
 public static class GrepTool
 {
     public const string Snippet = "Search file contents for patterns (respects .gitignore)";
@@ -283,7 +282,6 @@ public static class GrepTool
     public static AgentTool Create(string cwd, GrepOperations? operations = null) => CreateDefinition(cwd, operations).ToAgentTool();
 }
 
-/// <summary>Port of core/tools/find.ts.</summary>
 public static class FindTool
 {
     public const string Snippet = "Find files by glob pattern (respects .gitignore)";

@@ -8,18 +8,18 @@ using Iris.CodingAgent.Core.Compaction;
 namespace Iris.CodingAgent.Modes;
 
 /// <summary>
-/// Session events as emitted by the JSON and RPC stdout protocols. Port of modes/json-event.ts: message_update drops the
+/// Session events as emitted by the JSON and RPC stdout protocols.
 /// cumulative partial message and carries usage plus the delta event.
 /// </summary>
 public static class JsonEvents
 {
-    private static JsonNode? Node<T>(T value) => PiJson.ToNode(value);
+    private static JsonNode? Node<T>(T value) => IrisJson.ToNode(value);
 
-    private static JsonNode? MessageNode(Message message) => PiJson.ToNode<Message>(message);
+    private static JsonNode? MessageNode(Message message) => IrisJson.ToNode<Message>(message);
 
     public static JsonObject ToolResultNode(AgentToolResult result)
     {
-        var obj = new JsonObject { ["content"] = PiJson.ToNode(result.Content) };
+        var obj = new JsonObject { ["content"] = IrisJson.ToNode(result.Content) };
         if (result.Details is not null) obj["details"] = result.Details.DeepClone();
         if (result.Usage is not null) obj["usage"] = Node(result.Usage);
         if (result.AddedToolNames is not null) obj["addedToolNames"] = Node(result.AddedToolNames);
@@ -73,7 +73,7 @@ public static class JsonEvents
                 break;
             case ToolCallEndEvent e:
                 obj["contentIndex"] = e.ContentIndex;
-                obj["toolCall"] = PiJson.ToNode<ContentBlock>(e.ToolCall);
+                obj["toolCall"] = IrisJson.ToNode<ContentBlock>(e.ToolCall);
                 break;
             case DoneEvent e:
                 obj["reason"] = Node(e.Reason);
@@ -156,7 +156,7 @@ public static class JsonEvents
                 obj["reason"] = e.Reason;
                 break;
             case EntryAppendedEvent e:
-                obj["entry"] = PiJson.ToNode<FileEntry>(e.Entry);
+                obj["entry"] = IrisJson.ToNode<FileEntry>(e.Entry);
                 break;
             case SessionInfoChangedEvent e:
                 if (e.Name is not null) obj["name"] = e.Name;

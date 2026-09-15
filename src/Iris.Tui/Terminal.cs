@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Iris.Tui;
 
-/// <summary>Minimal terminal interface for the TUI. Port of pi-tui terminal.ts.</summary>
+/// <summary>Minimal terminal interface for the TUI.</summary>
 public interface ITerminal
 {
     /// <summary>Start with input and resize handlers. Handlers are invoked on the UI dispatcher.</summary>
@@ -71,7 +71,7 @@ public sealed partial class ProcessTerminal : ITerminal
     public ProcessTerminal()
     {
         _stdout = Console.OpenStandardOutput();
-        var log = Environment.GetEnvironmentVariable("PI_TUI_WRITE_LOG") ?? "";
+        var log = Environment.GetEnvironmentVariable("IRIS_TUI_WRITE_LOG") ?? "";
         _writeLogPath = log.Length > 0 && Directory.Exists(log)
             ? Path.Combine(log, $"tui-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Environment.ProcessId}.log")
             : log;
@@ -101,7 +101,7 @@ public sealed partial class ProcessTerminal : ITerminal
 
     public static int ResolveEscapeTimeoutMs()
     {
-        if (double.TryParse(Environment.GetEnvironmentVariable("PI_TUI_ESC_TIMEOUT"), out var configured) && configured > 0) return (int)configured;
+        if (double.TryParse(Environment.GetEnvironmentVariable("IRIS_TUI_ESC_TIMEOUT"), out var configured) && configured > 0) return (int)configured;
         if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SSH_CONNECTION")) || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SSH_TTY"))) return 100;
         return 10;
     }
@@ -222,7 +222,7 @@ public sealed partial class ProcessTerminal : ITerminal
             string text;
             if (n == 1 && bytes[0] > 127 && decoder.GetCharCount(bytes, 0, 1, flush: false) == 0)
             {
-                // High-byte meta: ESC + (byte - 128), as in pi's StdinBuffer.
+                // High-byte meta: ESC + (byte - 128).
                 text = $"\e{(char)(bytes[0] - 128)}";
                 decoder.Reset();
             }

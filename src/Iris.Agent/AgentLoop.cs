@@ -6,7 +6,7 @@ namespace Iris.Agent;
 
 public delegate Task AgentEventSink(AgentEvent agentEvent);
 
-/// <summary>Agent loop working with messages throughout; converts to LLM messages only at the call boundary. Port of agent-loop.ts.</summary>
+/// <summary>Agent loop working with messages throughout; converts to LLM messages only at the call boundary.</summary>
 public static class AgentLoop
 {
     /// <summary>Start an agent loop with new prompt messages, returning an event stream.</summary>

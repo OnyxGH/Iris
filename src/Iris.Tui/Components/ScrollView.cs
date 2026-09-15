@@ -23,7 +23,7 @@ public sealed class ScrollViewOptions
     public int ScrollbarHideDelayMs { get; init; } = 1000;
 }
 
-/// <summary>Vertical scroll viewport for fullscreen layouts. Port of pi-tui ScrollView.</summary>
+/// <summary>Vertical scroll viewport for fullscreen layouts.</summary>
 public sealed class ScrollView : Container, ILayoutComponent
 {
     private readonly IComponent _child;

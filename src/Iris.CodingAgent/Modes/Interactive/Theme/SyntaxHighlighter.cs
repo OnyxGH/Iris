@@ -3,9 +3,8 @@ using System.Text;
 namespace Iris.CodingAgent.Modes.Interactive;
 
 /// <summary>
-/// Lightweight lexical highlighter standing in for highlight.js: comments, strings, numbers, keywords, literals, types
-/// and function names are mapped onto the same hljs scope names pi's theme uses. Grammars are approximations, so
-/// colors can differ from pi on unusual constructs.
+/// Lightweight lexical highlighter for languages without a TextMate grammar: comments, strings, numbers, keywords,
+/// literals, types and function names are mapped onto scope names. Grammars are approximations.
 /// </summary>
 public static class SyntaxHighlighter
 {

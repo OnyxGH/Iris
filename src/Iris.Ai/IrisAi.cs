@@ -5,10 +5,10 @@ using Iris.Ai.Providers;
 namespace Iris.Ai;
 
 /// <summary>
-/// Global API surface equivalent to "@earendil-works/pi-ai/compat": api-registry dispatch with env API key
+/// Global API surface: api-registry dispatch with env API key
 /// injection and built-in catalog reads.
 /// </summary>
-public static class PiAi
+public static class IrisAi
 {
     private static readonly Lazy<ModelsCollection> CompatModels = new(() => BuiltinProviders.CreateModels());
 

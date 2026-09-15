@@ -49,7 +49,6 @@ public sealed class MdToken
 public sealed record MarkedExtension(string Name, bool Block, Func<string, int?> Start, Func<string, MdToken?> Tokenizer);
 
 /// <summary>
-/// Port of the marked 18 lexer and tokenizer with GFM rules (non-pedantic, no breaks), including tokenizer extensions
 /// and an overridable strikethrough tokenizer.
 /// </summary>
 public sealed partial class MarkedLexer
@@ -178,7 +177,7 @@ public sealed partial class MarkedLexer
 
     private static bool Truthy(Group g) => g.Success && g.Value.Length > 0;
 
-    // ----- helpers.ts -----
+    // ----- helpers -----
 
     private static string RTrim(string str, char c)
     {

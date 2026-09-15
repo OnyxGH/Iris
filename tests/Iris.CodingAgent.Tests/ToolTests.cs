@@ -16,7 +16,7 @@ internal static class TestEnvironment
     {
         Directory.CreateDirectory(Path.Combine(AgentDir, "bin"));
         Environment.SetEnvironmentVariable("IRIS_CODING_AGENT_DIR", AgentDir);
-        Environment.SetEnvironmentVariable("PI_OFFLINE", "1");
+        Environment.SetEnvironmentVariable("IRIS_OFFLINE", "1");
         // Reuse fd/rg binaries from an existing pi installation when available so find/grep tests can run offline.
         var piBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".pi", "agent", "bin");
         foreach (var name in new[] { "fd.exe", "rg.exe", "fd", "rg" })
@@ -256,7 +256,7 @@ public class ShellToolTests
     public async Task ExposesSessionEnvironmentAndCwd()
     {
         using var dir = new TempDir();
-        var output = Text(await Bash(dir.Path, "echo \"${PI_MODEL:-none}\"; pwd -W 2>/dev/null || pwd"));
+        var output = Text(await Bash(dir.Path, "echo \"${IRIS_MODEL:-none}\"; pwd -W 2>/dev/null || pwd"));
         var lines = output.Split('\n');
         Assert.Equal("none", lines[0]);
         Assert.Equal(Path.GetFullPath(dir.Path).TrimEnd('\\', '/').Replace('\\', '/'), lines[1].TrimEnd('/'), ignoreCase: true);

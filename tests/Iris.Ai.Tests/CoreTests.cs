@@ -20,23 +20,23 @@ public class JsonTests
             StopReason = StopReason.ToolUse,
             Timestamp = 123,
         };
-        var json = PiJson.Serialize<Message>(message);
+        var json = IrisJson.Serialize<Message>(message);
         Assert.StartsWith("{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\"", json);
         Assert.Contains("\"stopReason\":\"toolUse\"", json);
         Assert.DoesNotContain("errorMessage", json);
 
-        var back = Assert.IsType<AssistantMessage>(PiJson.Deserialize<Message>(json));
+        var back = Assert.IsType<AssistantMessage>(IrisJson.Deserialize<Message>(json));
         Assert.Equal(3, back.Content.Count);
         Assert.Equal("a.txt", back.Content.OfType<ToolCall>().Single().Arguments["path"]!.GetValue<string>());
-        Assert.Equal(json, PiJson.Serialize<Message>(back));
+        Assert.Equal(json, IrisJson.Serialize<Message>(back));
     }
 
     [Fact]
     public void User_content_preserves_string_vs_array_shape()
     {
-        var text = PiJson.Serialize<Message>(new UserMessage("hello", 1));
+        var text = IrisJson.Serialize<Message>(new UserMessage("hello", 1));
         Assert.Equal("{\"role\":\"user\",\"content\":\"hello\",\"timestamp\":1}", text);
-        var blocks = PiJson.Serialize<Message>(new UserMessage(UserContent.FromBlocks([new TextContent("a"), new ImageContent("AAA", "image/png")]), 2));
+        var blocks = IrisJson.Serialize<Message>(new UserMessage(UserContent.FromBlocks([new TextContent("a"), new ImageContent("AAA", "image/png")]), 2));
         Assert.Equal("{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"a\"},{\"type\":\"image\",\"data\":\"AAA\",\"mimeType\":\"image/png\"}],\"timestamp\":2}", blocks);
     }
 
@@ -44,10 +44,10 @@ public class JsonTests
     public void Unknown_roles_are_preserved_verbatim()
     {
         const string json = "{\"role\":\"bashExecution\",\"command\":\"ls\",\"timestamp\":5}";
-        var message = PiJson.Deserialize<Message>(json);
+        var message = IrisJson.Deserialize<Message>(json);
         var unknown = Assert.IsType<UnknownMessage>(message);
         Assert.Equal(5, unknown.Timestamp);
-        Assert.Equal(json, PiJson.Serialize(message));
+        Assert.Equal(json, IrisJson.Serialize(message));
     }
 }
 
@@ -62,7 +62,7 @@ public class JsonParseTests
     [InlineData("{\"a\":{\"b\":\"c\"}}", "{\"a\":{\"b\":\"c\"}}")]
     public void ParseStreamingJson_recovers_partial_objects(string input, string expected)
     {
-        Assert.Equal(expected, PiJson.Stringify(JsonParse.ParseStreamingJson(input)));
+        Assert.Equal(expected, IrisJson.Stringify(JsonParse.ParseStreamingJson(input)));
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class ValidationTests
     {
         var (tool, call) = Echo(schema, JsonNode.Parse(input));
         var result = ToolValidation.ValidateToolArguments(tool, call);
-        Assert.Equal($"{{\"value\":{expected}}}", PiJson.Stringify(result));
+        Assert.Equal($"{{\"value\":{expected}}}", IrisJson.Stringify(result));
     }
 
     [Fact]
@@ -174,7 +174,7 @@ public class ValidationTests
                 """)!.AsObject(),
         };
         var call = new ToolCall { Name = "echo", Arguments = JsonNode.Parse("{\"path\":\"file.txt\",\"offset\":null,\"nullable\":null,\"metadata\":{\"enabled\":null}}")!.AsObject() };
-        Assert.Equal("{\"path\":\"file.txt\",\"nullable\":null,\"metadata\":{}}", PiJson.Stringify(ToolValidation.ValidateToolArguments(tool, call)));
+        Assert.Equal("{\"path\":\"file.txt\",\"nullable\":null,\"metadata\":{}}", IrisJson.Stringify(ToolValidation.ValidateToolArguments(tool, call)));
     }
 
     [Fact]
@@ -258,9 +258,9 @@ public class OpenAICompletionsPayloadTests
     {
         var model = LlamaModel("{\"thinkingFormat\":\"chat-template\",\"chatTemplateKwargs\":{\"enable_thinking\":{\"$var\":\"thinking.enabled\"},\"reasoning_effort\":{\"$var\":\"thinking.effort\",\"omitWhenOff\":true},\"fixed\":1}}");
         var on = OpenAICompletionsApi.BuildParams(model, new Context { Messages = [new UserMessage("hi")] }, new OpenAICompletionsOptions { ReasoningEffort = ThinkingLevel.Low });
-        Assert.Equal("{\"enable_thinking\":true,\"reasoning_effort\":\"low\",\"fixed\":1}", PiJson.Stringify(on["chat_template_kwargs"]));
+        Assert.Equal("{\"enable_thinking\":true,\"reasoning_effort\":\"low\",\"fixed\":1}", IrisJson.Stringify(on["chat_template_kwargs"]));
         var off = OpenAICompletionsApi.BuildParams(model, new Context { Messages = [new UserMessage("hi")] }, new OpenAICompletionsOptions());
-        Assert.Equal("{\"enable_thinking\":false,\"fixed\":1}", PiJson.Stringify(off["chat_template_kwargs"]));
+        Assert.Equal("{\"enable_thinking\":false,\"fixed\":1}", IrisJson.Stringify(off["chat_template_kwargs"]));
     }
 
     [Fact]
@@ -285,7 +285,7 @@ public class OpenAICompletionsPayloadTests
         Assert.Equal("thought", assistant["reasoning_content"]!.GetValue<string>());
         Assert.Equal("{\"expr\":\"1+1\"}", assistant["tool_calls"]![0]!["function"]!["arguments"]!.GetValue<string>());
         Assert.Equal("tool", p["messages"]![2]!["role"]!.GetValue<string>());
-        Assert.Equal("[]", PiJson.Stringify(p["tools"]));
+        Assert.Equal("[]", IrisJson.Stringify(p["tools"]));
     }
 }
 

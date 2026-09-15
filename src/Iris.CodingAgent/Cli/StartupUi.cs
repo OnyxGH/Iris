@@ -6,7 +6,7 @@ using Iris.Tui;
 
 namespace Iris.CodingAgent.Cli;
 
-/// <summary>Short-lived TUIs shown before interactive mode starts. Port of cli/startup-ui.ts and cli/session-picker.ts.</summary>
+/// <summary>Short-lived TUIs shown before interactive mode starts.</summary>
 public static class StartupUi
 {
     /// <summary>Run a function on a dedicated UI dispatcher thread and return its result.</summary>
@@ -36,10 +36,10 @@ public static class StartupUi
     {
         var overrides = settingsManager.TerminalCapabilityOverrides;
         TerminalImage.SetCapabilityOverrides(
-            Ai.Json.PiJson.GetBool(overrides["trueColor"]),
-            Ai.Json.PiJson.GetBool(overrides["hyperlinks"]),
+            Ai.Json.IrisJson.GetBool(overrides["trueColor"]),
+            Ai.Json.IrisJson.GetBool(overrides["hyperlinks"]),
             overrides.ContainsKey("images"),
-            Ai.Json.PiJson.GetString(overrides["images"]));
+            Ai.Json.IrisJson.GetString(overrides["images"]));
         var terminalTheme = ThemeManager.DetectTerminalBackgroundFromEnv().Theme;
         ThemeManager.InitTheme(ThemeManager.ResolveThemeSetting(settingsManager.ThemeSetting, terminalTheme) ?? terminalTheme);
         KeybindingsManager.Global = AppKeybindings.Create();

@@ -1,7 +1,7 @@
 namespace Iris.CodingAgent.Utils;
 
 /// <summary>
-/// Cross-process lock compatible with the npm "proper-lockfile" package: an atomic "&lt;path&gt;.lock" directory whose
+/// Cross-process lock: an atomic "&lt;path&gt;.lock" directory whose
 /// mtime is refreshed while held. Locks older than the stale threshold are taken over.
 /// </summary>
 public sealed class FileLock : IDisposable
@@ -55,7 +55,7 @@ public sealed class FileLock : IDisposable
         throw new LockedException($"Lock file is already being held: {lockPath}");
     }
 
-    /// <summary>Acquire with retries (synchronous backoff), like pi's acquireLockSyncWithRetry.</summary>
+    /// <summary>Acquire with retries (synchronous backoff).</summary>
     public static FileLock AcquireWithRetry(string path, int maxAttempts = 10, int delayMs = 20)
     {
         for (var attempt = 1; ; attempt++)

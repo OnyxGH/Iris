@@ -11,7 +11,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Mutable per-tool-call renderer state (pi's context.state).</summary>
+/// <summary>Mutable per-tool-call renderer state.</summary>
 public sealed class ToolRenderState
 {
     public long? StartedAt { get; set; }
@@ -51,7 +51,7 @@ public sealed class ToolRenderers
     public ToolRenderResult? RenderResult { get; init; }
 }
 
-/// <summary>Shared tool rendering helpers. Port of core/tools/render-utils.ts.</summary>
+/// <summary>Shared tool rendering helpers.</summary>
 public static class RenderUtils
 {
     public static string ShortenPath(string? path)
@@ -108,7 +108,7 @@ public static class RenderUtils
         return LinkPath(theme.Fg("accent", ShortenPath(value)), value, cwd);
     }
 
-    internal static long? GetLong(JsonNode? node) => PiJson.GetLong(node);
+    internal static long? GetLong(JsonNode? node) => IrisJson.GetLong(node);
 
     internal static bool IsNumber(JsonNode? node) => node is JsonValue v && v.TryGetValue<double>(out _);
 
@@ -125,7 +125,7 @@ public static class RenderUtils
         $"{theme.Fg("muted", $"\n... ({remaining} more lines{totalSuffix},")} {KeyHints.KeyHint("app.tools.expand", "to expand")}{theme.Fg("muted", ")")}";
 }
 
-/// <summary>Built-in tool renderers. Port of core/tools/renderers/*.ts.</summary>
+/// <summary>Built-in tool renderers.</summary>
 public static class BuiltInToolRenderers
 {
     private static Text TextFor(ToolRenderContext context) => context.LastComponent as Text ?? new Text("", 0, 0);
@@ -233,14 +233,14 @@ public static class BuiltInToolRenderers
             var body = "\n" + string.Join("\n", display.Select(line => lang is not null ? RenderUtils.ReplaceTabs(line) : theme.Fg("toolOutput", RenderUtils.ReplaceTabs(line))));
             if (remaining > 0) body += RenderUtils.MoreLinesHint(remaining, theme);
 
-            if (result.Details?["truncation"] is JsonObject truncation && PiJson.GetBool(truncation["truncated"]) == true)
+            if (result.Details?["truncation"] is JsonObject truncation && IrisJson.GetBool(truncation["truncated"]) == true)
             {
-                var maxBytes = PiJson.GetLong(truncation["maxBytes"]) ?? Truncate.DefaultMaxBytes;
-                if (PiJson.GetBool(truncation["firstLineExceedsLimit"]) == true)
+                var maxBytes = IrisJson.GetLong(truncation["maxBytes"]) ?? Truncate.DefaultMaxBytes;
+                if (IrisJson.GetBool(truncation["firstLineExceedsLimit"]) == true)
                 {
                     body += "\n" + theme.Fg("warning", $"[First line exceeds {Truncate.FormatSize(maxBytes)} limit]");
                 }
-                else if (PiJson.GetString(truncation["truncatedBy"]) == "lines")
+                else if (IrisJson.GetString(truncation["truncatedBy"]) == "lines")
                 {
                     body += "\n" + theme.Fg("warning", $"[Truncated: showing {RenderUtils.NumberText(truncation["outputLines"])} of {RenderUtils.NumberText(truncation["totalLines"])} lines ({(truncation["maxLines"] is { } ml ? RenderUtils.NumberText(ml) : Truncate.DefaultMaxLines.ToString())} line limit)]");
                 }
@@ -310,8 +310,8 @@ public static class BuiltInToolRenderers
         component.Clear();
         var output = RenderUtils.GetTextOutput(result.Content, showImages).Trim();
         var truncation = result.Details?["truncation"] as JsonObject;
-        var truncated = PiJson.GetBool(truncation?["truncated"]) == true;
-        var fullOutputPath = PiJson.GetString(result.Details?["fullOutputPath"]);
+        var truncated = IrisJson.GetBool(truncation?["truncated"]) == true;
+        var fullOutputPath = IrisJson.GetString(result.Details?["fullOutputPath"]);
         if (!options.IsPartial && truncated && fullOutputPath is not null && output.EndsWith(']'))
         {
             var footerStart = output.LastIndexOf("\n\n[", StringComparison.Ordinal);
@@ -357,9 +357,9 @@ public static class BuiltInToolRenderers
             if (fullOutputPath is not null) warnings.Add($"Full output: {fullOutputPath}");
             if (truncated)
             {
-                warnings.Add(PiJson.GetString(truncation?["truncatedBy"]) == "lines"
+                warnings.Add(IrisJson.GetString(truncation?["truncatedBy"]) == "lines"
                     ? $"Truncated: showing {RenderUtils.NumberText(truncation?["outputLines"])} of {RenderUtils.NumberText(truncation?["totalLines"])} lines"
-                    : $"Truncated: {RenderUtils.NumberText(truncation?["outputLines"])} lines shown ({Truncate.FormatSize(PiJson.GetLong(truncation?["maxBytes"]) ?? Truncate.DefaultMaxBytes)} limit)");
+                    : $"Truncated: {RenderUtils.NumberText(truncation?["outputLines"])} lines shown ({Truncate.FormatSize(IrisJson.GetLong(truncation?["maxBytes"]) ?? Truncate.DefaultMaxBytes)} limit)");
             }
             component.AddChild(new Text("\n" + theme.Fg("warning", $"[{string.Join(". ", warnings)}]"), 0, 0));
         }
@@ -485,13 +485,13 @@ public static class BuiltInToolRenderers
         {
             var callComponent = context.State.CallComponent as EditCallRenderComponent;
             var argsKey = ArgsKey(GetRenderablePreviewInput(context.Args));
-            var resultDiff = !context.IsError ? PiJson.GetString(result.Details?["diff"]) : null;
+            var resultDiff = !context.IsError ? IrisJson.GetString(result.Details?["diff"]) : null;
             var changed = false;
             if (callComponent is not null)
             {
                 if (resultDiff is not null)
                 {
-                    var firstChanged = PiJson.GetLong(result.Details?["firstChangedLine"]) is { } fcl ? (int?)fcl : null;
+                    var firstChanged = IrisJson.GetLong(result.Details?["firstChangedLine"]) is { } fcl ? (int?)fcl : null;
                     changed = SetEditPreview(callComponent, (resultDiff, firstChanged, null), argsKey) || changed;
                 }
                 if (callComponent.SettledError != context.IsError)
@@ -510,7 +510,7 @@ public static class BuiltInToolRenderers
                 var errorText = string.Join("\n", result.Content.OfType<TextContent>().Select(c => c.Text));
                 if (errorText.Length > 0 && errorText != previewError) output = theme.Fg("error", errorText);
             }
-            else if (PiJson.GetString(result.Details?["diff"]) is { } diff && diff != previewDiff)
+            else if (IrisJson.GetString(result.Details?["diff"]) is { } diff && diff != previewDiff)
             {
                 output = DiffRenderer.RenderDiff(diff);
             }
@@ -662,7 +662,7 @@ public static class BuiltInToolRenderers
         return list.Count == 0 ? "" : "\n" + theme.Fg("warning", $"[Truncated: {string.Join(", ", list)}]");
     }
 
-    private static string SizeLimit(JsonNode? truncation) => $"{Truncate.FormatSize(PiJson.GetLong(truncation?["maxBytes"]) ?? Truncate.DefaultMaxBytes)} limit";
+    private static string SizeLimit(JsonNode? truncation) => $"{Truncate.FormatSize(IrisJson.GetLong(truncation?["maxBytes"]) ?? Truncate.DefaultMaxBytes)} limit";
 
     public static readonly ToolRenderers Grep = new()
     {
@@ -686,7 +686,7 @@ public static class BuiltInToolRenderers
             var details = result.Details;
             var warnings = new List<string>();
             if (details?["matchLimitReached"] is { } matchLimit && IsTruthy(matchLimit)) warnings.Add($"{JsText(matchLimit)} matches limit");
-            if (PiJson.GetBool(details?["truncation"]?["truncated"]) == true) warnings.Add(SizeLimit(details?["truncation"]));
+            if (IrisJson.GetBool(details?["truncation"]?["truncated"]) == true) warnings.Add(SizeLimit(details?["truncation"]));
             if (details?["linesTruncated"] is { } lt && IsTruthy(lt)) warnings.Add("some lines truncated");
             text += TruncationWarnings(theme, warnings);
             var component = TextFor(context);
@@ -715,7 +715,7 @@ public static class BuiltInToolRenderers
             var details = result.Details;
             var warnings = new List<string>();
             if (details?["resultLimitReached"] is { } limitReached && IsTruthy(limitReached)) warnings.Add($"{JsText(limitReached)} results limit");
-            if (PiJson.GetBool(details?["truncation"]?["truncated"]) == true) warnings.Add(SizeLimit(details?["truncation"]));
+            if (IrisJson.GetBool(details?["truncation"]?["truncated"]) == true) warnings.Add(SizeLimit(details?["truncation"]));
             text += TruncationWarnings(theme, warnings);
             var component = TextFor(context);
             component.SetText(text);
@@ -739,7 +739,7 @@ public static class BuiltInToolRenderers
             var details = result.Details;
             var warnings = new List<string>();
             if (details?["entryLimitReached"] is { } limitReached && IsTruthy(limitReached)) warnings.Add($"{JsText(limitReached)} entries limit");
-            if (PiJson.GetBool(details?["truncation"]?["truncated"]) == true) warnings.Add(SizeLimit(details?["truncation"]));
+            if (IrisJson.GetBool(details?["truncation"]?["truncated"]) == true) warnings.Add(SizeLimit(details?["truncation"]));
             text += TruncationWarnings(theme, warnings);
             var component = TextFor(context);
             component.SetText(text);
@@ -758,7 +758,7 @@ public static class BuiltInToolRenderers
     private static string JsText(JsonNode node) => node is JsonValue v && v.TryGetValue<string>(out var s) ? s : node is JsonValue n && n.TryGetValue<double>(out var d) ? NodeCompat.FormatNumber(d) : node.ToJsonString();
 }
 
-/// <summary>Component with render and invalidate callbacks (object literal components in pi).</summary>
+/// <summary>Component with render and invalidate callbacks.</summary>
 public sealed class DelegateComponent(Func<int, List<string>> render, Action? invalidate = null) : IComponent
 {
     public List<string> Render(int width) => render(width);
@@ -766,7 +766,7 @@ public sealed class DelegateComponent(Func<int, List<string>> render, Action? in
     public void Invalidate() => invalidate?.Invoke();
 }
 
-/// <summary>Renders a tool call and its result. Port of tool-execution.ts.</summary>
+/// <summary>Renders a tool call and its result.</summary>
 public sealed class ToolExecutionComponent : Container, IExpandable
 {
     private const int FallbackPreviewLines = 10;
@@ -816,7 +816,7 @@ public sealed class ToolExecutionComponent : Container, IExpandable
 
     private string RenderShell => _renderers?.RenderShell ?? "default";
 
-    /// <summary>Fullscreen mode: clicking a finished tool toggles its expanded output (pi wraps the result region the same way).</summary>
+    /// <summary>Fullscreen mode: clicking a finished tool toggles its expanded output.</summary>
     private MouseRegion CreateResultRegion(IComponent component) => new(component, mouseEvent =>
     {
         if (_result is null || mouseEvent.Type != TuiMouseEventType.Click || mouseEvent.Button != TuiMouseButton.Left) return null;
@@ -888,7 +888,7 @@ public sealed class ToolExecutionComponent : Container, IExpandable
         MaybeConvertImagesForKitty();
     }
 
-    /// <summary>Kitty graphics needs PNG, so convert other formats in the background. Port of maybeConvertImagesForKitty.</summary>
+    /// <summary>Kitty graphics needs PNG, so convert other formats in the background.</summary>
     private void MaybeConvertImagesForKitty()
     {
         if (TerminalImage.GetCapabilities().Images != "kitty" || _result is null) return;

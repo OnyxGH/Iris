@@ -9,7 +9,7 @@ public sealed record FuzzyMatchResult(bool Found, int Index, int MatchLength, bo
 
 public sealed record EditDiffResult(string Diff, int? FirstChangedLine);
 
-/// <summary>Shared diff computation utilities for the edit tool. Port of core/tools/edit-diff.ts.</summary>
+/// <summary>Shared diff computation utilities for the edit tool.</summary>
 public static class EditDiff
 {
     private sealed record TextReplacement(int EditIndex, int MatchIndex, int MatchLength, string NewText);

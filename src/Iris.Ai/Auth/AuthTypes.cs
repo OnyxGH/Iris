@@ -100,7 +100,7 @@ public sealed class CredentialJsonConverter : JsonConverter<Credential>
                 extra.Remove("type");
                 var refresh = Take("refresh");
                 var access = Take("access");
-                long expires = extra["expires"] is JsonValue ev && PiJson.TryGetNumber(ev, out var e) ? (long)e : 0;
+                long expires = extra["expires"] is JsonValue ev && IrisJson.TryGetNumber(ev, out var e) ? (long)e : 0;
                 extra.Remove("expires");
                 return new OAuthCredential { Refresh = refresh, Access = access, Expires = expires, Extra = extra };
             }

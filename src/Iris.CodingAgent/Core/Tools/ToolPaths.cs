@@ -5,7 +5,7 @@ using Iris.CodingAgent.Utils;
 
 namespace Iris.CodingAgent.Core.Tools;
 
-/// <summary>Path resolution for tools. Port of core/tools/path-utils.ts.</summary>
+/// <summary>Path resolution for tools.</summary>
 public static partial class ToolPaths
 {
     private const char NarrowNoBreakSpace = (char)0x202F;
@@ -56,7 +56,7 @@ public static partial class ToolPaths
     }
 }
 
-/// <summary>Serializes file mutation operations targeting the same file. Port of core/tools/file-mutation-queue.ts.</summary>
+/// <summary>Serializes file mutation operations targeting the same file.</summary>
 public static class FileMutationQueue
 {
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> Locks = new(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);

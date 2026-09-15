@@ -11,7 +11,7 @@ using Iris.CodingAgent.Utils;
 namespace Iris.CodingAgent.Modes;
 
 /// <summary>
-/// Headless JSONL protocol over stdin/stdout. Port of modes/rpc/rpc-mode.ts. Extension UI requests are not emitted yet
+/// Headless JSONL protocol over stdin/stdout. Extension UI requests are not emitted yet
 /// because no extension runtime exists.
 /// </summary>
 public sealed class RpcMode
@@ -32,7 +32,7 @@ public sealed class RpcMode
     }
 
     /// <summary>Serialize one LF-framed JSON record (JSON.stringify + "\n").</summary>
-    public static string SerializeJsonLine(JsonNode node) => node.ToJsonString(PiJson.Options) + "\n";
+    public static string SerializeJsonLine(JsonNode node) => node.ToJsonString(IrisJson.Options) + "\n";
 
     private void Output(JsonNode node)
     {
@@ -166,10 +166,10 @@ public sealed class RpcMode
             return;
         }
         // Extension UI responses have no pending requests until extensions exist.
-        if (PiJson.GetString(command["type"]) == "extension_ui_response") return;
+        if (IrisJson.GetString(command["type"]) == "extension_ui_response") return;
 
-        var id = PiJson.GetString(command["id"]);
-        var type = PiJson.GetString(command["type"]) ?? "";
+        var id = IrisJson.GetString(command["id"]);
+        var type = IrisJson.GetString(command["type"]) ?? "";
         try
         {
             if (await HandleCommandAsync(command, id, type) is { } response) Output(response);
@@ -181,9 +181,9 @@ public sealed class RpcMode
     }
 
     private static List<ImageContent>? Images(JsonObject command) =>
-        command["images"] is JsonArray arr ? arr.Select(n => PiJson.Deserialize<ContentBlock>(n)).OfType<ImageContent>().ToList() : null;
+        command["images"] is JsonArray arr ? arr.Select(n => IrisJson.Deserialize<ContentBlock>(n)).OfType<ImageContent>().ToList() : null;
 
-    private static JsonNode? ModelNode(Model? model) => model is null ? null : PiJson.ToNode(model);
+    private static JsonNode? ModelNode(Model? model) => model is null ? null : IrisJson.ToNode(model);
 
     private static JsonObject StatsNode(SessionStats stats)
     {
@@ -212,7 +212,7 @@ public sealed class RpcMode
     {
         var obj = new JsonObject
         {
-            ["entry"] = PiJson.ToNode<FileEntry>(node.Entry),
+            ["entry"] = IrisJson.ToNode<FileEntry>(node.Entry),
             ["children"] = new JsonArray(node.Children.Select(TreeNode).ToArray()),
         };
         if (node.Label is not null) obj["label"] = node.Label;
@@ -224,7 +224,7 @@ public sealed class RpcMode
     {
         var obj = new JsonObject { ["summary"] = result.Summary, ["firstKeptEntryId"] = result.FirstKeptEntryId, ["tokensBefore"] = result.TokensBefore };
         if (result.EstimatedTokensAfter is { } after) obj["estimatedTokensAfter"] = after;
-        if (result.Usage is not null) obj["usage"] = PiJson.ToNode(result.Usage);
+        if (result.Usage is not null) obj["usage"] = IrisJson.ToNode(result.Usage);
         if (result.Details is not null) obj["details"] = result.Details.DeepClone();
         return obj;
     }
@@ -238,10 +238,10 @@ public sealed class RpcMode
             {
                 // Respond only after preflight succeeds; queued and handled prompts count as success.
                 var preflightSucceeded = false;
-                _ = session.PromptAsync(PiJson.GetString(command["message"]) ?? "", new PromptOptions
+                _ = session.PromptAsync(IrisJson.GetString(command["message"]) ?? "", new PromptOptions
                 {
                     Images = Images(command),
-                    StreamingBehavior = PiJson.GetString(command["streamingBehavior"]),
+                    StreamingBehavior = IrisJson.GetString(command["streamingBehavior"]),
                     Source = "rpc",
                     PreflightResult = ok =>
                     {
@@ -256,10 +256,10 @@ public sealed class RpcMode
                 return null;
             }
             case "steer":
-                await session.SteerAsync(PiJson.GetString(command["message"]) ?? "", Images(command), "rpc");
+                await session.SteerAsync(IrisJson.GetString(command["message"]) ?? "", Images(command), "rpc");
                 return Success(id, "steer");
             case "follow_up":
-                await session.FollowUpAsync(PiJson.GetString(command["message"]) ?? "", Images(command), "rpc");
+                await session.FollowUpAsync(IrisJson.GetString(command["message"]) ?? "", Images(command), "rpc");
                 return Success(id, "follow_up");
             case "abort":
                 await session.AbortAsync();
@@ -267,11 +267,11 @@ public sealed class RpcMode
             case "clear_queue":
             {
                 var (steering, followUp) = session.ClearQueue();
-                return Success(id, "clear_queue", new JsonObject { ["steering"] = PiJson.ToNode(steering), ["followUp"] = PiJson.ToNode(followUp) });
+                return Success(id, "clear_queue", new JsonObject { ["steering"] = IrisJson.ToNode(steering), ["followUp"] = IrisJson.ToNode(followUp) });
             }
             case "new_session":
             {
-                var ok = await _runtime.NewSessionAsync(PiJson.GetString(command["parentSession"]));
+                var ok = await _runtime.NewSessionAsync(IrisJson.GetString(command["parentSession"]));
                 if (ok) await RebindSessionAsync();
                 return Success(id, "new_session", new JsonObject { ["cancelled"] = !ok });
             }
@@ -294,8 +294,8 @@ public sealed class RpcMode
             }
             case "set_model":
             {
-                var provider = PiJson.GetString(command["provider"]);
-                var modelId = PiJson.GetString(command["modelId"]);
+                var provider = IrisJson.GetString(command["provider"]);
+                var modelId = IrisJson.GetString(command["modelId"]);
                 var model = session.ModelRuntime.AvailableSnapshot.FirstOrDefault(m => m.Provider == provider && m.Id == modelId);
                 if (model is null) return Error(id, "set_model", $"Model not found: {provider}/{modelId}");
                 await session.SetModelAsync(model);
@@ -312,7 +312,7 @@ public sealed class RpcMode
             case "get_available_models":
                 return Success(id, "get_available_models", new JsonObject { ["models"] = new JsonArray(session.ModelRuntime.AvailableSnapshot.Select(ModelNode).ToArray()) });
             case "set_thinking_level":
-                if (!ThinkingLevels.TryParse(PiJson.GetString(command["level"]), out var level)) return Error(id, type, $"Invalid thinking level: {command["level"]}");
+                if (!ThinkingLevels.TryParse(IrisJson.GetString(command["level"]), out var level)) return Error(id, type, $"Invalid thinking level: {command["level"]}");
                 session.SetThinkingLevel(level);
                 return Success(id, "set_thinking_level");
             case "cycle_thinking_level":
@@ -323,26 +323,26 @@ public sealed class RpcMode
             case "get_available_thinking_levels":
                 return Success(id, "get_available_thinking_levels", new JsonObject { ["levels"] = new JsonArray(session.GetAvailableThinkingLevels().Select(l => (JsonNode)l.ToWire()).ToArray()) });
             case "set_steering_mode":
-                session.SetSteeringMode(QueueModes.Parse(PiJson.GetString(command["mode"])));
+                session.SetSteeringMode(QueueModes.Parse(IrisJson.GetString(command["mode"])));
                 return Success(id, "set_steering_mode");
             case "set_follow_up_mode":
-                session.SetFollowUpMode(QueueModes.Parse(PiJson.GetString(command["mode"])));
+                session.SetFollowUpMode(QueueModes.Parse(IrisJson.GetString(command["mode"])));
                 return Success(id, "set_follow_up_mode");
             case "compact":
-                return Success(id, "compact", CompactionResultNode(await session.CompactAsync(PiJson.GetString(command["customInstructions"]))));
+                return Success(id, "compact", CompactionResultNode(await session.CompactAsync(IrisJson.GetString(command["customInstructions"]))));
             case "set_auto_compaction":
-                session.SetAutoCompactionEnabled(PiJson.GetBool(command["enabled"]) ?? false);
+                session.SetAutoCompactionEnabled(IrisJson.GetBool(command["enabled"]) ?? false);
                 return Success(id, "set_auto_compaction");
             case "set_auto_retry":
-                session.SetAutoRetryEnabled(PiJson.GetBool(command["enabled"]) ?? false);
+                session.SetAutoRetryEnabled(IrisJson.GetBool(command["enabled"]) ?? false);
                 return Success(id, "set_auto_retry");
             case "abort_retry":
                 session.AbortRetry();
                 return Success(id, "abort_retry");
             case "bash":
             {
-                var result = await session.ExecuteBashAsync(PiJson.GetString(command["command"]) ?? "", null, PiJson.GetBool(command["excludeFromContext"]) ?? false, id);
-                return Success(id, "bash", PiJson.ToNode(result));
+                var result = await session.ExecuteBashAsync(IrisJson.GetString(command["command"]) ?? "", null, IrisJson.GetBool(command["excludeFromContext"]) ?? false, id);
+                return Success(id, "bash", IrisJson.ToNode(result));
             }
             case "abort_bash":
                 session.AbortBash();
@@ -353,13 +353,13 @@ public sealed class RpcMode
                 return Error(id, "export_html", "HTML export is not available in Iris yet");
             case "switch_session":
             {
-                var ok = await _runtime.SwitchSessionAsync(PiJson.GetString(command["sessionPath"]) ?? "");
+                var ok = await _runtime.SwitchSessionAsync(IrisJson.GetString(command["sessionPath"]) ?? "");
                 if (ok) await RebindSessionAsync();
                 return Success(id, "switch_session", new JsonObject { ["cancelled"] = !ok });
             }
             case "fork":
             {
-                var (cancelled, text) = await _runtime.ForkAsync(PiJson.GetString(command["entryId"]) ?? "");
+                var (cancelled, text) = await _runtime.ForkAsync(IrisJson.GetString(command["entryId"]) ?? "");
                 if (!cancelled) await RebindSessionAsync();
                 var data = new JsonObject();
                 if (text is not null) data["text"] = text;
@@ -381,7 +381,7 @@ public sealed class RpcMode
             case "get_entries":
             {
                 var entries = session.SessionManager.GetEntries();
-                if (PiJson.GetString(command["since"]) is { } since)
+                if (IrisJson.GetString(command["since"]) is { } since)
                 {
                     var index = entries.FindIndex(e => e.Id == since);
                     if (index == -1) return Error(id, "get_entries", $"Entry not found: {since}");
@@ -389,7 +389,7 @@ public sealed class RpcMode
                 }
                 return Success(id, "get_entries", new JsonObject
                 {
-                    ["entries"] = new JsonArray(entries.Select(e => PiJson.ToNode<FileEntry>(e)).ToArray()),
+                    ["entries"] = new JsonArray(entries.Select(e => IrisJson.ToNode<FileEntry>(e)).ToArray()),
                     ["leafId"] = session.SessionManager.LeafId,
                 });
             }
@@ -403,13 +403,13 @@ public sealed class RpcMode
                 return Success(id, "get_last_assistant_text", new JsonObject { ["text"] = session.GetLastAssistantText() });
             case "set_session_name":
             {
-                var name = (PiJson.GetString(command["name"]) ?? "").Trim();
+                var name = (IrisJson.GetString(command["name"]) ?? "").Trim();
                 if (name.Length == 0) return Error(id, "set_session_name", "Session name cannot be empty");
                 session.SetSessionName(name);
                 return Success(id, "set_session_name");
             }
             case "get_messages":
-                return Success(id, "get_messages", new JsonObject { ["messages"] = new JsonArray(session.Messages.Select(m => PiJson.ToNode<Message>(m)).ToArray()) });
+                return Success(id, "get_messages", new JsonObject { ["messages"] = new JsonArray(session.Messages.Select(m => IrisJson.ToNode<Message>(m)).ToArray()) });
             case "get_commands":
             {
                 var commands = new JsonArray();
@@ -431,7 +431,7 @@ public sealed class RpcMode
         var obj = new JsonObject { ["name"] = name };
         if (description is not null) obj["description"] = description;
         obj["source"] = source;
-        obj["sourceInfo"] = PiJson.ToNode(sourceInfo);
+        obj["sourceInfo"] = IrisJson.ToNode(sourceInfo);
         return obj;
     }
 }

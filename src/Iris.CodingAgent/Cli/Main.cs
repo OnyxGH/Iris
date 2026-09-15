@@ -10,9 +10,9 @@ using Iris.CodingAgent.Utils;
 namespace Iris.CodingAgent.Cli;
 
 /// <summary>
-/// CLI entry point. Port of main.ts. Supported so far: interactive, print (-p), json and rpc modes, session selection
-/// flags (including the --resume picker), model/tool options, --list-models, --help, --version. --export and
-/// package/auth/config subcommands are not ported yet.
+/// CLI entry point. Supported so far: interactive, print (-p), json and rpc modes, session selection
+/// flags (including the --resume picker), model/tool options, --list-models, --help, --version, and the config/auth
+/// subcommands. --export is not available yet.
 /// </summary>
 public static class Main
 {
@@ -244,11 +244,11 @@ public static class Main
     {
         CodingAgentMessages.Register();
 
-        var offlineMode = args.Contains("--offline") || IsTruthyEnvFlag(Environment.GetEnvironmentVariable("PI_OFFLINE"));
+        var offlineMode = args.Contains("--offline") || IsTruthyEnvFlag(Environment.GetEnvironmentVariable("IRIS_OFFLINE"));
         if (offlineMode)
         {
-            Environment.SetEnvironmentVariable("PI_OFFLINE", "1");
-            Environment.SetEnvironmentVariable("PI_SKIP_VERSION_CHECK", "1");
+            Environment.SetEnvironmentVariable("IRIS_OFFLINE", "1");
+            Environment.SetEnvironmentVariable("IRIS_SKIP_VERSION_CHECK", "1");
         }
 
         if (await AuthCommand.RunAsync(args) is { } authExitCode) return authExitCode;
@@ -256,7 +256,7 @@ public static class Main
         var cwd = Directory.GetCurrentDirectory();
         var agentDir = AppConfig.AgentDir;
         var bootstrapSettingsManager = SettingsManager.Create(cwd, agentDir, projectTrusted: false);
-        EnvHttpProxy.ApplyHttpProxySetting(Iris.Ai.Json.PiJson.GetString(bootstrapSettingsManager.GetGlobalSettings()["httpProxy"]));
+        EnvHttpProxy.ApplyHttpProxySetting(Iris.Ai.Json.IrisJson.GetString(bootstrapSettingsManager.GetGlobalSettings()["httpProxy"]));
 
         if (await ConfigCommand.RunAsync(args) is { } configExitCode) return configExitCode;
 

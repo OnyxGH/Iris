@@ -6,7 +6,7 @@ namespace Iris.Ai.Utils;
 
 /// <summary>
 /// HTTP error from a provider endpoint. Message formatting follows the OpenAI/Anthropic SDK conventions that
-/// pi's error handling (overflow/retry detection) is written against.
+/// the overflow and retry detection is written against.
 /// </summary>
 public class ProviderHttpException : Exception
 {
@@ -57,11 +57,11 @@ public class ProviderHttpException : Exception
         string? msg;
         if (error is JsonObject errObj && errObj["message"] is { } m)
         {
-            msg = m is JsonValue mv && mv.TryGetValue<string>(out var s) ? s : PiJson.Stringify(m);
+            msg = m is JsonValue mv && mv.TryGetValue<string>(out var s) ? s : IrisJson.Stringify(m);
         }
         else if (error is not null)
         {
-            msg = PiJson.Stringify(error);
+            msg = IrisJson.Stringify(error);
         }
         else if (parsed is not null)
         {
@@ -92,11 +92,11 @@ public class ProviderHttpException : Exception
         string? msg;
         if (parsed is JsonObject obj && obj["message"] is { } topMessage)
         {
-            msg = topMessage is JsonValue mv && mv.TryGetValue<string>(out var ms) ? ms : PiJson.Stringify(topMessage);
+            msg = topMessage is JsonValue mv && mv.TryGetValue<string>(out var ms) ? ms : IrisJson.Stringify(topMessage);
         }
         else if (parsed is not null)
         {
-            msg = PiJson.Stringify(parsed);
+            msg = IrisJson.Stringify(parsed);
         }
         else
         {
@@ -119,7 +119,7 @@ public static class ProviderErrors
         if (error is ProviderHttpException http)
         {
             string? body = null;
-            if (http.Error is JsonObject o && o.Count > 0) body = PiJson.Stringify(o);
+            if (http.Error is JsonObject o && o.Count > 0) body = IrisJson.Stringify(o);
             if (body is not null)
             {
                 body = body.Trim();

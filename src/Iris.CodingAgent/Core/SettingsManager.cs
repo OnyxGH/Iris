@@ -76,7 +76,7 @@ public sealed class InMemorySettingsStorage : ISettingsStorage
 
 /// <summary>
 /// Global (~/.iris/agent/settings.json) and project (.iris/settings.json) settings with deep merge.
-/// Settings are kept as JSON so unknown fields round-trip. Port of core/settings-manager.ts.
+/// Settings are kept as JSON so unknown fields round-trip.
 /// </summary>
 public sealed class SettingsManager
 {
@@ -134,7 +134,7 @@ public sealed class SettingsManager
     {
         var storage = new InMemorySettingsStorage();
         var initial = MigrateSettings((JsonObject)(settings?.DeepClone() ?? new JsonObject()));
-        storage.WithLock(SettingsScope.Global, _ => PiJson.SerializeIndentedTwoSpaces(initial));
+        storage.WithLock(SettingsScope.Global, _ => IrisJson.SerializeIndentedTwoSpaces(initial));
         return FromStorage(storage, projectTrusted);
     }
 
@@ -166,14 +166,14 @@ public sealed class SettingsManager
             settings["steeringMode"] = settings["queueMode"]?.DeepClone();
             settings.Remove("queueMode");
         }
-        if (!settings.ContainsKey("transport") && PiJson.GetBool(settings["websockets"]) is { } websockets)
+        if (!settings.ContainsKey("transport") && IrisJson.GetBool(settings["websockets"]) is { } websockets)
         {
             settings["transport"] = websockets ? "websocket" : "sse";
             settings.Remove("websockets");
         }
         if (settings["skills"] is JsonObject skills)
         {
-            if (PiJson.GetBool(skills["enableSkillCommands"]) is { } enable && !settings.ContainsKey("enableSkillCommands"))
+            if (IrisJson.GetBool(skills["enableSkillCommands"]) is { } enable && !settings.ContainsKey("enableSkillCommands"))
                 settings["enableSkillCommands"] = enable;
             if (skills["customDirectories"] is JsonArray { Count: > 0 } dirs) settings["skills"] = dirs.DeepClone();
             else settings.Remove("skills");
@@ -181,7 +181,7 @@ public sealed class SettingsManager
         if (settings["retry"] is JsonObject retry)
         {
             var provider = retry["provider"] as JsonObject;
-            if (PiJson.GetNumber(retry["maxDelayMs"]) is { } maxDelay && provider?["maxRetryDelayMs"] is null)
+            if (IrisJson.GetNumber(retry["maxDelayMs"]) is { } maxDelay && provider?["maxRetryDelayMs"] is null)
             {
                 var next = (JsonObject?)provider?.DeepClone() ?? new JsonObject();
                 next["maxRetryDelayMs"] = maxDelay;
@@ -354,7 +354,7 @@ public sealed class SettingsManager
                     merged.Remove(field);
                 }
             }
-            return PiJson.SerializeIndentedTwoSpaces(merged);
+            return IrisJson.SerializeIndentedTwoSpaces(merged);
         });
     }
 
@@ -436,12 +436,12 @@ public sealed class SettingsManager
         }
     }
 
-    private string? GetString(string field) => PiJson.GetString(Get(field));
+    private string? GetString(string field) => IrisJson.GetString(Get(field));
 
-    private bool? GetBool(string field) => PiJson.GetBool(Get(field));
+    private bool? GetBool(string field) => IrisJson.GetBool(Get(field));
 
     private static List<string>? StringList(JsonNode? node) =>
-        node is JsonArray arr ? arr.Select(x => PiJson.GetString(x)).Where(x => x is not null).Select(x => x!).ToList() : null;
+        node is JsonArray arr ? arr.Select(x => IrisJson.GetString(x)).Where(x => x is not null).Select(x => x!).ToList() : null;
 
     private static JsonArray ToArray(IEnumerable<string> values) => new(values.Select(v => (JsonNode)JsonValue.Create(v)).ToArray());
 
@@ -492,7 +492,7 @@ public sealed class SettingsManager
     public void SetDefaultThinkingLevel(ThinkingLevel level) => SetGlobal("defaultThinkingLevel", level.ToWire());
 
     public ThinkingLevel? GetModelThinkingLevel(string provider, string modelId) =>
-        ThinkingLevels.Parse(PiJson.GetString(GetNested("modelThinkingLevels", $"{provider}/{modelId}")));
+        ThinkingLevels.Parse(IrisJson.GetString(GetNested("modelThinkingLevels", $"{provider}/{modelId}")));
 
     public Dictionary<string, ThinkingLevel> GetAllModelThinkingLevels()
     {
@@ -501,7 +501,7 @@ public sealed class SettingsManager
         {
             foreach (var (key, value) in obj)
             {
-                if (ThinkingLevels.Parse(PiJson.GetString(value)) is { } level) result[key] = level;
+                if (ThinkingLevels.Parse(IrisJson.GetString(value)) is { } level) result[key] = level;
             }
         }
         return result;
@@ -546,7 +546,7 @@ public sealed class SettingsManager
 
     public void SetTransport(string transport) => SetGlobal("transport", transport);
 
-    public bool CompactionEnabled => PiJson.GetBool(GetNested("compaction", "enabled")) ?? true;
+    public bool CompactionEnabled => IrisJson.GetBool(GetNested("compaction", "enabled")) ?? true;
 
     public void SetCompactionEnabled(bool enabled) => SetGlobalNested("compaction", "enabled", enabled);
 
@@ -557,7 +557,7 @@ public sealed class SettingsManager
         long? ordinary = null;
         if (ordinaryNode is not null)
         {
-            if (!PiJson.TryGetNumber(ordinaryNode, out var d) || d < 0 || Math.Floor(d) != d || d > 9007199254740991)
+            if (!IrisJson.TryGetNumber(ordinaryNode, out var d) || d < 0 || Math.Floor(d) != d || d > 9007199254740991)
                 throw new InvalidOperationException($"Invalid compaction.{field} setting: {ordinaryNode.ToJsonString()}. Expected a non-negative safe integer.");
             ordinary = (long)d;
         }
@@ -569,7 +569,7 @@ public sealed class SettingsManager
                 throw new InvalidOperationException($"Invalid compaction.modelOverrides[\"{modelKey}\"] setting: {entry.ToJsonString()}. Expected an object.");
             if (entryObj[field] is { } overrideNode)
             {
-                if (!PiJson.TryGetNumber(overrideNode, out var d) || d < 0 || Math.Floor(d) != d || d > 9007199254740991)
+                if (!IrisJson.TryGetNumber(overrideNode, out var d) || d < 0 || Math.Floor(d) != d || d > 9007199254740991)
                     throw new InvalidOperationException($"Invalid compaction.modelOverrides[\"{modelKey}\"].{field} setting: {overrideNode.ToJsonString()}. Expected a non-negative safe integer.");
                 overrideValue = (long)d;
             }
@@ -585,18 +585,18 @@ public sealed class SettingsManager
         (CompactionEnabled, GetCompactionReserveTokens(model), GetCompactionKeepRecentTokens(model));
 
     public (long ReserveTokens, bool SkipPrompt) BranchSummarySettings =>
-        (PiJson.GetLong(GetNested("branchSummary", "reserveTokens")) ?? 16384, PiJson.GetBool(GetNested("branchSummary", "skipPrompt")) ?? false);
+        (IrisJson.GetLong(GetNested("branchSummary", "reserveTokens")) ?? 16384, IrisJson.GetBool(GetNested("branchSummary", "skipPrompt")) ?? false);
 
-    public bool RetryEnabled => PiJson.GetBool(GetNested("retry", "enabled")) ?? true;
+    public bool RetryEnabled => IrisJson.GetBool(GetNested("retry", "enabled")) ?? true;
 
     public void SetRetryEnabled(bool enabled) => SetGlobalNested("retry", "enabled", enabled);
 
     public RetryPolicy RetrySettings => new()
     {
         Enabled = RetryEnabled,
-        MaxRetries = (int)(PiJson.GetLong(GetNested("retry", "maxRetries")) ?? 3),
-        BaseDelayMs = PiJson.GetLong(GetNested("retry", "baseDelayMs")) ?? 2000,
-        MaxAgentDelayMs = PiJson.GetLong(GetNested("retry", "maxAgentDelayMs")) ?? AssistantRetry.DefaultMaxAgentRetryDelayMs,
+        MaxRetries = (int)(IrisJson.GetLong(GetNested("retry", "maxRetries")) ?? 3),
+        BaseDelayMs = IrisJson.GetLong(GetNested("retry", "baseDelayMs")) ?? 2000,
+        MaxAgentDelayMs = IrisJson.GetLong(GetNested("retry", "maxAgentDelayMs")) ?? AssistantRetry.DefaultMaxAgentRetryDelayMs,
     };
 
     public long HttpIdleTimeoutMs
@@ -605,7 +605,7 @@ public sealed class SettingsManager
         {
             var node = Get("httpIdleTimeoutMs");
             if (node is null) return DefaultHttpIdleTimeoutMs;
-            if (PiJson.TryGetNumber(node, out var d) && d >= 0) return (long)d;
+            if (IrisJson.TryGetNumber(node, out var d) && d >= 0) return (long)d;
             throw new InvalidOperationException($"Invalid httpIdleTimeoutMs setting: {node.ToJsonString()}");
         }
     }
@@ -621,11 +621,11 @@ public sealed class SettingsManager
         get
         {
             var provider = (Get("retry") as JsonObject)?["provider"] as JsonObject;
-            return ((int?)PiJson.GetLong(provider?["timeoutMs"]), (int?)PiJson.GetLong(provider?["maxRetries"]), (int)(PiJson.GetLong(provider?["maxRetryDelayMs"]) ?? 60000));
+            return ((int?)IrisJson.GetLong(provider?["timeoutMs"]), (int?)IrisJson.GetLong(provider?["maxRetries"]), (int)(IrisJson.GetLong(provider?["maxRetryDelayMs"]) ?? 60000));
         }
     }
 
-    public int? WebSocketConnectTimeoutMs => (int?)PiJson.GetLong(Get("websocketConnectTimeoutMs"));
+    public int? WebSocketConnectTimeoutMs => (int?)IrisJson.GetLong(Get("websocketConnectTimeoutMs"));
 
     public bool HideThinkingBlock => GetBool("hideThinkingBlock") ?? false;
 
@@ -660,7 +660,7 @@ public sealed class SettingsManager
         get
         {
             string? value;
-            lock (_gate) value = PiJson.GetString(_globalSettings["defaultProjectTrust"]);
+            lock (_gate) value = IrisJson.GetString(_globalSettings["defaultProjectTrust"]);
             return value is "always" or "never" ? value : "ask";
         }
     }
@@ -691,7 +691,7 @@ public sealed class SettingsManager
         {
             _globalSettings["enableAnalytics"] = enabled;
             MarkModified("enableAnalytics");
-            if (enabled && PiJson.GetString(_globalSettings["trackingId"]) is null)
+            if (enabled && IrisJson.GetString(_globalSettings["trackingId"]) is null)
             {
                 _globalSettings["trackingId"] = Guid.NewGuid().ToString();
                 MarkModified("trackingId");
@@ -732,7 +732,7 @@ public sealed class SettingsManager
 
     public void SetEnableSkillCommands(bool enabled) => SetGlobal("enableSkillCommands", enabled);
 
-    public ThinkingBudgets? ThinkingBudgets => Get("thinkingBudgets") is JsonObject obj ? PiJson.Deserialize<ThinkingBudgets>(obj) : null;
+    public ThinkingBudgets? ThinkingBudgets => Get("thinkingBudgets") is JsonObject obj ? IrisJson.Deserialize<ThinkingBudgets>(obj) : null;
 
     /// <summary>images: "kitty" | "iterm2" | false; trueColor/hyperlinks booleans.</summary>
     public JsonObject TerminalCapabilityOverrides
@@ -742,31 +742,31 @@ public sealed class SettingsManager
             var terminal = Get("terminal") as JsonObject;
             var result = new JsonObject();
             var images = terminal?["images"];
-            if (PiJson.GetString(images) is "kitty" or "iterm2") result["images"] = images!.DeepClone();
-            else if (PiJson.GetBool(images) == false) result["images"] = null;
-            if (PiJson.GetBool(terminal?["trueColor"]) is { } trueColor) result["trueColor"] = trueColor;
-            if (PiJson.GetBool(terminal?["hyperlinks"]) is { } hyperlinks) result["hyperlinks"] = hyperlinks;
+            if (IrisJson.GetString(images) is "kitty" or "iterm2") result["images"] = images!.DeepClone();
+            else if (IrisJson.GetBool(images) == false) result["images"] = null;
+            if (IrisJson.GetBool(terminal?["trueColor"]) is { } trueColor) result["trueColor"] = trueColor;
+            if (IrisJson.GetBool(terminal?["hyperlinks"]) is { } hyperlinks) result["hyperlinks"] = hyperlinks;
             return result;
         }
     }
 
-    public bool ShowImages => PiJson.GetBool(GetNested("terminal", "showImages")) ?? true;
+    public bool ShowImages => IrisJson.GetBool(GetNested("terminal", "showImages")) ?? true;
 
     public void SetShowImages(bool show) => SetGlobalNested("terminal", "showImages", show);
 
-    public int ImageWidthCells => PiJson.GetNumber(GetNested("terminal", "imageWidthCells")) is { } width && double.IsFinite(width) ? Math.Max(1, (int)Math.Floor(width)) : 60;
+    public int ImageWidthCells => IrisJson.GetNumber(GetNested("terminal", "imageWidthCells")) is { } width && double.IsFinite(width) ? Math.Max(1, (int)Math.Floor(width)) : 60;
 
     public void SetImageWidthCells(int width) => SetGlobalNested("terminal", "imageWidthCells", Math.Max(1, width));
 
-    public bool ClearOnShrink => PiJson.GetBool(GetNested("terminal", "clearOnShrink")) ?? Environment.GetEnvironmentVariable("PI_CLEAR_ON_SHRINK") == "1";
+    public bool ClearOnShrink => IrisJson.GetBool(GetNested("terminal", "clearOnShrink")) ?? Environment.GetEnvironmentVariable("IRIS_CLEAR_ON_SHRINK") == "1";
 
     public void SetClearOnShrink(bool enabled) => SetGlobalNested("terminal", "clearOnShrink", enabled);
 
-    public bool ShowTerminalProgress => PiJson.GetBool(GetNested("terminal", "showTerminalProgress")) ?? false;
+    public bool ShowTerminalProgress => IrisJson.GetBool(GetNested("terminal", "showTerminalProgress")) ?? false;
 
     public void SetShowTerminalProgress(bool enabled) => SetGlobalNested("terminal", "showTerminalProgress", enabled);
 
-    /// <summary>Iris: fullscreen (fixed input dock) is the default; pi defaults to regular.</summary>
+    /// <summary>Fullscreen (fixed input dock) is the default.</summary>
     public string TuiMode => GetString("tuiMode") == "regular" ? "regular" : "fullscreen";
 
     public void SetTuiMode(string mode) => SetGlobal("tuiMode", mode);
@@ -783,11 +783,11 @@ public sealed class SettingsManager
 
     public bool FullscreenCopyOnSelect => GetBool("fullscreenCopyOnSelect") ?? true;
 
-    public bool ImageAutoResize => PiJson.GetBool(GetNested("images", "autoResize")) ?? true;
+    public bool ImageAutoResize => IrisJson.GetBool(GetNested("images", "autoResize")) ?? true;
 
     public void SetImageAutoResize(bool enabled) => SetGlobalNested("images", "autoResize", enabled);
 
-    public bool BlockImages => PiJson.GetBool(GetNested("images", "blockImages")) ?? false;
+    public bool BlockImages => IrisJson.GetBool(GetNested("images", "blockImages")) ?? false;
 
     public void SetBlockImages(bool blocked) => SetGlobalNested("images", "blockImages", blocked);
 
@@ -805,25 +805,25 @@ public sealed class SettingsManager
 
     public void SetTreeFilterMode(string mode) => SetGlobal("treeFilterMode", mode);
 
-    public bool ShowHardwareCursor => GetBool("showHardwareCursor") ?? Environment.GetEnvironmentVariable("PI_HARDWARE_CURSOR") == "1";
+    public bool ShowHardwareCursor => GetBool("showHardwareCursor") ?? Environment.GetEnvironmentVariable("IRIS_HARDWARE_CURSOR") == "1";
 
     public void SetShowHardwareCursor(bool enabled) => SetGlobal("showHardwareCursor", enabled);
 
-    public int EditorPaddingX => (int)(PiJson.GetLong(Get("editorPaddingX")) ?? 0);
+    public int EditorPaddingX => (int)(IrisJson.GetLong(Get("editorPaddingX")) ?? 0);
 
     public void SetEditorPaddingX(int padding) => SetGlobal("editorPaddingX", Math.Max(0, Math.Min(3, padding)));
 
-    public int OutputPad => PiJson.GetLong(Get("outputPad")) == 0 ? 0 : 1;
+    public int OutputPad => IrisJson.GetLong(Get("outputPad")) == 0 ? 0 : 1;
 
     public void SetOutputPad(int padding) => SetGlobal("outputPad", padding == 0 ? 0 : 1);
 
-    public int AutocompleteMaxVisible => (int)(PiJson.GetLong(Get("autocompleteMaxVisible")) ?? 5);
+    public int AutocompleteMaxVisible => (int)(IrisJson.GetLong(Get("autocompleteMaxVisible")) ?? 5);
 
     public void SetAutocompleteMaxVisible(int maxVisible) => SetGlobal("autocompleteMaxVisible", Math.Max(3, Math.Min(20, maxVisible)));
 
-    public string CodeBlockIndent => PiJson.GetString(GetNested("markdown", "codeBlockIndent")) ?? "  ";
+    public string CodeBlockIndent => IrisJson.GetString(GetNested("markdown", "codeBlockIndent")) ?? "  ";
 
-    public string MermaidRenderingMode => PiJson.GetString(GetNested("markdown", "mermaid")) is "off" or "final" ? PiJson.GetString(GetNested("markdown", "mermaid"))! : "streaming";
+    public string MermaidRenderingMode => IrisJson.GetString(GetNested("markdown", "mermaid")) is "off" or "final" ? IrisJson.GetString(GetNested("markdown", "mermaid"))! : "streaming";
 
     public void SetMermaidRenderingMode(string mode) => SetGlobalNested("markdown", "mermaid", mode);
 

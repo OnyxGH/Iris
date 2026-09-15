@@ -4,7 +4,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Horizontal border spanning the viewport. Port of dynamic-border.ts.</summary>
+/// <summary>Horizontal border spanning the viewport.</summary>
 public sealed class DynamicBorder(Func<string, string>? color = null) : IComponent
 {
     private readonly Func<string, string> _color = color ?? (s => ThemeManager.Current.Fg("border", s));
@@ -16,7 +16,7 @@ public sealed class DynamicBorder(Func<string, string>? color = null) : ICompone
     public List<string> Render(int width) => [_color(new string('─', Math.Max(1, width)))];
 }
 
-/// <summary>Keybinding hint formatting. Port of keybinding-hints.ts.</summary>
+/// <summary>Keybinding hint formatting.</summary>
 public static class KeyHints
 {
     private static string FormatKeyPart(string part, bool capitalize)
@@ -41,7 +41,7 @@ public static class KeyHints
         ThemeManager.Current.Fg("dim", FormatKeyText(key)) + ThemeManager.Current.Fg("muted", $" {description}");
 }
 
-/// <summary>Per-second countdown. Port of countdown-timer.ts.</summary>
+/// <summary>Per-second countdown.</summary>
 public sealed class CountdownTimer : IDisposable
 {
     private IDisposable? _interval;
@@ -72,7 +72,7 @@ public sealed class CountdownTimer : IDisposable
     }
 }
 
-/// <summary>Spinner status shown above the editor or in its border. Port of status-indicator.ts.</summary>
+/// <summary>Spinner status shown above the editor or in its border.</summary>
 public class StatusIndicator(string kind, TuiBase ui, Func<string, string> spinnerColor, Func<string, string> messageColor, string message, LoaderIndicatorOptions? indicator = null)
     : Loader(ui, spinnerColor, messageColor, message, indicator), IDisposable
 {
@@ -142,7 +142,7 @@ public sealed class IdleStatus : IComponent
     }
 }
 
-/// <summary>Editor with coding-agent app keybindings and an embedded working status. Port of custom-editor.ts.</summary>
+/// <summary>Editor with coding-agent app keybindings and an embedded working status.</summary>
 public sealed class CustomEditor : Editor
 {
     private readonly KeybindingsManager _keybindings;
@@ -261,7 +261,7 @@ public sealed class CustomEditor : Editor
     }
 }
 
-/// <summary>Truncate text to its last visual lines. Port of visual-truncate.ts.</summary>
+/// <summary>Truncate text to its last visual lines.</summary>
 public static class VisualTruncate
 {
     public static (List<string> VisualLines, int SkippedCount) TruncateToVisualLines(string text, int maxVisualLines, int width, int paddingX = 0)
@@ -299,7 +299,7 @@ public static class MarkdownTransform
         };
 }
 
-/// <summary>Renders a user message. Port of user-message.ts.</summary>
+/// <summary>Renders a user message.</summary>
 public sealed class UserMessageComponent : Container
 {
     internal const string Osc133ZoneStart = "\e]133;A\a";
@@ -345,7 +345,7 @@ public sealed class UserMessageComponent : Container
     }
 }
 
-/// <summary>Renders an assistant message (text and thinking blocks). Port of assistant-message.ts.</summary>
+/// <summary>Renders an assistant message (text and thinking blocks).</summary>
 public sealed class AssistantMessageComponent : Container
 {
     private readonly Container _contentContainer = new();

@@ -16,7 +16,6 @@ public sealed class WriteOperations
     };
 }
 
-/// <summary>Port of core/tools/write.ts.</summary>
 public static class WriteTool
 {
     public const string Snippet = "Create or overwrite files";

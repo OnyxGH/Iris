@@ -1,6 +1,6 @@
 namespace Iris.Tui.Components;
 
-/// <summary>Multi-line text with word wrapping, padding and optional background. Port of pi-tui Text.</summary>
+/// <summary>Multi-line text with word wrapping, padding and optional background.</summary>
 public class Text : IComponent
 {
     private string _text;
@@ -79,7 +79,7 @@ public class Text : IComponent
     }
 }
 
-/// <summary>Single-line text truncated to the viewport width. Port of pi-tui TruncatedText.</summary>
+/// <summary>Single-line text truncated to the viewport width.</summary>
 public sealed class TruncatedText(string text, int paddingX = 0, int paddingY = 0) : IComponent
 {
     public void Invalidate()
@@ -105,7 +105,7 @@ public sealed class TruncatedText(string text, int paddingX = 0, int paddingY = 
     }
 }
 
-/// <summary>Renders empty lines. Port of pi-tui Spacer.</summary>
+/// <summary>Renders empty lines.</summary>
 public sealed class Spacer(int lines = 1) : IComponent
 {
     private int _lines = lines;
@@ -119,7 +119,7 @@ public sealed class Spacer(int lines = 1) : IComponent
     public List<string> Render(int width) => Enumerable.Repeat("", _lines).ToList();
 }
 
-/// <summary>Container applying padding and background to all children. Port of pi-tui Box.</summary>
+/// <summary>Container applying padding and background to all children.</summary>
 public class Box(int paddingX = 1, int paddingY = 1, Func<string, string>? bg = null) : IMouseComponent
 {
     private Func<string, string>? _bg = bg;
@@ -210,7 +210,7 @@ public class Box(int paddingX = 1, int paddingY = 1, Func<string, string>? bg = 
 
 public sealed record LoaderIndicatorOptions(IReadOnlyList<string>? Frames = null, int? IntervalMs = null);
 
-/// <summary>Text with an optional spinner animation. Port of pi-tui Loader.</summary>
+/// <summary>Text with an optional spinner animation.</summary>
 public class Loader : Text
 {
     private static readonly string[] DefaultFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
@@ -296,7 +296,7 @@ public class Loader : Text
     }
 }
 
-/// <summary>Loader cancellable with the select-cancel keybinding. Port of pi-tui CancellableLoader.</summary>
+/// <summary>Loader cancellable with the select-cancel keybinding.</summary>
 public sealed class CancellableLoader(TuiBase ui, Func<string, string> spinnerColor, Func<string, string> messageColor, string message = "Loading...", LoaderIndicatorOptions? indicator = null)
     : Loader(ui, spinnerColor, messageColor, message, indicator), IInputComponent, IDisposable
 {

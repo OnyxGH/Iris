@@ -10,7 +10,7 @@ public readonly record struct TextSlice(string Text, int Width);
 
 public readonly record struct LineSegments(string Before, int BeforeWidth, string After, int AfterWidth);
 
-/// <summary>Terminal text measurement, wrapping, truncation and slicing with ANSI awareness. Port of pi-tui utils.ts.</summary>
+/// <summary>Terminal text measurement, wrapping, truncation and slicing with ANSI awareness.</summary>
 public static partial class TextUtils
 {
     private const int WidthCacheSize = 512;

@@ -59,7 +59,7 @@ public sealed class CompactionSummaryMessage : Message
     public long TokensBefore { get; set; }
 }
 
-/// <summary>Custom message types and conversion to LLM messages. Port of core/messages.ts.</summary>
+/// <summary>Custom message types and conversion to LLM messages.</summary>
 public static class CodingAgentMessages
 {
     public const string CompactionSummaryPrefix = "The conversation history before this point was compacted into the following summary:\n\n<summary>\n";

@@ -10,8 +10,7 @@ namespace Iris.CodingAgent.Modes.Interactive;
 
 /// <summary>
 /// Syntax highlighting with VS Code's TextMate grammars and the token colors of VS Code's "Dark Modern" theme
-/// (which inherits Dark+ token colors). Light pi themes use "Light Modern" (Light+ token colors) so code stays readable.
-/// Deviation from pi, which uses highlight.js with the pi theme's syntax* colors.
+/// (which inherits Dark+ token colors). Light themes use "Light Modern" (Light+ token colors) so code stays readable.
 /// </summary>
 public static class TextMateHighlighter
 {
@@ -56,7 +55,7 @@ public static class TextMateHighlighter
     private static readonly Engine DarkModern = new(ThemeName.DarkPlus, "#CCCCCC");
     private static readonly Engine LightModern = new(ThemeName.LightPlus, "#3B3B3B");
 
-    /// <summary>pi / highlight.js language names mapped to VS Code language ids.</summary>
+    /// <summary>Markdown code fence language names mapped to VS Code language ids.</summary>
     private static readonly Dictionary<string, string> LanguageIds = new(StringComparer.OrdinalIgnoreCase)
     {
         ["bash"] = "shellscript", ["sh"] = "shellscript", ["shell"] = "shellscript", ["zsh"] = "shellscript", ["shellscript"] = "shellscript", ["console"] = "shellscript",

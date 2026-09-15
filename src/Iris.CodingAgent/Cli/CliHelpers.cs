@@ -7,13 +7,12 @@ using Iris.Tui;
 
 namespace Iris.CodingAgent.Cli;
 
-/// <summary>Thrown by CLI helpers where pi calls process.exit.</summary>
+/// <summary>Thrown by CLI helpers to exit with an error.</summary>
 public sealed class CliExitException(int exitCode, string? message = null) : Exception(message)
 {
     public int ExitCode { get; } = exitCode;
 }
 
-/// <summary>Port of cli/file-processor.ts and cli/initial-message.ts.</summary>
 public static class InitialMessageBuilder
 {
     public static async Task<(string Text, List<ImageContent> Images)> ProcessFileArgumentsAsync(IEnumerable<string> fileArgs, bool autoResizeImages = true)
@@ -74,7 +73,6 @@ public static class InitialMessageBuilder
     }
 }
 
-/// <summary>Port of cli/list-models.ts.</summary>
 public static class ModelLister
 {
     private static string FormatTokenCount(long count)

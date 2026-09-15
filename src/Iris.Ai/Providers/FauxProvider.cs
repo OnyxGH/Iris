@@ -53,7 +53,7 @@ public sealed class FauxProviderOptions
     public int? MaxTokenSize { get; init; }
 }
 
-/// <summary>Scripted in-memory provider for tests. Port of providers/faux.ts (without deferred responses).</summary>
+/// <summary>Scripted in-memory provider for tests.</summary>
 public sealed class FauxProvider : IApiStreams
 {
     private const string DefaultApi = "faux";
@@ -253,7 +253,7 @@ public sealed class FauxProvider : IApiStreams
         {
             TextContent t => t.Text,
             ThinkingContent th => th.Thinking,
-            ToolCall tc => $"{tc.Name}:{PiJson.Stringify(tc.Arguments)}",
+            ToolCall tc => $"{tc.Name}:{IrisJson.Stringify(tc.Arguments)}",
             _ => "",
         }));
 
@@ -270,7 +270,7 @@ public sealed class FauxProvider : IApiStreams
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(context.SystemPrompt)) parts.Add($"system:{context.SystemPrompt}");
         foreach (var message in context.Messages) parts.Add($"{message.Role}:{MessageToText(message)}");
-        if (context.Tools is { Count: > 0 }) parts.Add($"tools:{PiJson.Serialize(context.Tools)}");
+        if (context.Tools is { Count: > 0 }) parts.Add($"tools:{IrisJson.Serialize(context.Tools)}");
         return string.Join("\n\n", parts);
     }
 
@@ -399,7 +399,7 @@ public sealed class FauxProvider : IApiStreams
                     var block = new ToolCall { Id = toolCall.Id, Name = toolCall.Name, Arguments = new JsonObject() };
                     partial.Content.Add(block);
                     stream.Push(new ToolCallStartEvent(index, Snapshot(partial)));
-                    foreach (var chunk in Split(PiJson.Stringify(toolCall.Arguments)))
+                    foreach (var chunk in Split(IrisJson.Stringify(toolCall.Arguments)))
                     {
                         await ScheduleChunk(chunk);
                         if (AbortIfNeeded()) return;

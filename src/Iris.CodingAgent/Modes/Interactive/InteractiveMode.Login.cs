@@ -272,8 +272,8 @@ public sealed partial class InteractiveMode
         var session = Session;
         var defaultModelId = ModelResolver.DefaultModelPerProvider.FirstOrDefault(kv => kv.Key == providerId).Value;
         var unknownPrevious = previousModel is null;
-        // Deviation from pi: llama.cpp catalogs are always empty before the first refresh after login, so pi reports
-        // "no models are loaded" even when the server has loaded models. Wait for the refresh before giving guidance.
+        // llama.cpp catalogs are always empty before the first refresh after login, so guidance given right away would
+        // report "no models are loaded" even when the server has loaded models. Wait for the refresh first.
         var deferSelection = unknownPrevious
             && (providerId == LlamaProvider.ProviderId
                 || (defaultModelId is not null && !session.ModelRuntime.AvailableSnapshot.Any(m => m.Provider == providerId && m.Id == defaultModelId)));
@@ -512,7 +512,7 @@ public sealed partial class InteractiveMode
         using var cts = new CancellationTokenSource(15_000);
         var current = catalog ?? await client.ListAsync(ct: cts.Token);
         LlamaProvider.EnsureRegistered(Session.ModelRuntime).SetCatalog(current, client.ServerUrl);
-        // /llama already contacted the configured llama.cpp server, so keep this refresh live even in PI_OFFLINE.
+        // /llama already contacted the configured llama.cpp server, so keep this refresh live even in IRIS_OFFLINE.
         var result = await Session.ModelRuntime.RefreshAsync(new ModelsRefreshOptions { Providers = [LlamaProvider.ProviderId], AllowNetwork = true, CancellationToken = cts.Token });
         if (result.Aborted) throw new TimeoutException("Model catalog refresh timed out.");
         if (result.Errors.TryGetValue(LlamaProvider.ProviderId, out var refreshError)) throw refreshError;

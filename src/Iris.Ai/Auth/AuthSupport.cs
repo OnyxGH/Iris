@@ -264,7 +264,7 @@ public static class AuthResolver
     }
 }
 
-/// <summary>Known API key environment variables per provider. Port of env-api-keys.ts.</summary>
+/// <summary>Known API key environment variables per provider.</summary>
 public static class EnvApiKeys
 {
     public const string AnthropicAuthTokenEnv = "ANTHROPIC_AUTH_TOKEN";

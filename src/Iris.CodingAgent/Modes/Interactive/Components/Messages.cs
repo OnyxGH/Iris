@@ -15,7 +15,7 @@ public interface IExpandable
     void SetExpanded(bool expanded);
 }
 
-/// <summary>Compaction summary with collapsed/expanded state. Port of compaction-summary-message.ts.</summary>
+/// <summary>Compaction summary with collapsed/expanded state.</summary>
 public sealed class CompactionSummaryMessageComponent : Box, IExpandable
 {
     private bool _expanded;
@@ -61,7 +61,7 @@ public sealed class CompactionSummaryMessageComponent : Box, IExpandable
     }
 }
 
-/// <summary>Branch summary with collapsed/expanded state. Port of branch-summary-message.ts.</summary>
+/// <summary>Branch summary with collapsed/expanded state.</summary>
 public sealed class BranchSummaryMessageComponent : Box, IExpandable
 {
     private bool _expanded;
@@ -106,7 +106,7 @@ public sealed class BranchSummaryMessageComponent : Box, IExpandable
     }
 }
 
-/// <summary>Skill invocation block. Port of skill-invocation-message.ts.</summary>
+/// <summary>Skill invocation block.</summary>
 public sealed class SkillInvocationMessageComponent : Box, IExpandable
 {
     private bool _expanded;
@@ -152,7 +152,7 @@ public sealed class SkillInvocationMessageComponent : Box, IExpandable
 
 public delegate IComponent? MessageRenderer(CustomMessage message, bool expanded, int outputPad, Theme theme);
 
-/// <summary>Extension custom message. Port of custom-message.ts.</summary>
+/// <summary>Extension custom message.</summary>
 public sealed class CustomMessageComponent : Container, IExpandable
 {
     private readonly CustomMessage _message;
@@ -230,7 +230,7 @@ public sealed class CustomMessageComponent : Container, IExpandable
     }
 }
 
-/// <summary>Git branch and extension status data for the footer. Port of core/footer-data-provider.ts.</summary>
+/// <summary>Git branch and extension status data for the footer.</summary>
 public sealed class FooterDataProvider : IDisposable
 {
     private const int WatchDebounceMs = 500;
@@ -450,7 +450,7 @@ public sealed class FooterDataProvider : IDisposable
     }
 }
 
-/// <summary>Footer with cwd, token stats and model. Port of footer.ts.</summary>
+/// <summary>Footer with cwd, token stats and model.</summary>
 public sealed partial class FooterComponent(AgentSession session, FooterDataProvider footerData) : IComponent
 {
     private AgentSession _session = session;
@@ -563,7 +563,7 @@ public sealed partial class FooterComponent(AgentSession session, FooterDataProv
         var autoIndicator = _autoCompactEnabled ? " (auto)" : "";
         var contextDisplay = contextPercent == "?" ? $"?/{FormatTokens(contextWindow)}{autoIndicator}" : $"{contextPercent}%/{FormatTokens(contextWindow)}{autoIndicator}";
         statsParts.Add(contextPercentValue > 90 ? theme.Fg("error", contextDisplay) : contextPercentValue > 70 ? theme.Fg("warning", contextDisplay) : contextDisplay);
-        if (Environment.GetEnvironmentVariable("PI_EXPERIMENTAL") == "1") statsParts.Add($"{theme.Fg("dim", "•")} {theme.Bold(theme.Fg("warning", "xp"))}");
+        if (Environment.GetEnvironmentVariable("IRIS_EXPERIMENTAL") == "1") statsParts.Add($"{theme.Fg("dim", "•")} {theme.Bold(theme.Fg("warning", "xp"))}");
 
         var statsLeft = string.Join(" ", statsParts);
         var modelName = state.Model.Id is { Length: > 0 } id ? id : "no-model";
@@ -624,7 +624,7 @@ public sealed partial class FooterComponent(AgentSession session, FooterDataProv
     }
 }
 
-/// <summary>Colored diff rendering with intra-line word highlights. Port of diff.ts.</summary>
+/// <summary>Colored diff rendering with intra-line word highlights.</summary>
 public static partial class DiffRenderer
 {
     [GeneratedRegex(@"^([+\-\s])(\s*\d*)\s(.*)$")]
@@ -744,7 +744,7 @@ public static partial class DiffRenderer
     }
 }
 
-/// <summary>Streaming bash (! command) execution display. Port of bash-execution.ts.</summary>
+/// <summary>Streaming bash (! command) execution display.</summary>
 public sealed class BashExecutionComponent : Container, IExpandable
 {
     private const int PreviewLines = 20;

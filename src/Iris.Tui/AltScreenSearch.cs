@@ -4,7 +4,7 @@ using Iris.Tui.Components;
 
 namespace Iris.Tui;
 
-/// <summary>Transient messages composited by the alternate-screen renderer. Port of pi-tui AltScreenFlashContainer.</summary>
+/// <summary>Transient messages composited by the alternate-screen renderer.</summary>
 public sealed class AltScreenFlashContainer(UiDispatcher dispatcher, Action requestRender) : IComponent
 {
     private const int DefaultDurationMs = 1000;
@@ -52,7 +52,7 @@ public sealed record AltScreenSearchMatch(List<AltScreenSearchSegment> Segments)
     public string Key => Segments.Count > 0 ? $"{Segments[0].Row}:{Segments[0].StartCol}:{Segments[^1].Row}:{Segments[^1].EndCol}" : "";
 }
 
-/// <summary>Cache the searchable corpus and matches while rendered transcript lines remain unchanged. Port of pi-tui AltScreenSearchIndex.</summary>
+/// <summary>Cache the searchable corpus and matches while rendered transcript lines remain unchanged.</summary>
 public sealed partial class AltScreenSearchIndex
 {
     private sealed record SourceSpan(int TextStart, int TextEnd, int Row, int StartCol, int EndCol, bool LinearColumns);
@@ -196,7 +196,7 @@ public sealed partial class AltScreenSearchIndex
     }
 }
 
-/// <summary>Transcript search box. Port of pi-tui AltScreenSearchComponent.</summary>
+/// <summary>Transcript search box.</summary>
 public sealed class AltScreenSearchComponent(Action<string> onQueryChange, Func<string, bool, string>? navigationButtonStyle = null) : IInputComponent, IFocusable
 {
     private readonly Input _input = new(" ", "Find in transcript", text => $"\e[2m{text}\e[22m");

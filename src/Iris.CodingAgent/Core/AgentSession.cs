@@ -53,7 +53,7 @@ public sealed class AgentSessionConfig
 }
 
 /// <summary>
-/// Core abstraction for agent lifecycle and session management, shared by all run modes. Port of core/agent-session.ts.
+/// Core abstraction for agent lifecycle and session management, shared by all run modes.
 /// Session HTML/JSONL export arrives with the export milestone.
 /// </summary>
 public sealed partial class AgentSession : IDisposable
@@ -469,7 +469,7 @@ public sealed partial class AgentSession : IDisposable
         }
 
         _extensionRunner.Invalidate(
-            "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload().");
+            "This extension ctx is stale after session replacement or reload. Do not use a captured extension API or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload().");
         _agentSubscription?.Dispose();
         _agentSubscription = null;
         _extensionErrorSubscription?.Dispose();

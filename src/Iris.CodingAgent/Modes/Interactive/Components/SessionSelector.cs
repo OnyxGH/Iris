@@ -7,7 +7,7 @@ using Iris.Tui.Markdown;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Session search parsing and ranking. Port of session-selector-search.ts.</summary>
+/// <summary>Session search parsing and ranking.</summary>
 public static partial class SessionSelectorSearch
 {
     public sealed record ParsedSearchQuery(string Mode, List<(string Kind, string Value)> Tokens, Regex? Regex, string? Error = null);
@@ -131,7 +131,7 @@ public static partial class SessionSelectorSearch
     }
 }
 
-/// <summary>Resume session selector. Port of session-selector.ts.</summary>
+/// <summary>Resume session selector.</summary>
 public sealed partial class SessionSelectorComponent : Container, IInputComponent, IFocusable
 {
     public delegate Task<List<SessionInfo>> SessionsLoader(Action<int, int>? onProgress);

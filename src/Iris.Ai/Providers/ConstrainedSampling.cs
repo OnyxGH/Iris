@@ -14,7 +14,7 @@ public sealed class GrammarToolInputJsonBuffer
     public bool Closed { get; set; }
 }
 
-/// <summary>Strict JSON schema and grammar tool helpers. Port of api/constrained-sampling.ts.</summary>
+/// <summary>Strict JSON schema and grammar tool helpers.</summary>
 public static class ConstrainedSampling
 {
     private static readonly string[] UnsupportedStrictSchemaKeys =
@@ -138,10 +138,10 @@ public static class ConstrainedSampling
         var delta = "";
         if (!buffer.Started)
         {
-            delta += "{" + PiJson.Quote(inputProperty) + ":\"";
+            delta += "{" + IrisJson.Quote(inputProperty) + ":\"";
             buffer.Started = true;
         }
-        var quoted = PiJson.Quote(inputDelta);
+        var quoted = IrisJson.Quote(inputDelta);
         delta += quoted[1..^1];
         buffer.Input = nextInput;
         if (close)

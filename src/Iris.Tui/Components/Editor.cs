@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Iris.Tui.Components;
 
-/// <summary>Interface for editor components (custom editors from extensions). Port of pi-tui editor-component.ts.</summary>
+/// <summary>Interface for editor components (custom editors from extensions).</summary>
 public interface IEditorComponent : IInputComponent
 {
     string GetText();
@@ -56,7 +56,7 @@ public sealed class EditorOptions
     public int? AutocompleteMaxVisible { get; init; }
 }
 
-/// <summary>Multi-line editor with word wrap, autocomplete, history, kill ring and undo. Port of pi-tui Editor.</summary>
+/// <summary>Multi-line editor with word wrap, autocomplete, history, kill ring and undo.</summary>
 public partial class Editor : IEditorComponent, IFocusable, IMouseComponent
 {
     [GeneratedRegex(@"\[paste #(\d+)( (\+\d+ lines|\d+ chars))?\]")]

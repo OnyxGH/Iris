@@ -1,6 +1,6 @@
 namespace Iris.CodingAgent.Utils;
 
-/// <summary>Word diff. Faithful port of jsdiff 8 diffWords (tokenizer, Myers diff, whitespace post-processing).</summary>
+/// <summary>Word diff. Faithful</summary>
 public static class WordDiff
 {
     private sealed class PathState

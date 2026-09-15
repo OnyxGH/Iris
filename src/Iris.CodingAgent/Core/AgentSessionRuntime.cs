@@ -25,7 +25,7 @@ public delegate Task<CreateAgentSessionRuntimeResult> CreateAgentSessionRuntimeF
 
 public sealed class SessionImportFileNotFoundException(string filePath) : FileNotFoundException($"File not found: {filePath}", filePath);
 
-/// <summary>Missing stored session cwd. Port of core/session-cwd.ts.</summary>
+/// <summary>Missing stored session cwd.</summary>
 public sealed record SessionCwdIssue(string? SessionFile, string SessionCwd, string FallbackCwd)
 {
     public static SessionCwdIssue? Find(SessionManager sessionManager, string fallbackCwd)
@@ -53,7 +53,6 @@ public sealed class MissingSessionCwdException(SessionCwdIssue issue) : InvalidO
     }
 }
 
-/// <summary>Port of core/agent-session-services.ts.</summary>
 public static class AgentSessionServicesFactory
 {
     public sealed class Options
@@ -103,7 +102,6 @@ public static class AgentSessionServicesFactory
 
 /// <summary>
 /// Owns the current AgentSession plus its cwd-bound services, and replaces them for /new, /resume, /fork and import.
-/// Port of core/agent-session-runtime.ts.
 /// </summary>
 public sealed class AgentSessionRuntime
 {

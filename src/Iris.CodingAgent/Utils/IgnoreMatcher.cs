@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace Iris.CodingAgent.Utils;
 
 /// <summary>
-/// gitignore-style matcher compatible with the node "ignore" package as used by pi: rules are relative posix paths,
+/// gitignore-style matcher: rules are relative posix paths,
 /// the last matching rule wins, and a path is ignored when any parent directory is ignored.
 /// </summary>
 public sealed class IgnoreMatcher

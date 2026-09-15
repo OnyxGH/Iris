@@ -3,7 +3,7 @@ using Iris.Tui;
 
 namespace Iris.CodingAgent.Modes.Interactive;
 
-/// <summary>Applies theme settings, including automatic light/dark sync. Port of theme-controller.ts.</summary>
+/// <summary>Applies theme settings, including automatic light/dark sync.</summary>
 public sealed class InteractiveThemeController
 {
     private readonly TuiBase _ui;

@@ -2,7 +2,7 @@ using SkiaSharp;
 
 namespace Iris.CodingAgent.Utils;
 
-/// <summary>EXIF orientation lookup for JPEG and WebP. Port of utils/exif-orientation.ts.</summary>
+/// <summary>EXIF orientation lookup for JPEG and WebP.</summary>
 public static class ExifOrientation
 {
     private static int ReadOrientationFromTiff(byte[] bytes, int tiffStart)
@@ -95,9 +95,8 @@ public static class ExifOrientation
 }
 
 /// <summary>
-/// SkiaSharp image codec standing in for pi's Photon (WASM): decoding, EXIF orientation, resizing and PNG/JPEG encoding.
-/// Port of utils/image-resize-core.ts and image-convert.ts. Encoded bytes differ from Photon's, but the size limits,
-/// quality steps and dimension strategy are the same.
+/// SkiaSharp image codec: decoding, EXIF orientation, resizing and PNG/JPEG encoding within the inline image size
+/// limits and quality steps.
 /// </summary>
 public sealed class SkiaImageCodec : IImageCodec
 {
@@ -180,7 +179,7 @@ public sealed class SkiaImageCodec : IImageCodec
         _ => image,
     };
 
-    /// <summary>High-quality downscale (Photon uses Lanczos3): box halving, then a Catmull-Rom cubic pass.</summary>
+    /// <summary>High-quality downscale : box halving, then a Catmull-Rom cubic pass.</summary>
     private static SKBitmap Resize(SKBitmap source, int width, int height)
     {
         var current = source;
@@ -206,13 +205,13 @@ public sealed class SkiaImageCodec : IImageCodec
 
     private static SKData EncodeJpeg(SKBitmap bitmap, int quality)
     {
-        // JPEG has no alpha: flatten like Photon, which drops the alpha channel (transparent pixels keep their RGB).
+        // JPEG has no alpha: drop the alpha channel (transparent pixels keep their RGB).
         using var opaque = new SKBitmap(new SKImageInfo(bitmap.Width, bitmap.Height, SKColorType.Rgb888x, SKAlphaType.Opaque));
         var src = bitmap.GetPixelSpan();
         var dst = opaque.GetPixelSpan();
         for (var i = 0; i + 3 < src.Length && i + 3 < dst.Length; i += 4)
         {
-            // Pixels are premultiplied; undo that so semi-transparent pixels keep their color, as with Photon.
+            // Pixels are premultiplied; undo that so semi-transparent pixels keep their color.
             var alpha = src[i + 3];
             dst[i] = alpha is 0 or 255 ? src[i] : (byte)Math.Min(255, src[i] * 255 / alpha);
             dst[i + 1] = alpha is 0 or 255 ? src[i + 1] : (byte)Math.Min(255, src[i + 1] * 255 / alpha);

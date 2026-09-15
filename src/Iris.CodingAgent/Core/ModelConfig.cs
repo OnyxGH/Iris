@@ -5,7 +5,7 @@ using Iris.CodingAgent.Utils;
 
 namespace Iris.CodingAgent.Core;
 
-/// <summary>One immutable load of models.json (providers kept as raw JSON). Port of core/model-config.ts.</summary>
+/// <summary>One immutable load of models.json (providers kept as raw JSON).</summary>
 public sealed class ModelConfig
 {
     private readonly Dictionary<string, JsonObject> _providers;

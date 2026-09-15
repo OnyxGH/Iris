@@ -11,8 +11,14 @@ pi stays the parity baseline, but Iris deliberately deviates in a few places (se
 ## Iris deviations (intentional)
 
 - Name and paths: executable `iris`, config `~/.iris/agent` and project `.iris/`, env `IRIS_CODING_AGENT_DIR` etc. The system
-  prompt, startup tip, `update` help and HTTP User-Agent say Iris where pi says pi (provider attribution headers and
-  pi.dev service URLs are unchanged).
+  prompt, startup tip and HTTP User-Agent say Iris where pi says pi. OpenRouter attribution says Iris; pi's NVIDIA and
+  Cloudflare attribution headers are not sent.
+- No pi/OpenCode references in `src/`: identifiers (`IrisJson`, `IrisAi`), `IRIS_*` env vars, temp-file prefixes and the
+  cursor marker are Iris-named, and comments do not point at pi sources. (OpenCode Zen/Go remain as model providers.)
+- No npm/package ecosystem: the package manager (install/remove/update/list, `packages` setting, update checks) is removed.
+  Resources come from settings entries and the auto-discovered user/project directories (Core/ResourceResolver.cs).
+- No pi.dev services: built-in providers use only the bundled model catalog (no remote catalog refresh); `/share` is
+  unavailable until Iris has its own hosting.
 - Fullscreen (`tuiMode`) is the default: transcript in a scroll view, input dock (pending messages, status, editor, footer)
   fixed at the bottom. pi defaults to regular. Changing the TUI mode in /settings applies on the next start (pi swaps
   renderers live).
@@ -29,7 +35,7 @@ pi stays the parity baseline, but Iris deliberately deviates in a few places (se
 |-------|----------|
 | Config dir | Same file formats, but default to `~/.iris/agent` and project `.iris/` so the port never touches real pi data. |
 | Providers | Core APIs first: `openai-completions`, `anthropic-messages`, `openai-responses`, `google-generative-ai`, faux. Then Bedrock, Vertex, Mistral, Codex, Azure, OAuth logins. |
-| In scope | Interactive (fullscreen and regular TUI), print, json, rpc modes; HTML export and `/share`; llama.cpp `/llama`. |
+| In scope | Interactive (fullscreen and regular TUI), print, json, rpc modes; HTML export; llama.cpp `/llama`. |
 | Out of scope (for now) | `packages/{server,client,protocol,chord,telemetry,evals}`, `coding-agent/src/experimental`. |
 | Extensions | Deferred. To be designed together with the user (TypeScript extensions cannot run as-is). |
 | HTTP | Raw `HttpClient` + SSE parsing, no vendor SDKs, so request bodies match pi exactly. SDK error message formats are emulated because overflow/retry detection depends on them. |
@@ -84,14 +90,14 @@ pi stays the parity baseline, but Iris deliberately deviates in a few places (se
 - [x] Tools: read, bash, powershell, edit, write, grep, find, ls
 - [x] Images: SkiaSharp codec (decode, EXIF orientation, resize to 2000x2000 / 4.5MB with pi's PNG/JPEG quality steps, PNG conversion, kitty PNG conversion)
 - [x] System prompt, context files, skills, prompt templates, slash commands, resource loader (fixture-tested against pi)
-- [x] Package manager: npm/git/local package sources, install/remove/update, update checks, filters and autoload deltas (git URL parsing fixture-tested against pi's hosted-git-info)
+- [x] Resource resolution from settings entries and auto-discovery (pi's package manager is intentionally not ported)
 - [x] Theme JSON validation (messages fixture-tested against pi's typebox validator)
-- [x] HTTP proxy (undici EnvHttpProxyAgent semantics, httpProxy setting), version check (configurable URL), package update notifications
+- [x] HTTP proxy (undici EnvHttpProxyAgent semantics, httpProxy setting), version check (configurable URL)
 - [x] AgentSession (+ compaction, retry, bash execution, branching), SDK factory, session runtime/services, project trust store (extension hooks go through IExtensionRunner; NullExtensionRunner for now)
-- [x] CLI args, main, print/json/rpc/interactive modes, --resume picker, startup trust prompt, `auth`, `install`/`remove`/`update`/`list`, `config` TUI (--export waits for HTML export)
+- [x] CLI args, main, print/json/rpc/interactive modes, --resume picker, startup trust prompt, `auth`, `config` TUI (--export waits for HTML export)
 - [x] Interactive mode (Modes/Interactive: InteractiveMode + .Commands partial), components, themes, footer, selectors, settings
 - [x] Project trust (store, startup prompt, /trust)
-- [ ] HTML export, `/share`
+- [ ] HTML export
 - [x] llama.cpp: built-in `llama.cpp` provider (Extensions/Llama, registered directly on each ModelRuntime) and `/llama` manager (list, load/unload; model downloading intentionally left out)
 - [x] `/login` (auth-type selector, provider selector, API-key dialogs) and `/logout`
 - [ ] Extensions (design TBD)
@@ -116,8 +122,8 @@ Interactive-mode deviations from pi (intentional or pending):
 - Syntax highlighting uses VS Code TextMate grammars (TextMateSharp) with Dark Modern token colors, and Light Modern for light
   themes; languages without a bundled grammar use the heuristic tokenizer with the same palette. pi uses highlight.js with the
   theme's syntax* colors. Mermaid diagrams are not rendered.
-- Version checks read IRIS_LATEST_VERSION_URL (same JSON shape as pi's endpoint) and are skipped when unset; `update --self`
-  reports that Iris cannot self-update. The changelog link in the update notice is omitted.
+- Version checks read IRIS_LATEST_VERSION_URL (same JSON shape as pi's endpoint) and are skipped when unset; there is no
+  update command (releases will come from GitHub releases).
 - Encoded image bytes differ from Photon's (different codec); dimensions, size limits and hints match.
 - /login works for API-key providers and llama.cpp; OAuth providers (Anthropic, Copilot, Codex, Kimi, OpenRouter) report "login is not yet supported" because the OAuth flows are not ported. /share and HTML /export show errors.
 - After `/login llama.cpp`, guidance waits for the catalog refresh (pi reports "no models are loaded" before refreshing) and is shown as a status when models are loaded.
@@ -139,12 +145,11 @@ Not yet ported / known gaps:
 - Extensions: IExtensionRunner seam exists (Core/Extensions/ExtensionRunner.cs); loader/runtime design pending with the user.
   Discovered extension entries currently produce a "not loaded" warning.
 - Session HTML export, OAuth login flows, migrations, settings diagnostics, project-trust extension hooks in commands.
-- npm/git installs are only verified with local packages so far (no network installs run).
 - No AgentSession unit tests yet (verified end to end instead); faux-provider tests for retry/compaction flows are worth adding.
 
 Next steps, in order:
 1. User testing of interactive mode, /login and /llama against their llama-server (verified: login, catalog listing, /model, prompting; load/unload/download not exercised to avoid disturbing the user's server).
-2. HTML export + /share, then --export.
+2. HTML export, then --export.
 3. Extension design discussion with the user.
 4. OAuth login flows.
 

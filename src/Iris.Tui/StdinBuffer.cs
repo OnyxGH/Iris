@@ -5,7 +5,7 @@ namespace Iris.Tui;
 
 /// <summary>
 /// Buffers raw input and emits complete key sequences and bracketed pastes (partial escape sequences can arrive split
-/// across reads). Port of pi-tui stdin-buffer.ts. Timer callbacks are delivered through <see cref="Post"/>.
+/// across reads). Timer callbacks are delivered through <see cref="Post"/>.
 /// </summary>
 public sealed partial class StdinBuffer : IDisposable
 {

@@ -67,7 +67,7 @@ public static class AnsiStyle
     public static string Strikethrough(string text) => Apply(text, "\e[9m", "\e[29m");
 }
 
-/// <summary>Resolved color theme. Port of pi's Theme class (theme.ts).</summary>
+/// <summary>Resolved color theme.</summary>
 public sealed class Theme
 {
     public static readonly HashSet<string> BgColorKeys = ["selectedBg", "searchMatchBg", "userMessageBg", "customMessageBg", "toolPendingBg", "toolSuccessBg", "toolErrorBg"];
@@ -103,7 +103,7 @@ public sealed class Theme
 
     private static bool DetectLight(JsonNode? textColor, string? name)
     {
-        var hex = textColor is JsonValue v && v.TryGetValue<double>(out var index) ? ThemeColors.Ansi256ToHex((int)index) : PiJson.GetString(textColor);
+        var hex = textColor is JsonValue v && v.TryGetValue<double>(out var index) ? ThemeColors.Ansi256ToHex((int)index) : IrisJson.GetString(textColor);
         if (hex is null || hex.Length != 7 || hex[0] != '#') return name == "light";
         var (r, g, b) = ThemeColors.HexToRgb(hex);
         return 0.2126 * r + 0.7152 * g + 0.0722 * b < 128;
@@ -211,7 +211,7 @@ internal static class ThemeColors
     private static string Ansi(JsonNode? color, string mode, int code, string reset)
     {
         if (color is JsonValue v && v.TryGetValue<double>(out var number)) return $"\e[{code};5;{(long)number}m";
-        var s = PiJson.GetString(color);
+        var s = IrisJson.GetString(color);
         if (s == "") return reset;
         if (s is not null && s.StartsWith('#'))
         {
@@ -224,7 +224,7 @@ internal static class ThemeColors
     public static JsonNode? ResolveVarRefs(JsonNode? value, JsonObject vars, HashSet<string>? visited = null)
     {
         if (value is JsonValue v && v.TryGetValue<double>(out _)) return value;
-        var s = PiJson.GetString(value);
+        var s = IrisJson.GetString(value);
         if (s is null || s == "" || s.StartsWith('#')) return value;
         visited ??= [];
         if (visited.Contains(s)) throw new InvalidOperationException($"Circular variable reference detected: {s}");
@@ -250,7 +250,7 @@ internal static class ThemeColors
 
 public sealed record TerminalThemeDetection(string Theme, string Source, string Detail, string Confidence);
 
-/// <summary>Global theme state, loading and TUI theme adapters. Port of theme.ts module functions.</summary>
+/// <summary>Global theme state, loading and TUI theme adapters.</summary>
 public static class ThemeManager
 {
     private static Theme? _current;
@@ -261,7 +261,7 @@ public static class ThemeManager
     private static Timer? _reloadTimer;
     private static Action? _onThemeChange;
 
-    /// <summary>The active theme (pi's global `theme` proxy).</summary>
+    /// <summary>The active theme.</summary>
     public static Theme Current => _current ?? throw new InvalidOperationException("Theme not initialized. Call initTheme() first.");
 
     public static bool IsInitialized => _current is not null;
@@ -332,7 +332,7 @@ public static class ThemeManager
         {
             throw new InvalidOperationException($"Failed to parse theme {label}: {ex.Message}");
         }
-        // pi installs its typebox validator for every mode (main.ts), so user themes are always validated.
+        // User themes are always validated.
         return ThemeJsonValidator.Validate(label, json);
     }
 
@@ -377,7 +377,7 @@ public static class ThemeManager
             if (Theme.BgColorKeys.Contains(key)) bg[key] = value;
             else fg[key] = value;
         }
-        return new Theme(fg, bg, colorMode, PiJson.GetString(themeJson["name"]), sourcePath);
+        return new Theme(fg, bg, colorMode, IrisJson.GetString(themeJson["name"]), sourcePath);
     }
 
     public static Theme LoadThemeFromPath(string themePath, string? mode = null) =>
@@ -625,8 +625,8 @@ public static class ThemeManager
         foreach (var (key, value) in ResolveColors(LoadThemeJson(name)))
         {
             if (value is JsonValue v && v.TryGetValue<double>(out var n)) result[key] = ThemeColors.Ansi256ToHex((int)n);
-            else if (PiJson.GetString(value) is "" or null) result[key] = defaultText;
-            else result[key] = PiJson.GetString(value)!;
+            else if (IrisJson.GetString(value) is "" or null) result[key] = defaultText;
+            else result[key] = IrisJson.GetString(value)!;
         }
         return result;
     }
@@ -646,7 +646,7 @@ public static class ThemeManager
                 if (value is null) return null;
                 var resolved = ThemeColors.ResolveVarRefs(value, vars);
                 if (resolved is JsonValue v && v.TryGetValue<double>(out var n)) return ThemeColors.Ansi256ToHex((int)n);
-                var s = PiJson.GetString(resolved);
+                var s = IrisJson.GetString(resolved);
                 return string.IsNullOrEmpty(s) ? null : s;
             }
             return (Resolve(export["pageBg"]), Resolve(export["cardBg"]), Resolve(export["infoBg"]));

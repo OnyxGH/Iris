@@ -4,14 +4,11 @@ using Iris.CodingAgent.Utils;
 namespace Iris.CodingAgent.Config;
 
 /// <summary>
-/// Application identity and user config paths. Port of coding-agent config.ts. Iris uses its own config directory
-/// (~/.iris/agent) with the same file formats as pi.
+/// Application identity and user config paths (~/.iris/agent and project .iris/).
 /// </summary>
 public static class AppConfig
 {
-    public const string PackageName = "@earendil-works/pi-coding-agent";
-
-    /// <summary>Application name (pi's piConfig.name).</summary>
+    /// <summary>Application name.</summary>
     public const string AppName = "iris";
 
     /// <summary>Display title shown in the UI.</summary>
@@ -38,7 +35,7 @@ public static class AppConfig
     {
         get
         {
-            var envDir = Environment.GetEnvironmentVariable("PI_PACKAGE_DIR");
+            var envDir = Environment.GetEnvironmentVariable("IRIS_PACKAGE_DIR");
             return !string.IsNullOrEmpty(envDir) ? PathUtils.NormalizePath(envDir) : AppContext.BaseDirectory;
         }
     }

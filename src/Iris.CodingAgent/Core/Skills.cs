@@ -10,7 +10,7 @@ public sealed record Skill(string Name, string Description, string FilePath, str
 
 public sealed record LoadSkillsResult(List<Skill> Skills, List<ResourceDiagnostic> Diagnostics);
 
-/// <summary>Agent Skills discovery and prompt formatting. Port of core/skills.ts.</summary>
+/// <summary>Agent Skills discovery and prompt formatting.</summary>
 public static partial class Skills
 {
     private const int MaxNameLength = 64;

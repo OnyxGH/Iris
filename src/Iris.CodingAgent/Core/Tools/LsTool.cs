@@ -21,7 +21,6 @@ public sealed class LsOperations
         Task.FromResult(new DirectoryInfo(path).EnumerateFileSystemInfos().Select(e => e.Name).ToList());
 }
 
-/// <summary>Port of core/tools/ls.ts.</summary>
 public static class LsTool
 {
     public const string Snippet = "List directory contents";

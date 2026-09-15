@@ -43,7 +43,7 @@ public sealed class LayoutFrame
 public sealed record ScrollbarGeometry(int Column, int TrackTop, int TrackHeight, int ThumbTop, int ThumbHeight, int MaxScrollTop);
 
 /// <summary>
-/// Fullscreen layout: stacks, scroll views and leaf components rendered into a fixed-size frame. Port of pi-tui layout.ts.
+/// Fullscreen layout: stacks, scroll views and leaf components rendered into a fixed-size frame.
 /// Iris: Kitty image cropping at clip edges is not ported (images are disabled while the alternate screen is active).
 /// </summary>
 public static partial class LayoutEngine

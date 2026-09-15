@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 
 namespace Iris.Ai.Utils;
 
-/// <summary>JSON repair and streaming (partial) JSON parsing. Port of pi-ai utils/json-parse.ts.</summary>
+/// <summary>JSON repair and streaming (partial) JSON parsing.</summary>
 public static class JsonParse
 {
     private static readonly JsonDocumentOptions DocOptions = new() { AllowTrailingCommas = false };
@@ -142,7 +142,7 @@ public static class JsonParse
 }
 
 /// <summary>
-/// Lenient parser for truncated JSON, equivalent to the "partial-json" npm package with Allow.ALL:
+/// Lenient parser for truncated JSON (all partial value kinds allowed):
 /// unterminated strings, arrays and objects are closed; trailing incomplete tokens are dropped.
 /// </summary>
 public static class PartialJson

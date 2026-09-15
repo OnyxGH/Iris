@@ -34,9 +34,9 @@ public sealed class TuiAltScreenOptions
 }
 
 /// <summary>
-/// Alternate-screen TUI with a scrollable, application-owned viewport. Port of pi-tui tui-alt-screen.ts.
-/// Iris deviations: a selection that starts outside a scroll view stays inside the layout section (or overlay) where
-/// it started, like OpenCode's per-section selection; inline images are disabled while the alternate screen is active.
+/// Alternate-screen TUI with a scrollable, application-owned viewport.
+/// A selection that starts outside a scroll view stays inside the layout section (or overlay) where it started;
+/// inline images are disabled while the alternate screen is active.
 /// </summary>
 public sealed partial class TuiAltScreen : TuiBase
 {

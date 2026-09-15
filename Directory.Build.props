@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <!-- Version tracks the pi release this port mirrors. -->
+    <!-- Iris version. -->
     <Version>0.85.1</Version>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>

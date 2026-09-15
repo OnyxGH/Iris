@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Iris.Tui;
 
-/// <summary>TUI rendering into the terminal's main screen and scrollback with differential updates. Port of pi-tui tui-main-screen.ts.</summary>
+/// <summary>TUI rendering into the terminal's main screen and scrollback with differential updates.</summary>
 public sealed class TuiMainScreen : TuiBase
 {
     private const string KittySequencePrefix = "\e_G";
@@ -344,7 +344,7 @@ public sealed class TuiMainScreen : TuiBase
             writer.Append("\e[2K");
             if (!isImage && TextUtils.VisibleWidth(line) > width)
             {
-                var crashLogPath = Path.Combine(LogDirectory ?? Path.GetTempPath(), "pi-tui-crash.log");
+                var crashLogPath = Path.Combine(LogDirectory ?? Path.GetTempPath(), "iris-tui-crash.log");
                 var crashData = new List<string>
                 {
                     $"Crash at {DateTime.UtcNow:O}",

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace Iris.Ai.Utils;
 
 /// <summary>
-/// Environment-based proxy with undici EnvHttpProxyAgent semantics (pi's global dispatcher): http_proxy/HTTP_PROXY for
+/// Environment-based proxy: http_proxy/HTTP_PROXY for
 /// http targets, https_proxy/HTTPS_PROXY (falling back to the http proxy) for https targets, and no_proxy/NO_PROXY
 /// exclusions re-read on every request. Unlike .NET's default proxy, the OS proxy configuration is never consulted.
 /// </summary>
@@ -53,7 +53,7 @@ public sealed partial class EnvHttpProxy : IWebProxy
 
     public Uri? GetProxy(Uri destination)
     {
-        // Keep IPv6 brackets, like undici's url.host with the port stripped.
+        // Keep IPv6 brackets (host without the port).
         var hostname = Regex.Replace(destination.Authority, @":\d*$", "").ToLowerInvariant();
         var port = destination.IsDefaultPort ? DefaultPorts.GetValueOrDefault(destination.Scheme, 0) : destination.Port;
         if (!ShouldProxy(hostname, port)) return null;
@@ -63,7 +63,7 @@ public sealed partial class EnvHttpProxy : IWebProxy
 
     public bool IsBypassed(Uri host) => GetProxy(host) is null;
 
-    /// <summary>Apply the httpProxy setting as HTTP_PROXY/HTTPS_PROXY when those are unset. Port of applyHttpProxySettings.</summary>
+    /// <summary>Apply the httpProxy setting as HTTP_PROXY/HTTPS_PROXY when those are unset.</summary>
     public static void ApplyHttpProxySetting(string? httpProxy)
     {
         var proxy = httpProxy?.Trim();
@@ -74,7 +74,7 @@ public sealed partial class EnvHttpProxy : IWebProxy
 
     public const string UnsupportedProxyProtocolMessage = "Unsupported proxy protocol. SOCKS and PAC proxy URLs are not supported; use an HTTP or HTTPS proxy URL.";
 
-    /// <summary>Proxy URL for a target, including all_proxy and scheme-less values. Port of node-http-proxy.ts resolveHttpProxyUrlForTarget.</summary>
+    /// <summary>Proxy URL for a target, including all_proxy and scheme-less values.</summary>
     public static Uri? ResolveHttpProxyUrlForTarget(string targetUrl, IReadOnlyDictionary<string, string>? env = null)
     {
         string GetEnv(string key) =>

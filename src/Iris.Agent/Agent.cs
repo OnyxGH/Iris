@@ -109,7 +109,7 @@ internal sealed class PendingMessageQueue(QueueMode mode)
 
 /// <summary>
 /// Stateful wrapper around the agent loop. Owns the transcript, emits lifecycle events, executes tools, and exposes
-/// steering and follow-up queues. Port of agent.ts.
+/// steering and follow-up queues.
 /// </summary>
 public sealed class Agent
 {

@@ -75,7 +75,7 @@ public static class HeaderUtils
         headers?.ToDictionary(kv => kv.Key, kv => (string?)kv.Value) ?? new Dictionary<string, string?>();
 }
 
-/// <summary>Default <see cref="IMutableModels"/> implementation (ModelsImpl in pi-ai).</summary>
+/// <summary>Default <see cref="IMutableModels"/> implementation.</summary>
 public sealed class ModelsCollection : IMutableModels
 {
     private readonly Dictionary<string, IProvider> _providers = new();

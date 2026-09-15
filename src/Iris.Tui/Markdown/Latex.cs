@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Iris.Tui.Markdown;
 
-/// <summary>Renders basic LaTeX math as terminal-friendly Unicode text. Port of pi-tui latex.ts.</summary>
+/// <summary>Renders basic LaTeX math as terminal-friendly Unicode text.</summary>
 public static partial class Latex
 {
     private static readonly string NamedOperatorStart = char.ConvertFromUtf32(0xF0004);

@@ -7,7 +7,7 @@ namespace Iris.CodingAgent.Utils;
 
 public sealed record ShellConfig(string Shell, IReadOnlyList<string> Args, string CommandTransport = "argv");
 
-/// <summary>Shell resolution and process helpers. Port of utils/shell.ts.</summary>
+/// <summary>Shell resolution and process helpers.</summary>
 public static partial class ShellUtils
 {
     public static readonly string[] PowerShellArgs = ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command"];

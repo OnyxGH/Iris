@@ -24,7 +24,7 @@ public static class JsonSchemaValidator
 
     private static string? Str(JsonObject obj, string name) => obj[name] is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
-    private static double? Num(JsonObject obj, string name) => obj[name] is JsonValue v && PiJson.TryGetNumber(v, out var d) ? d : null;
+    private static double? Num(JsonObject obj, string name) => obj[name] is JsonValue v && IrisJson.TryGetNumber(v, out var d) ? d : null;
 
     private static List<string> TypesOf(JsonObject schema) => schema["type"] switch
     {
@@ -50,7 +50,7 @@ public static class JsonSchemaValidator
             case "number":
                 return value is JsonValue n && n.GetValueKind() == JsonValueKind.Number;
             case "integer":
-                return value is JsonValue i && i.GetValueKind() == JsonValueKind.Number && PiJson.TryGetNumber(i, out var d) && Math.Floor(d) == d && !double.IsInfinity(d);
+                return value is JsonValue i && i.GetValueKind() == JsonValueKind.Number && IrisJson.TryGetNumber(i, out var d) && Math.Floor(d) == d && !double.IsInfinity(d);
             default:
                 return false;
         }
@@ -115,7 +115,7 @@ public static class JsonSchemaValidator
                 ValidateString(schema, v.GetValue<string>(), path, errors);
                 break;
             case JsonValue v when v.GetValueKind() == JsonValueKind.Number:
-                ValidateNumber(schema, PiJson.GetNumber(v)!.Value, path, errors);
+                ValidateNumber(schema, IrisJson.GetNumber(v)!.Value, path, errors);
                 break;
         }
     }
@@ -224,7 +224,7 @@ public static class JsonSchemaValidator
     }
 }
 
-/// <summary>Tool argument validation with lenient coercion. Port of pi-ai utils/validation.ts.</summary>
+/// <summary>Tool argument validation with lenient coercion.</summary>
 public static class ToolValidation
 {
     public static JsonObject ValidateToolCall(IReadOnlyList<Tool> tools, ToolCall toolCall)
@@ -245,7 +245,7 @@ public static class ToolValidation
 
         var formatted = string.Join("\n", errors.Select(e => $"  - {FormatValidationPath(e)}: {e.Message}"));
         if (formatted.Length == 0) formatted = "Unknown validation error";
-        var received = PiJson.SerializeIndentedTwoSpaces(toolCall.Arguments);
+        var received = IrisJson.SerializeIndentedTwoSpaces(toolCall.Arguments);
         throw new InvalidOperationException($"Validation failed for tool \"{toolCall.Name}\":\n{formatted}\n\nReceived arguments:\n{received}");
     }
 
@@ -311,7 +311,7 @@ public static class ToolValidation
                 }
                 if (kind == JsonValueKind.Number)
                 {
-                    var d = PiJson.GetNumber(v)!.Value;
+                    var d = IrisJson.GetNumber(v)!.Value;
                     if (d == 1) { changed = true; return JsonValue.Create(true); }
                     if (d == 0) { changed = true; return JsonValue.Create(false); }
                 }
@@ -323,7 +323,7 @@ public static class ToolValidation
                 return value;
             case "null":
                 if (kind == JsonValueKind.String && v!.GetValue<string>() == "") { changed = true; return null; }
-                if (kind == JsonValueKind.Number && PiJson.GetNumber(v)!.Value == 0) { changed = true; return null; }
+                if (kind == JsonValueKind.Number && IrisJson.GetNumber(v)!.Value == 0) { changed = true; return null; }
                 if (kind == JsonValueKind.False) { changed = true; return null; }
                 return value;
             default:

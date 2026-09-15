@@ -40,7 +40,7 @@ internal sealed class SessionStreamOptions : SimpleStreamOptions, IHeaderTransfo
     public Func<Dictionary<string, string?>, Task<Dictionary<string, string?>>>? TransformHeaders { get; init; }
 }
 
-/// <summary>Provider attribution headers. Port of core/provider-attribution.ts.</summary>
+/// <summary>Provider attribution headers.</summary>
 public static class ProviderAttribution
 {
     private static bool MatchesHost(string baseUrl, string host) =>
@@ -48,7 +48,7 @@ public static class ProviderAttribution
 
     public static bool IsInstallTelemetryEnabled(SettingsManager settings, string? telemetryEnv = null)
     {
-        telemetryEnv ??= Environment.GetEnvironmentVariable("PI_TELEMETRY");
+        telemetryEnv ??= Environment.GetEnvironmentVariable("IRIS_TELEMETRY");
         if (telemetryEnv is null) return settings.EnableInstallTelemetry;
         return telemetryEnv == "1" || telemetryEnv.Equals("true", StringComparison.OrdinalIgnoreCase) || telemetryEnv.Equals("yes", StringComparison.OrdinalIgnoreCase);
     }
@@ -58,15 +58,7 @@ public static class ProviderAttribution
         if (!IsInstallTelemetryEnabled(settings)) return null;
         if (model.Provider == "openrouter" || model.BaseUrl.Contains("openrouter.ai"))
         {
-            return new() { ["HTTP-Referer"] = "https://pi.dev", ["X-OpenRouter-Title"] = "pi", ["X-OpenRouter-Categories"] = "cli-agent" };
-        }
-        if (model.Provider == "nvidia" || MatchesHost(model.BaseUrl, "integrate.api.nvidia.com"))
-        {
-            return new() { ["X-BILLING-INVOKE-ORIGIN"] = "Pi" };
-        }
-        if (model.Provider is "cloudflare-workers-ai" or "cloudflare-ai-gateway" || MatchesHost(model.BaseUrl, "api.cloudflare.com") || MatchesHost(model.BaseUrl, "gateway.ai.cloudflare.com"))
-        {
-            return new() { ["User-Agent"] = "pi-coding-agent" };
+            return new() { ["X-OpenRouter-Title"] = "Iris", ["X-OpenRouter-Categories"] = "cli-agent" };
         }
         return null;
     }
@@ -75,7 +67,7 @@ public static class ProviderAttribution
     {
         if (string.IsNullOrEmpty(sessionId)) return null;
         if (model.Provider is not "opencode" and not "opencode-go" && !MatchesHost(model.BaseUrl, "opencode.ai")) return null;
-        return new() { ["x-opencode-session"] = sessionId, ["x-opencode-client"] = "pi" };
+        return new() { ["x-opencode-session"] = sessionId, ["x-opencode-client"] = "iris" };
     }
 
     public static Dictionary<string, string?>? Merge(Model model, SettingsManager settings, string? sessionId, params Dictionary<string, string?>?[] sources)
@@ -90,7 +82,7 @@ public static class ProviderAttribution
     }
 }
 
-/// <summary>Session factory. Port of core/sdk.ts (createAgentSession).</summary>
+/// <summary>Session factory.</summary>
 public static class Sdk
 {
     private const string ImageReadingDisabled = "Image reading is disabled.";

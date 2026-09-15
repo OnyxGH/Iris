@@ -14,7 +14,7 @@ public sealed record RenderedImage(string Sequence, int Columns, int Rows, int? 
 
 public readonly record struct RgbColor(int R, int G, int B);
 
-/// <summary>Terminal capability detection and inline image protocols (Kitty, iTerm2). Port of pi-tui terminal-image.ts.</summary>
+/// <summary>Terminal capability detection and inline image protocols (Kitty, iTerm2).</summary>
 public static partial class TerminalImage
 {
     private static TerminalCapabilities? _cached;
@@ -74,11 +74,11 @@ public static partial class TerminalImage
 
     public static TerminalCapabilities DetectCapabilities()
     {
-        var hyperlinks = ParseBoolOverride(Env("PI_HYPERLINKS"));
+        var hyperlinks = ParseBoolOverride(Env("IRIS_HYPERLINKS"));
         var detected = DetectFromEnvironment(hyperlinks is { } h ? () => h : ProbeTmuxHyperlinks);
-        var protocol = Env("PI_IMAGE_PROTOCOL").ToLowerInvariant();
+        var protocol = Env("IRIS_IMAGE_PROTOCOL").ToLowerInvariant();
         var images = protocol is "kitty" or "iterm2" ? protocol : protocol is "none" or "0" ? null : detected.Images;
-        var trueColor = ParseBoolOverride(Env("PI_TRUE_COLOR"));
+        var trueColor = ParseBoolOverride(Env("IRIS_TRUE_COLOR"));
         return new(images, trueColor ?? detected.TrueColor, hyperlinks ?? detected.Hyperlinks);
     }
 

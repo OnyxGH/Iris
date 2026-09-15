@@ -8,7 +8,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Session tree navigator. Port of tree-selector.ts.</summary>
+/// <summary>Session tree navigator.</summary>
 public sealed partial class TreeSelectorComponent : Container, IInputComponent, IFocusable
 {
     private sealed record GutterInfo(int Position, bool Show);

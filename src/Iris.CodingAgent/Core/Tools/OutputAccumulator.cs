@@ -8,7 +8,6 @@ public sealed record OutputSnapshot(string Content, TruncationResult Truncation,
 /// <summary>
 /// Incrementally tracks streaming output with bounded memory: decodes chunks with a streaming UTF-8 decoder, keeps a
 /// decoded tail for display snapshots, and spills the raw output to a temp file when it needs to be preserved.
-/// Port of core/tools/output-accumulator.ts.
 /// </summary>
 public sealed class OutputAccumulator
 {
@@ -38,7 +37,7 @@ public sealed class OutputAccumulator
         _maxLines = maxLines ?? Truncate.DefaultMaxLines;
         _maxBytes = maxBytes ?? Truncate.DefaultMaxBytes;
         _maxRollingBytes = Math.Max(_maxBytes * 2, 1);
-        _tempFilePrefix = tempFilePrefix ?? "pi-output";
+        _tempFilePrefix = tempFilePrefix ?? "iris-output";
     }
 
     public void Append(ReadOnlySpan<byte> data)

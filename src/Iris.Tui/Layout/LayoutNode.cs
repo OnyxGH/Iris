@@ -10,7 +10,7 @@ public enum StackAlign
     End,
 }
 
-/// <summary>A stack child with flex-like sizing. Port of pi-tui StackLayoutEntry.</summary>
+/// <summary>A stack child with flex-like sizing.</summary>
 public sealed class StackLayoutEntry
 {
     public required IComponent Component { get; init; }
@@ -31,7 +31,7 @@ public sealed record StackLayoutNode(bool Horizontal, IReadOnlyList<StackLayoutE
 
 public sealed record ScrollLayoutNode(IComponent Component, Components.ScrollView State) : LayoutNode;
 
-/// <summary>Component that participates in fullscreen layout. Port of pi-tui LayoutComponent.</summary>
+/// <summary>Component that participates in fullscreen layout.</summary>
 public interface ILayoutComponent : IComponent
 {
     LayoutNode GetLayoutNode();

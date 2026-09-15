@@ -56,7 +56,7 @@ public sealed class ResponsesStreamOptions
     public Action<Usage, string?>? ApplyServiceTierPricing { get; init; }
 }
 
-/// <summary>Shared OpenAI Responses conversion and stream processing. Port of api/openai-responses-shared.ts.</summary>
+/// <summary>Shared OpenAI Responses conversion and stream processing.</summary>
 public static class OpenAIResponsesShared
 {
     private static readonly Regex NonIdChars = new("[^a-zA-Z0-9_-]", RegexOptions.Compiled);
@@ -64,13 +64,13 @@ public static class OpenAIResponsesShared
 
     private static string? Str(JsonObject? obj, string name) => obj?[name] is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
-    private static long? Long(JsonObject? obj, string name) => obj?[name] is JsonValue v && PiJson.TryGetNumber(v, out var d) ? (long)d : null;
+    private static long? Long(JsonObject? obj, string name) => obj?[name] is JsonValue v && IrisJson.TryGetNumber(v, out var d) ? (long)d : null;
 
     public static string EncodeTextSignatureV1(string id, string? phase)
     {
         var payload = new JsonObject { ["v"] = 1, ["id"] = id };
         if (!string.IsNullOrEmpty(phase)) payload["phase"] = phase;
-        return PiJson.Stringify(payload);
+        return IrisJson.Stringify(payload);
     }
 
     public static (string Id, string? Phase)? ParseTextSignature(string? signature)
@@ -244,7 +244,7 @@ public static class OpenAIResponsesShared
                                     if (itemId is not null) item["id"] = itemId;
                                     item["call_id"] = callId;
                                     item["name"] = toolCall.Name;
-                                    item["arguments"] = PiJson.Stringify(toolCall.Arguments);
+                                    item["arguments"] = IrisJson.Stringify(toolCall.Arguments);
                                 }
                                 if (canReplayNamespace && toolCall.Namespace is not null) item["namespace"] = toolCall.Namespace;
                                 output.Add(item);
@@ -479,7 +479,7 @@ public static class OpenAIResponsesShared
                 if (Str(item, "id") is not { } id || !reasoningBlocksById.TryGetValue(id, out var block) || string.IsNullOrEmpty(block.ThinkingSignature)) continue;
                 if (JsonNode.Parse(block.ThinkingSignature) is not JsonObject stored || !string.IsNullOrEmpty(Str(stored, "encrypted_content"))) continue;
                 stored["encrypted_content"] = Str(item, "encrypted_content");
-                block.ThinkingSignature = PiJson.Stringify(stored);
+                block.ThinkingSignature = IrisJson.Stringify(stored);
             }
         }
 
@@ -610,7 +610,7 @@ public static class OpenAIResponsesShared
                         var summaryText = string.Join("\n\n", (item["summary"] as JsonArray)?.OfType<JsonObject>().Select(s => Str(s, "text") ?? "") ?? []);
                         var contentText = string.Join("\n\n", (item["content"] as JsonArray)?.OfType<JsonObject>().Select(s => Str(s, "text") ?? "") ?? []);
                         block.Thinking = summaryText.Length > 0 ? summaryText : contentText.Length > 0 ? contentText : block.Thinking;
-                        block.ThinkingSignature = PiJson.Stringify(item);
+                        block.ThinkingSignature = IrisJson.Stringify(item);
                         if (Str(item, "id") is { } reasoningId) reasoningBlocksById[reasoningId] = block;
                         stream.Push(new ThinkingEndEvent(slot.ContentIndex, block.Thinking, output));
                         slots.Remove(outputIndex);
@@ -700,10 +700,10 @@ public static class OpenAIResponsesShared
                 throw new InvalidOperationException($"Could not parse message into JSON: {sse.Data}");
             }
             if (node is not JsonObject obj) continue;
-            if (PiJson.IsTruthy(obj["error"]))
+            if (IrisJson.IsTruthy(obj["error"]))
             {
                 var errorNode = obj["error"]!;
-                var message = errorNode is JsonObject eo && eo["message"] is JsonValue mv && mv.TryGetValue<string>(out var ms) ? ms : PiJson.Stringify(errorNode);
+                var message = errorNode is JsonObject eo && eo["message"] is JsonValue mv && mv.TryGetValue<string>(out var ms) ? ms : IrisJson.Stringify(errorNode);
                 throw new ProviderHttpException(null, null, message, errorNode);
             }
             yield return obj;
@@ -711,7 +711,7 @@ public static class OpenAIResponsesShared
     }
 }
 
-/// <summary>OpenAI Responses streaming adapter. Port of api/openai-responses.ts.</summary>
+/// <summary>OpenAI Responses streaming adapter.</summary>
 public sealed class OpenAIResponsesApi : IApiStreams
 {
     public static readonly OpenAIResponsesApi Instance = new();
@@ -785,7 +785,7 @@ public sealed class OpenAIResponsesApi : IApiStreams
             {
                 new("Authorization", $"Bearer {apiKey}"),
                 new("Accept", "application/json"),
-                new("User-Agent", PiUserAgent.Get()),
+                new("User-Agent", IrisUserAgent.Get()),
             };
             if (model.Headers is not null) headerList.AddRange(ProviderHttp.AsNullable(model.Headers)!);
             if (model.Provider == "github-copilot")

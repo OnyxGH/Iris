@@ -27,7 +27,7 @@ public sealed class CreateModelRuntimeOptions
     public CancellationToken CancellationToken { get; init; }
 }
 
-/// <summary>Configured Models collection used by the coding agent. Port of core/model-runtime.ts.</summary>
+/// <summary>Configured Models collection used by the coding agent.</summary>
 public sealed class ModelRuntime
 {
     private readonly ModelsCollection _models;
@@ -71,7 +71,7 @@ public sealed class ModelRuntime
                 : new InMemoryModelsStore());
         // Built-in providers use the model catalog bundled with Iris; there is no remote catalog service.
         var providers = (options.BuiltinProviders ?? BuiltinProviders.All()).ToList();
-        var runtime = new ModelRuntime(credentials, config, modelsPath, modelsStore, providers, Environment.GetEnvironmentVariable("PI_OFFLINE") is null);
+        var runtime = new ModelRuntime(credentials, config, modelsPath, modelsStore, providers, Environment.GetEnvironmentVariable("IRIS_OFFLINE") is null);
 
         var refreshFromNetwork = runtime.ModelNetworkEnabled && options.AllowModelNetwork;
         using var timeout = refreshFromNetwork && options.ModelRefreshTimeoutMs is not null ? new CancellationTokenSource(options.ModelRefreshTimeoutMs.Value) : null;
@@ -444,7 +444,7 @@ public sealed class ModelRuntime
     }
 }
 
-/// <summary>Synchronous compatibility facade over <see cref="ModelRuntime"/>. Port of core/model-registry.ts.</summary>
+/// <summary>Synchronous compatibility facade over <see cref="ModelRuntime"/>.</summary>
 public sealed class ModelRegistry(ModelRuntime runtime)
 {
     public ModelRuntime Runtime => runtime;

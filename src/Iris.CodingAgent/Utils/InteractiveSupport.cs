@@ -11,21 +11,9 @@ namespace Iris.CodingAgent.Utils;
 
 public sealed record ChangelogEntry(int Major, int Minor, int Patch, string Content);
 
-/// <summary>CHANGELOG.md parsing. Port of utils/changelog.ts.</summary>
+/// <summary>CHANGELOG.md parsing.</summary>
 public static partial class Changelog
 {
-    private const string GithubRepo = "earendil-works/pi";
-    private const string LinkBasePath = "packages/coding-agent";
-
-    [GeneratedRegex(@"^https://github\.com/(?:badlogic|earendil-works)/pi-mono(?=/|$)")]
-    private static partial Regex LegacyRepo();
-
-    [GeneratedRegex("^[a-z][a-z0-9+.-]*:", RegexOptions.IgnoreCase)]
-    private static partial Regex UrlScheme();
-
-    [GeneratedRegex(@"(!?\[[^\]\n]+\]\()([^\s)]+)((?:\s+[^)]*)?\))")]
-    private static partial Regex InlineMarkdownLink();
-
     [GeneratedRegex(@"##\s+\[?(\d+)\.(\d+)\.(\d+)\]?")]
     private static partial Regex VersionHeader();
 
@@ -78,60 +66,9 @@ public static partial class Changelog
         var last = new ChangelogEntry(parts.ElementAtOrDefault(0), parts.ElementAtOrDefault(1), parts.ElementAtOrDefault(2), "");
         return entries.Where(e => Compare(e, last) > 0).ToList();
     }
-
-    public static string NormalizeLinks(string markdown, ChangelogEntry entry)
-    {
-        var tag = $"v{entry.Major}.{entry.Minor}.{entry.Patch}";
-        return InlineMarkdownLink().Replace(markdown, m => m.Groups[1].Value + NormalizeTarget(m.Groups[2].Value, tag) + m.Groups[3].Value);
-    }
-
-    private static string NormalizeTarget(string target, string tag)
-    {
-        var repoUrl = $"https://github.com/{GithubRepo}";
-        var canonical = LegacyRepo().Replace(target, repoUrl);
-        foreach (var route in new[] { "blob", "tree" })
-        {
-            foreach (var branch in new[] { "main", "master" })
-            {
-                var prefix = $"{repoUrl}/{route}/{branch}/";
-                if (canonical.StartsWith(prefix, StringComparison.Ordinal)) canonical = $"{repoUrl}/{route}/{tag}/{canonical[prefix.Length..]}";
-            }
-        }
-        if (canonical.StartsWith('#') || canonical.StartsWith("//", StringComparison.Ordinal) || UrlScheme().IsMatch(canonical)) return canonical;
-
-        var hash = canonical.IndexOf('#');
-        var beforeHash = hash == -1 ? canonical : canonical[..hash];
-        var fragment = hash == -1 ? "" : canonical[hash..];
-        var q = beforeHash.IndexOf('?');
-        var pathPart = q == -1 ? beforeHash : beforeHash[..q];
-        var query = q == -1 ? "" : beforeHash[q..];
-        if (pathPart.Length == 0) return canonical;
-
-        var normalized = pathPart.Replace('\\', '/');
-        var joined = PosixNormalize(normalized.StartsWith('/') ? normalized.TrimStart('/') : $"{LinkBasePath}/{normalized}");
-        if (joined is "." or ".." || joined.StartsWith("../", StringComparison.Ordinal)) return canonical;
-        var baseName = joined[(joined.LastIndexOf('/') + 1)..];
-        var routeName = pathPart.EndsWith('/') || !baseName.Contains('.') ? "tree" : "blob";
-        return $"https://github.com/{GithubRepo}/{routeName}/{tag}/{Uri.EscapeUriString(joined)}{query}{fragment}";
-    }
-
-    private static string PosixNormalize(string path)
-    {
-        var trailing = path.EndsWith('/');
-        var segments = new List<string>();
-        foreach (var segment in path.Split('/'))
-        {
-            if (segment.Length == 0 || segment == ".") continue;
-            if (segment == ".." && segments.Count > 0 && segments[^1] != "..") segments.RemoveAt(segments.Count - 1);
-            else segments.Add(segment);
-        }
-        var result = string.Join("/", segments);
-        if (result.Length == 0) return ".";
-        return trailing ? result + "/" : result;
-    }
 }
 
-/// <summary>System clipboard access. Port of utils/clipboard.ts (native module replaced with platform commands).</summary>
+/// <summary>System clipboard access.</summary>
 public static class Clipboard
 {
     private static async Task<byte[]?> RunAsync(string command, IEnumerable<string> args, byte[]? input = null, int timeoutMs = 5000)
@@ -258,13 +195,13 @@ public static class Clipboard
     {
         if (OperatingSystem.IsWindows())
         {
-            var tempFile = Path.Combine(Path.GetTempPath(), $"pi-clip-{Guid.NewGuid():N}.png");
-            const string script = "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $img = [System.Windows.Forms.Clipboard]::GetImage(); if ($img -eq $null) { exit 1 }; $img.Save($env:PI_CLIP_OUT, [System.Drawing.Imaging.ImageFormat]::Png)";
+            var tempFile = Path.Combine(Path.GetTempPath(), $"iris-clip-{Guid.NewGuid():N}.png");
+            const string script = "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $img = [System.Windows.Forms.Clipboard]::GetImage(); if ($img -eq $null) { exit 1 }; $img.Save($env:IRIS_CLIP_OUT, [System.Drawing.Imaging.ImageFormat]::Png)";
             try
             {
                 var psi = new ProcessStartInfo("powershell") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardError = true, RedirectStandardOutput = true };
                 foreach (var arg in new[] { "-NoProfile", "-NonInteractive", "-STA", "-Command", script }) psi.ArgumentList.Add(arg);
-                psi.Environment["PI_CLIP_OUT"] = tempFile;
+                psi.Environment["IRIS_CLIP_OUT"] = tempFile;
                 using var process = Process.Start(psi);
                 if (process is null) return null;
                 await process.WaitForExitAsync();
@@ -309,7 +246,7 @@ public sealed record CacheMiss(long MissedTokens, double MissedCost, long IdleMs
 
 public sealed record CacheWasteTotals(long MissedTokens, double MissedCost, int MissCount);
 
-/// <summary>Prompt cache miss detection. Port of core/cache-stats.ts.</summary>
+/// <summary>Prompt cache miss detection.</summary>
 public static class CacheStats
 {
     public const long CacheTtlMs = 5 * 60 * 1000;
@@ -373,7 +310,7 @@ public static class CacheStats
     public static CacheMiss? DetectCacheMiss(IEnumerable<SessionEntry> entries, AssistantMessage message, ModelRuntime models) => DetectMiss(Scan(entries, models).Prev, message, models);
 }
 
-/// <summary>Session JSONL export. Port of core/session-export.ts.</summary>
+/// <summary>Session JSONL export.</summary>
 public static class SessionExport
 {
     public static string ExportToJsonl(SessionManager sessionManager, string? outputPath = null)
@@ -399,7 +336,7 @@ public static class SessionExport
                 ordered[key] = key == "parentId" ? parentId is null ? null : JsonValue.Create(parentId) : value?.DeepClone();
             }
             if (!ordered.ContainsKey("parentId")) ordered["parentId"] = parentId;
-            lines.Add(ordered.ToJsonString(PiJson.Options));
+            lines.Add(ordered.ToJsonString(IrisJson.Options));
             parentId = entry.Id;
         }
         File.WriteAllText(filePath, string.Join("\n", lines) + "\n");

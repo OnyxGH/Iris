@@ -17,7 +17,6 @@ public static class KnownApis
     public const string BedrockConverseStream = "bedrock-converse-stream";
     public const string GoogleGenerativeAI = "google-generative-ai";
     public const string GoogleVertex = "google-vertex";
-    public const string PiMessages = "pi-messages";
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<ThinkingLevel>))]
@@ -100,7 +99,7 @@ public sealed class ModelCost : ModelCostRates
 }
 
 /// <summary>
-/// A model definition. Mirrors pi-ai's Model interface. Compat settings are kept as raw JSON because
+/// A model definition. Compat settings are kept as raw JSON because
 /// their shape depends on <see cref="Api"/>; use <see cref="GetCompat{T}"/> to read a typed view.
 /// </summary>
 public sealed class Model
@@ -118,7 +117,7 @@ public sealed class Model
     public bool Reasoning { get; set; }
 
     /// <summary>
-    /// Maps pi thinking levels ("off", "minimal", ...) to provider values. Missing keys use provider defaults;
+    /// Maps thinking levels ("off", "minimal", ...) to provider values. Missing keys use provider defaults;
     /// a null value marks the level as unsupported.
     /// </summary>
     public Dictionary<string, string?>? ThinkingLevelMap { get; set; }
@@ -141,7 +140,7 @@ public sealed class Model
     public bool SupportsImages => Input.Contains("image");
 
     public T GetCompat<T>() where T : new() =>
-        Compat is null ? new T() : Compat.Deserialize<T>(PiJson.Options) ?? new T();
+        Compat is null ? new T() : Compat.Deserialize<T>(IrisJson.Options) ?? new T();
 
     /// <summary>Look up a thinking level mapping. Returns (found, value) where value null means unsupported.</summary>
     public bool TryGetThinkingMapping(ThinkingLevel level, out string? value)

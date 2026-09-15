@@ -28,7 +28,7 @@ public sealed class BuildSystemPromptOptions
 
 public sealed record BuiltinSlashCommand(string Name, string Description, string? ArgumentHint = null);
 
-/// <summary>System prompt construction. Port of core/system-prompt.ts (text kept verbatim).</summary>
+/// <summary>System prompt construction.</summary>
 public static class SystemPrompt
 {
     private static void AppendContextFiles(StringBuilder prompt, IReadOnlyList<ContextFile> contextFiles)
@@ -125,7 +125,6 @@ public static class SystemPrompt
         return prompt.ToString();
     }
 
-    /// <summary>Port of BUILTIN_SLASH_COMMANDS from core/slash-commands.ts.</summary>
     public static readonly IReadOnlyList<BuiltinSlashCommand> BuiltinSlashCommands =
     [
         new("settings", "Open settings menu"),

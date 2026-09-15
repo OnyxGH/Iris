@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Iris.Ai.Utils;
 
-/// <summary>Context overflow detection. Port of pi-ai utils/overflow.ts.</summary>
+/// <summary>Context overflow detection.</summary>
 public static class Overflow
 {
     private const RegexOptions I = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;

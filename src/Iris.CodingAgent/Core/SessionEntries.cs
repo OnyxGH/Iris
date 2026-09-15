@@ -146,15 +146,15 @@ public sealed class UnknownSessionEntry : SessionEntry
     public UnknownSessionEntry(JsonObject raw)
     {
         Raw = raw;
-        Id = PiJson.GetString(raw["id"]) ?? "";
-        ParentId = PiJson.GetString(raw["parentId"]);
-        Timestamp = PiJson.GetString(raw["timestamp"]) ?? "";
+        Id = IrisJson.GetString(raw["id"]) ?? "";
+        ParentId = IrisJson.GetString(raw["parentId"]);
+        Timestamp = IrisJson.GetString(raw["timestamp"]) ?? "";
     }
 
     [JsonIgnore]
     public JsonObject Raw { get; }
 
-    public override string Type => PiJson.GetString(Raw["type"]) ?? "unknown";
+    public override string Type => IrisJson.GetString(Raw["type"]) ?? "unknown";
 }
 
 public sealed class FileEntryJsonConverter : JsonConverter<FileEntry>
@@ -170,8 +170,8 @@ public sealed class FileEntryJsonConverter : JsonConverter<FileEntry>
 
     public static FileEntry FromObject(JsonObject obj, JsonSerializerOptions? options = null)
     {
-        options ??= PiJson.Options;
-        var type = PiJson.GetString(obj["type"]);
+        options ??= IrisJson.Options;
+        var type = IrisJson.GetString(obj["type"]);
         Type? target = type switch
         {
             "session" => typeof(SessionHeader),

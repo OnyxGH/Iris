@@ -5,8 +5,7 @@ using System.Text.Json.Nodes;
 namespace Iris.CodingAgent.Core;
 
 /// <summary>
-/// Validates user-authored theme JSON. Port of modes/interactive/theme/theme-json.ts, reproducing typebox's error
-/// ordering, messages and 8-error cap so messages match pi.
+/// Validates user-authored theme JSON, reporting up to 8 errors.
 /// </summary>
 public static class ThemeJsonValidator
 {

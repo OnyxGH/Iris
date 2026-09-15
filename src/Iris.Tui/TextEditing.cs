@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Iris.Tui;
 
-/// <summary>Emacs-style kill ring. Port of pi-tui kill-ring.ts.</summary>
+/// <summary>Emacs-style kill ring.</summary>
 public sealed class KillRing
 {
     private readonly List<string> _ring = [];
@@ -35,7 +35,7 @@ public sealed class KillRing
     public int Count => _ring.Count;
 }
 
-/// <summary>Undo stack of snapshots. Callers pass immutable or cloned state. Port of pi-tui undo-stack.ts.</summary>
+/// <summary>Undo stack of snapshots. Callers pass immutable or cloned state.</summary>
 public sealed class UndoStack<T>
 {
     private readonly List<T> _stack = [];
@@ -174,7 +174,7 @@ public static class WordSegmenter
     }
 }
 
-/// <summary>Word-wise cursor movement. Port of pi-tui word-navigation.ts.</summary>
+/// <summary>Word-wise cursor movement.</summary>
 public static partial class WordNavigation
 {
     [GeneratedRegex("[(){}\\[\\]<>.,;:'\"!?+\\-=*/\\\\|&%^$#@~`]")]
@@ -259,7 +259,7 @@ public static partial class WordNavigation
 
 public readonly record struct FuzzyMatchResult(bool Matches, double Score);
 
-/// <summary>Fuzzy matching: query characters in order; lower score is better. Port of pi-tui fuzzy.ts.</summary>
+/// <summary>Fuzzy matching: query characters in order; lower score is better.</summary>
 public static partial class Fuzzy
 {
     [GeneratedRegex("^(?<letters>[a-z]+)(?<digits>[0-9]+)$")]

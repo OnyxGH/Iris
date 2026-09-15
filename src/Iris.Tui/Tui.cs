@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Iris.Tui;
 
-/// <summary>A renderable TUI component. Port of the pi-tui Component interface.</summary>
+/// <summary>A renderable TUI component.</summary>
 public interface IComponent
 {
     /// <summary>Render to lines for the given viewport width. Lines must not exceed width.</summary>
@@ -131,12 +131,12 @@ public interface IOverlayHandle
 public readonly record struct InputListenerResult(bool Consume = false, string? Data = null);
 
 /// <summary>
-/// Base TUI: component tree, focus, overlays, throttled rendering and input routing. Port of pi-tui TuiBase.
+/// Base TUI: component tree, focus, overlays, throttled rendering and input routing.
 /// All members must be used on the <see cref="UiDispatcher"/> thread.
 /// </summary>
 public abstract partial class TuiBase : Container
 {
-    public const string CursorMarker = "\e_pi:c\a";
+    public const string CursorMarker = "\e_iris:c\a";
     internal const string SegmentReset = "\e[0m\e]8;;\a";
     private const int MinRenderIntervalMs = 16;
 

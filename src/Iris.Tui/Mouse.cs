@@ -18,7 +18,7 @@ public enum TuiMouseButton
     None,
 }
 
-/// <summary>Normalized cell-based mouse event. Coordinates are zero-based. Port of pi-tui TuiMouseEvent.</summary>
+/// <summary>Normalized cell-based mouse event. Coordinates are zero-based.</summary>
 public sealed record TuiMouseEvent
 {
     public required TuiMouseEventType Type { get; init; }
@@ -114,7 +114,7 @@ public static class MouseDispatch
     };
 }
 
-/// <summary>Adds mouse handling to an existing component without changing its rendering. Port of pi-tui MouseRegion.</summary>
+/// <summary>Adds mouse handling to an existing component without changing its rendering.</summary>
 public sealed class MouseRegion(IComponent child, Func<TuiMouseEvent, TuiMouseEventResult?> onMouse) : IMouseComponent
 {
     public IComponent Child => child;

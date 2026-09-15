@@ -5,7 +5,7 @@ using Iris.CodingAgent.Utils;
 
 namespace Iris.CodingAgent.Modes;
 
-/// <summary>Single-shot mode: send prompts, print the result (text) or every event (json), exit. Port of modes/print-mode.ts.</summary>
+/// <summary>Single-shot mode: send prompts, print the result (text) or every event (json), exit.</summary>
 public static class PrintMode
 {
     public static async Task<int> RunAsync(AgentSessionRuntime runtime, string mode, IReadOnlyList<string> messages, string? initialMessage, List<ImageContent>? initialImages, TextWriter stdout)
@@ -41,7 +41,7 @@ public static class PrintMode
             subscription?.Dispose();
             subscription = session.Subscribe(evt =>
             {
-                if (mode == "json") Write(JsonEvents.ToJson(evt).ToJsonString(PiJson.Options));
+                if (mode == "json") Write(JsonEvents.ToJson(evt).ToJsonString(IrisJson.Options));
             });
         }
 
@@ -59,7 +59,7 @@ public static class PrintMode
         {
             if (mode == "json" && session.SessionManager.Header is { } header)
             {
-                Write(PiJson.Serialize<FileEntry>(header));
+                Write(IrisJson.Serialize<FileEntry>(header));
             }
 
             await RebindSessionAsync();
@@ -71,7 +71,7 @@ public static class PrintMode
             {
                 if (last.StopReason is StopReason.Error or StopReason.Aborted)
                 {
-                    Console.Error.WriteLine(string.IsNullOrEmpty(last.ErrorMessage) ? $"Request {PiJson.Serialize(last.StopReason).Trim('"')}" : last.ErrorMessage);
+                    Console.Error.WriteLine(string.IsNullOrEmpty(last.ErrorMessage) ? $"Request {IrisJson.Serialize(last.StopReason).Trim('"')}" : last.ErrorMessage);
                     exitCode = 1;
                 }
                 else

@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 namespace Iris.Ai.Providers;
 
 /// <summary>
-/// Global registry of API implementations keyed by API id (the api-registry of pi-ai's compat module).
+/// Global registry of API implementations keyed by API id.
 /// Built-in APIs are registered lazily; extensions and tests can override entries.
 /// </summary>
 public static class ApiRegistry
@@ -27,7 +27,6 @@ public static class ApiRegistry
         [KnownApis.GoogleVertex] = new UnsupportedApi(KnownApis.GoogleVertex),
         [KnownApis.MistralConversations] = new UnsupportedApi(KnownApis.MistralConversations),
         [KnownApis.BedrockConverseStream] = new UnsupportedApi(KnownApis.BedrockConverseStream),
-        [KnownApis.PiMessages] = new UnsupportedApi(KnownApis.PiMessages),
     };
 
     public static void Register(string api, IApiStreams streams, string? sourceId = null) => Entries[api] = new Entry(streams, sourceId);

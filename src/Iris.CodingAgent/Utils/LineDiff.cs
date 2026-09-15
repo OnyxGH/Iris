@@ -13,8 +13,7 @@ public sealed class DiffChange
 }
 
 /// <summary>
-/// Line diff and unified patch generation. Faithful port of jsdiff 8 (diffLines / createTwoFilesPatch) so diffs match
-/// pi's output byte for byte.
+/// Line diff and unified patch generation (Myers diff over lines, unified patch output).
 /// </summary>
 public static class LineDiff
 {

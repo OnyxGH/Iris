@@ -857,7 +857,7 @@ public sealed partial class InteractiveMode
     private async Task MaybeWarnAboutAnthropicSubscriptionAuthAsync(Model? model = null)
     {
         model ??= Session.Model;
-        if (PiJson.GetBool(SettingsManager.Warnings["anthropicExtraUsage"]) == false) return;
+        if (IrisJson.GetBool(SettingsManager.Warnings["anthropicExtraUsage"]) == false) return;
         if (_anthropicSubscriptionWarningShown || model is null || model.Provider != "anthropic") return;
         try
         {
@@ -1643,7 +1643,7 @@ public sealed partial class InteractiveMode
     {
         var allEntries = Changelog.Parse(AppConfig.ChangelogPath);
         var markdown = allEntries.Count > 0
-            ? string.Join("\n\n", Enumerable.Reverse(allEntries).Select(e => Changelog.NormalizeLinks(e.Content, e)))
+            ? string.Join("\n\n", Enumerable.Reverse(allEntries).Select(e => e.Content))
             : "No changelog entries found.";
         _chatContainer.AddChild(new Spacer(1));
         _chatContainer.AddChild(new DynamicBorder());
@@ -1746,10 +1746,10 @@ public sealed partial class InteractiveMode
             "",
             "=== All rendered lines with visible widths ===",
         };
-        lines.AddRange(allLines.Select((line, idx) => $"[{idx}] (w={TextUtils.VisibleWidth(line)}) {PiJson.Stringify(JsonValueOf(line))}"));
+        lines.AddRange(allLines.Select((line, idx) => $"[{idx}] (w={TextUtils.VisibleWidth(line)}) {IrisJson.Stringify(JsonValueOf(line))}"));
         lines.Add("");
         lines.Add("=== Agent messages (JSONL) ===");
-        lines.AddRange(Session.Messages.Select(m => PiJson.Stringify(PiJson.ToNode<Message>(m))));
+        lines.AddRange(Session.Messages.Select(m => IrisJson.Stringify(IrisJson.ToNode<Message>(m))));
         lines.Add("");
         Directory.CreateDirectory(Path.GetDirectoryName(debugLogPath)!);
         File.WriteAllText(debugLogPath, string.Join("\n", lines));

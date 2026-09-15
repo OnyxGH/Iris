@@ -12,7 +12,7 @@ namespace Iris.CodingAgent.Cli;
 
 public sealed class AuthCommandException(string message) : Exception(message);
 
-/// <summary>auth.json reader that never writes or runs command-backed keys. Port of ReadOnlyAuthStorage.</summary>
+/// <summary>auth.json reader that never writes or runs command-backed keys.</summary>
 public sealed class ReadOnlyAuthStorage(string? authPath = null) : ICredentialStore
 {
     private readonly string _authPath = PathUtils.NormalizePath(authPath ?? AppConfig.AuthPath);
@@ -36,15 +36,15 @@ public sealed class ReadOnlyAuthStorage(string? authPath = null) : ICredentialSt
         {
             if (credential is JsonObject value)
             {
-                var type = PiJson.GetString(value["type"]);
+                var type = IrisJson.GetString(value["type"]);
                 if (type == "api_key")
                 {
-                    var validKey = !value.ContainsKey("key") || PiJson.GetString(value["key"]) is not null;
-                    var validEnv = !value.ContainsKey("env") || (value["env"] is JsonObject env && env.All(kv => PiJson.GetString(kv.Value) is not null));
+                    var validKey = !value.ContainsKey("key") || IrisJson.GetString(value["key"]) is not null;
+                    var validEnv = !value.ContainsKey("env") || (value["env"] is JsonObject env && env.All(kv => IrisJson.GetString(kv.Value) is not null));
                     if (validKey && validEnv) continue;
                 }
-                else if (type == "oauth" && PiJson.GetString(value["access"]) is not null && PiJson.GetString(value["refresh"]) is not null
-                    && PiJson.GetNumber(value["expires"]) is { } expires && double.IsFinite(expires))
+                else if (type == "oauth" && IrisJson.GetString(value["access"]) is not null && IrisJson.GetString(value["refresh"]) is not null
+                    && IrisJson.GetNumber(value["expires"]) is { } expires && double.IsFinite(expires))
                 {
                     continue;
                 }
@@ -69,7 +69,7 @@ public sealed class ReadOnlyAuthStorage(string? authPath = null) : ICredentialSt
     public Task<IReadOnlyList<CredentialInfo>> ListAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        IReadOnlyList<CredentialInfo> list = Load().Select(kv => new CredentialInfo(kv.Key, PiJson.GetString(kv.Value?["type"]) ?? "")).ToList();
+        IReadOnlyList<CredentialInfo> list = Load().Select(kv => new CredentialInfo(kv.Key, IrisJson.GetString(kv.Value?["type"]) ?? "")).ToList();
         return Task.FromResult(list);
     }
 
@@ -80,7 +80,7 @@ public sealed class ReadOnlyAuthStorage(string? authPath = null) : ICredentialSt
         throw new InvalidOperationException("Read-only credential storage cannot modify auth.json");
 }
 
-/// <summary>`iris auth check | print-api-key | print-bearer-token`. Port of cli/auth-command.ts, auth-check.ts and credential-print.ts.</summary>
+/// <summary>`iris auth check | print-api-key | print-bearer-token`.</summary>
 public static partial class AuthCommand
 {
     private const long DefaultBearerTokenMinExpiryMs = 30 * 60_000;
@@ -253,7 +253,7 @@ public static partial class AuthCommand
                 if (result.Reason is not null) obj["reason"] = result.Reason;
                 if (result.AuthType is not null) obj["authType"] = result.AuthType;
                 if (printed is not null) obj["credentials"] = printed;
-                output = PiJson.Stringify(obj);
+                output = IrisJson.Stringify(obj);
             }
             else
             {

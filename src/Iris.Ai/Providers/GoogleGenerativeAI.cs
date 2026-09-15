@@ -23,7 +23,7 @@ public sealed class GoogleOptions : StreamOptions
     public GoogleThinkingOptions? Thinking { get; set; }
 }
 
-/// <summary>Shared utilities for Google Generative AI and Vertex. Port of api/google-shared.ts.</summary>
+/// <summary>Shared utilities for Google Generative AI and Vertex.</summary>
 public static class GoogleShared
 {
     private static readonly Regex Base64Signature = new("^[A-Za-z0-9+/]+={0,2}$", RegexOptions.Compiled);
@@ -33,7 +33,7 @@ public static class GoogleShared
     private static readonly HashSet<string> JsonSchemaMetaDeclarations =
         ["$schema", "$id", "$anchor", "$dynamicAnchor", "$vocabulary", "$comment", "$defs", "definitions"];
 
-    /// <summary>Resolve a pi level (or model mapping) to minimal/low/medium/high.</summary>
+    /// <summary>Resolve a thinking level (or model mapping) to minimal/low/medium/high.</summary>
     public static string ResolveThinkingLevel(Model model, ThinkingLevel level)
     {
         if (level == ThinkingLevel.Off) return "high";
@@ -253,7 +253,7 @@ public static class GoogleShared
     };
 }
 
-/// <summary>Google Generative AI (Gemini API) streaming adapter. Port of api/google-generative-ai.ts.</summary>
+/// <summary>Google Generative AI (Gemini API) streaming adapter.</summary>
 public sealed class GoogleGenerativeAIApi : IApiStreams
 {
     public static readonly GoogleGenerativeAIApi Instance = new();
@@ -310,7 +310,7 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
 
     private static string? Str(JsonObject? obj, string name) => obj?[name] is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
-    private static long Long(JsonObject? obj, string name) => obj?[name] is JsonValue v && PiJson.TryGetNumber(v, out var d) ? (long)d : 0;
+    private static long Long(JsonObject? obj, string name) => obj?[name] is JsonValue v && IrisJson.TryGetNumber(v, out var d) ? (long)d : 0;
 
     private static async Task RunAsync(Model model, Context context, GoogleOptions options, AssistantMessageEventStream stream)
     {
@@ -332,7 +332,7 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
             var (url, body) = ToRestRequest(model, (JsonObject)payload);
             var headers = ProviderHttp.MergeHeaders(
                 new Dictionary<string, string?> { ["x-goog-api-key"] = apiKey, ["Content-Type"] = "application/json" },
-                new Dictionary<string, string?> { ["User-Agent"] = PiUserAgent.Get() },
+                new Dictionary<string, string?> { ["User-Agent"] = IrisUserAgent.Get() },
                 ProviderHttp.AsNullable(model.Headers),
                 options.Headers);
 
@@ -357,7 +357,7 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
                 if (chunk["error"] is JsonObject errorObj)
                 {
                     var code = Long(errorObj, "code");
-                    var msg = $"got status: {Str(errorObj, "status")}. {PiJson.Stringify(chunk)}";
+                    var msg = $"got status: {Str(errorObj, "status")}. {IrisJson.Stringify(chunk)}";
                     throw new ProviderHttpException(code is >= 400 and < 600 ? (int)code : null, null, msg);
                 }
 
@@ -421,7 +421,7 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
                             };
                             output.Content.Add(toolCall);
                             stream.Push(new ToolCallStartEvent(BlockIndex(), output));
-                            stream.Push(new ToolCallDeltaEvent(BlockIndex(), PiJson.Stringify(toolCall.Arguments), output));
+                            stream.Push(new ToolCallDeltaEvent(BlockIndex(), IrisJson.Stringify(toolCall.Arguments), output));
                             stream.Push(new ToolCallEndEvent(BlockIndex(), toolCall, output));
                         }
                     }
@@ -487,8 +487,8 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
             {
             }
             var message = parsed is not null
-                ? PiJson.Stringify(parsed)
-                : PiJson.Stringify(new JsonObject { ["error"] = new JsonObject { ["message"] = http.RawBody ?? "", ["code"] = http.Status } });
+                ? IrisJson.Stringify(parsed)
+                : IrisJson.Stringify(new JsonObject { ["error"] = new JsonObject { ["message"] = http.RawBody ?? "", ["code"] = http.Status } });
             throw new ProviderHttpException(http.Status, http.Headers, message);
         }
     }

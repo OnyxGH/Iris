@@ -27,7 +27,6 @@ public sealed class EditAccessException(string code) : IOException(code)
     public string Code { get; } = code;
 }
 
-/// <summary>Port of core/tools/edit.ts.</summary>
 public static class EditTool
 {
     public const string Snippet = "Make precise file edits with exact text replacement, including multiple disjoint edits in one call";

@@ -5,7 +5,7 @@ namespace Iris.Tui;
 
 /// <summary>
 /// Keyboard input parsing for legacy terminal sequences, xterm modifyOtherKeys and the Kitty keyboard protocol. Key ids
-/// look like "ctrl+c", "shift+tab", "alt+enter". Port of pi-tui keys.ts.
+/// look like "ctrl+c", "shift+tab", "alt+enter".
 /// </summary>
 public static partial class Keys
 {
@@ -503,7 +503,7 @@ public sealed record KeybindingDefinition(IReadOnlyList<string> DefaultKeys, str
 
 public sealed record KeybindingConflict(string Key, IReadOnlyList<string> Keybindings);
 
-/// <summary>Keybinding registry with user overrides. Port of pi-tui keybindings.ts.</summary>
+/// <summary>Keybinding registry with user overrides.</summary>
 public sealed class KeybindingsManager
 {
     public static readonly IReadOnlyDictionary<string, KeybindingDefinition> TuiKeybindings = new Dictionary<string, KeybindingDefinition>
@@ -608,7 +608,7 @@ public sealed class KeybindingsManager
 
     public IReadOnlyList<string> GetKeys(string keybinding) => _keysById.TryGetValue(keybinding, out var keys) ? [.. keys] : [];
 
-    /// <summary>Effective keys for every definition (pi-tui getResolvedBindings).</summary>
+    /// <summary>Effective keys for every definition.</summary>
     public Dictionary<string, IReadOnlyList<string>> GetResolvedBindings() => _keysById.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<string>)[.. kv.Value]);
 
     public KeybindingDefinition? GetDefinition(string keybinding) => _definitions.GetValueOrDefault(keybinding);

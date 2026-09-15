@@ -6,8 +6,8 @@ using Iris.CodingAgent.Core.Tools;
 namespace Iris.CodingAgent.Core.Extensions;
 
 /// <summary>
-/// An extension event. pi's extension events are a large discriminated union; until the Iris extension model is
-/// designed they are carried as a type name plus named payload values mirroring pi's field names.
+/// An extension event. Until the Iris extension model is designed, events are carried as a type name plus named
+/// payload values.
 /// </summary>
 public sealed record ExtensionEvent(string Type, IReadOnlyDictionary<string, object?>? Data = null)
 {
@@ -39,7 +39,7 @@ public sealed record DiscoveredResourcePath(string Path, string ExtensionPath);
 public sealed record ResourcesDiscoverResult(List<DiscoveredResourcePath> SkillPaths, List<DiscoveredResourcePath> PromptPaths, List<DiscoveredResourcePath> ThemePaths);
 
 /// <summary>
-/// The surface AgentSession uses to talk to loaded extensions (port of the ExtensionRunner calls in agent-session.ts).
+/// The surface AgentSession uses to talk to loaded extensions.
 /// </summary>
 public interface IExtensionRunner
 {

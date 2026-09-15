@@ -3,7 +3,7 @@ using Iris.Ai.Utils;
 
 namespace Iris.Ai.Providers;
 
-/// <summary>Shared helpers for building provider options from SimpleStreamOptions. Port of api/simple-options.ts.</summary>
+/// <summary>Shared helpers for building provider options from SimpleStreamOptions.</summary>
 public static class SimpleOptions
 {
     private const long ContextSafetyTokens = 4096;
@@ -70,6 +70,6 @@ public static class SimpleOptions
     public static CacheRetention ResolveCacheRetention(CacheRetention? cacheRetention, IReadOnlyDictionary<string, string>? env)
     {
         if (cacheRetention is not null) return cacheRetention.Value;
-        return ProviderEnv.Get("PI_CACHE_RETENTION", env) == "long" ? CacheRetention.Long : CacheRetention.Short;
+        return ProviderEnv.Get("IRIS_CACHE_RETENTION", env) == "long" ? CacheRetention.Long : CacheRetention.Short;
     }
 }

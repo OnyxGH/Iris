@@ -62,7 +62,6 @@ public sealed class DefaultResourceLoaderOptions
     public Func<List<string>, List<string>>? AppendSystemPromptOverride { get; init; }
 }
 
-/// <summary>Port of core/resource-loader.ts (without the extension runtime).</summary>
 public sealed class DefaultResourceLoader : IResourceLoader
 {
     private static readonly string[] ContextFileCandidates = ["AGENTS.override.md", "AGENTS.md", "AGENTS.MD", "CLAUDE.md", "CLAUDE.MD"];

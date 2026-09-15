@@ -5,7 +5,7 @@ namespace Iris.CodingAgent.Utils;
 
 public sealed record ParsedFrontmatter(JsonObject Frontmatter, string Body);
 
-/// <summary>YAML frontmatter parsing. Port of utils/frontmatter.ts.</summary>
+/// <summary>YAML frontmatter parsing.</summary>
 public static class Frontmatter
 {
     private static string NormalizeNewlines(string value) => value.Replace("\r\n", "\n").Replace('\r', '\n');

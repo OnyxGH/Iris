@@ -83,7 +83,7 @@ public static class ProviderHttp
         ProviderErrorStyle errorStyle,
         CancellationToken cancellationToken)
     {
-        var payload = PiJson.Stringify(body);
+        var payload = IrisJson.Stringify(body);
         var maxRetries = options?.MaxRetries ?? 0;
         var retriesRemaining = maxRetries;
         var client = options?.HttpClient ?? Client;

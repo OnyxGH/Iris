@@ -18,7 +18,7 @@ public sealed class ModelsStoreEntry
     /// <summary>Opaque validator from the remote catalog's ETag header, stored verbatim.</summary>
     public string? Etag { get; set; }
 
-    public ModelsStoreEntry Clone() => PiJson.Deserialize<ModelsStoreEntry>(PiJson.Serialize(this))!;
+    public ModelsStoreEntry Clone() => IrisJson.Deserialize<ModelsStoreEntry>(IrisJson.Serialize(this))!;
 }
 
 /// <summary>Persistent model catalogs keyed by provider id.</summary>
@@ -118,7 +118,7 @@ public sealed class CreateProviderOptions
     public IReadOnlyDictionary<string, IApiStreams>? ApiByName { get; init; }
 }
 
-/// <summary>Provider built from parts (createProvider in pi-ai).</summary>
+/// <summary>Provider built from parts.</summary>
 public sealed class ComposedProvider : IProvider
 {
     private readonly CreateProviderOptions _input;

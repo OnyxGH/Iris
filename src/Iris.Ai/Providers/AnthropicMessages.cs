@@ -36,7 +36,7 @@ internal sealed record ResolvedAnthropicCompat(
     bool SupportsStrictTools,
     bool SupportsToolReferences);
 
-/// <summary>Anthropic Messages streaming adapter. Port of api/anthropic-messages.ts.</summary>
+/// <summary>Anthropic Messages streaming adapter.</summary>
 public sealed class AnthropicMessagesApi : IApiStreams
 {
     public static readonly AnthropicMessagesApi Instance = new();
@@ -465,7 +465,7 @@ public sealed class AnthropicMessagesApi : IApiStreams
 
     private static string? Str(JsonObject? obj, string name) => obj?[name] is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
-    private static long? Long(JsonObject? obj, string name) => obj?[name] is JsonValue v && PiJson.TryGetNumber(v, out var d) ? (long)d : null;
+    private static long? Long(JsonObject? obj, string name) => obj?[name] is JsonValue v && IrisJson.TryGetNumber(v, out var d) ? (long)d : null;
 
     private static (Dictionary<string, string> Headers, bool IsOAuth) BuildHeaders(Model model, Context context, string? apiKey, IReadOnlyDictionary<string, string?>? optionsHeaders, string? sessionId)
     {
@@ -482,7 +482,7 @@ public sealed class AnthropicMessagesApi : IApiStreams
             if (!string.IsNullOrEmpty(apiKey)) auth["Authorization"] = $"Bearer {apiKey}";
             return (ProviderHttp.MergeHeaders(
                 sdkDefaults, auth,
-                new Dictionary<string, string?> { ["User-Agent"] = PiUserAgent.Get() },
+                new Dictionary<string, string?> { ["User-Agent"] = IrisUserAgent.Get() },
                 new Dictionary<string, string?> { ["accept"] = "application/json", ["anthropic-dangerous-direct-browser-access"] = "true" },
                 ProviderHttp.AsNullable(model.Headers),
                 dynamicHeaders.ToDictionary(kv => kv.Key, kv => (string?)kv.Value),
@@ -494,7 +494,7 @@ public sealed class AnthropicMessagesApi : IApiStreams
             return (ProviderHttp.MergeHeaders(
                 sdkDefaults,
                 new Dictionary<string, string?> { ["Authorization"] = $"Bearer {apiKey}" },
-                new Dictionary<string, string?> { ["User-Agent"] = PiUserAgent.Get() },
+                new Dictionary<string, string?> { ["User-Agent"] = IrisUserAgent.Get() },
                 new Dictionary<string, string?>
                 {
                     ["accept"] = "application/json",
@@ -516,7 +516,7 @@ public sealed class AnthropicMessagesApi : IApiStreams
         if (!string.IsNullOrEmpty(apiKey)) keyHeader["x-api-key"] = apiKey;
         return (ProviderHttp.MergeHeaders(
             sdkDefaults, keyHeader,
-            new Dictionary<string, string?> { ["User-Agent"] = PiUserAgent.Get() },
+            new Dictionary<string, string?> { ["User-Agent"] = IrisUserAgent.Get() },
             new Dictionary<string, string?> { ["accept"] = "application/json", ["anthropic-dangerous-direct-browser-access"] = "true" },
             affinity,
             ProviderHttp.AsNullable(model.Headers),

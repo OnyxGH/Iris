@@ -6,7 +6,7 @@ using Iris.Ai.Models;
 
 namespace Iris.Ai.Providers;
 
-/// <summary>Generated built-in model catalog (embedded copies of pi-ai's providers/data/*.json).</summary>
+/// <summary>Generated built-in model catalog (embedded Providers/Data/*.json).</summary>
 public static class BuiltinCatalog
 {
     private static readonly Lazy<Dictionary<string, IReadOnlyList<Model>>> Catalog = new(Load);
@@ -30,7 +30,7 @@ public static class BuiltinCatalog
                 if (group is not JsonObject groupObj) continue;
                 foreach (var (_, modelNode) in groupObj)
                 {
-                    if (modelNode is JsonObject) models.Add(PiJson.Deserialize<Model>(modelNode)!);
+                    if (modelNode is JsonObject) models.Add(IrisJson.Deserialize<Model>(modelNode)!);
                 }
             }
             result[provider] = models;
@@ -61,7 +61,7 @@ public static class BuiltinCatalog
         Catalog.Value.TryGetValue(provider, out var models) ? models.FirstOrDefault(m => m.Id == modelId)?.Clone() : null;
 }
 
-/// <summary>Built-in provider factories. Port of pi-ai providers/*.ts.</summary>
+/// <summary>Built-in provider factories.</summary>
 public static class BuiltinProviders
 {
     private static IApiStreams Api(string api) => ApiRegistry.BuiltinApis[api];

@@ -31,7 +31,7 @@ public interface IAutocompleteProvider
     bool ShouldTriggerFileCompletion(IReadOnlyList<string> lines, int cursorLine, int cursorCol) => true;
 }
 
-/// <summary>Slash command and file path completion. Port of pi-tui CombinedAutocompleteProvider.</summary>
+/// <summary>Slash command and file path completion.</summary>
 public sealed partial class CombinedAutocompleteProvider : IAutocompleteProvider
 {
     private static readonly HashSet<char> PathDelimiters = [' ', '\t', '"', '\'', '='];

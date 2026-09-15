@@ -6,7 +6,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>Titled select list submenu with optional fuzzy search. Port of settings-submenu.ts SelectSubmenu.</summary>
+/// <summary>Titled select list submenu with optional fuzzy search.</summary>
 public sealed class SelectSubmenu : Container, IInputComponent
 {
     private static readonly SelectListLayoutOptions DefaultLayout = new() { MinPrimaryColumnWidth = 12, MaxPrimaryColumnWidth = 32 };
@@ -99,7 +99,7 @@ public sealed class SteppedSubmenuStep
     public SelectListLayoutOptions? Layout { get; init; }
 }
 
-/// <summary>Multi-step submenu. Port of settings-submenu.ts SteppedSubmenu.</summary>
+/// <summary>Multi-step submenu.</summary>
 public sealed class SteppedSubmenu : Container, IInputComponent
 {
     private readonly List<SteppedSubmenuStep> _steps;
@@ -249,7 +249,7 @@ public sealed class SettingsCallbacks
     public required Action OnCancel { get; init; }
 }
 
-/// <summary>/settings selector. Port of settings-selector.ts.</summary>
+/// <summary>/settings selector.</summary>
 public sealed class SettingsSelectorComponent : Container, IInputComponent
 {
     public static readonly (string Label, long TimeoutMs)[] HttpIdleTimeoutChoices = [("30 sec", 30_000), ("1 min", 60_000), ("2 min", 120_000), ("5 min", 300_000), ("disabled", 0)];
@@ -286,7 +286,7 @@ public sealed class SettingsSelectorComponent : Container, IInputComponent
             _state = (JsonObject)warnings.DeepClone();
             var items = new List<SettingItem>
             {
-                new() { Id = "anthropic-extra-usage", Label = "Anthropic extra usage", Description = "Warn when Anthropic subscription auth may use paid extra usage", CurrentValue = (PiJson.GetBool(_state["anthropicExtraUsage"]) ?? true) ? "true" : "false", Values = ["true", "false"] },
+                new() { Id = "anthropic-extra-usage", Label = "Anthropic extra usage", Description = "Warn when Anthropic subscription auth may use paid extra usage", CurrentValue = (IrisJson.GetBool(_state["anthropicExtraUsage"]) ?? true) ? "true" : "false", Values = ["true", "false"] },
             };
             _list = new SettingsList(items, Math.Min(items.Count, 10), ThemeManager.GetSettingsListTheme(), (id, value) =>
             {

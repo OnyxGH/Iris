@@ -11,7 +11,7 @@ public sealed class PathInputOptions
     public bool NormalizeUnicodeSpaces { get; init; }
 }
 
-/// <summary>Path normalization helpers. Port of utils/paths.ts.</summary>
+/// <summary>Path normalization helpers.</summary>
 public static partial class PathUtils
 {
     [GeneratedRegex("[\\u00A0\\u2000-\\u200A\\u202F\\u205F\\u3000]")]

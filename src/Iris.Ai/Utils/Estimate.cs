@@ -4,7 +4,7 @@ namespace Iris.Ai.Utils;
 
 public sealed record ContextUsageEstimate(long Tokens, long UsageTokens, long TrailingTokens, int? LastUsageIndex);
 
-/// <summary>Heuristic token estimation. Port of pi-ai utils/estimate.ts.</summary>
+/// <summary>Heuristic token estimation.</summary>
 public static class Estimate
 {
     private const int CharsPerToken = 4;
@@ -46,7 +46,7 @@ public static class Estimate
                     {
                         TextContent t => t.Text.Length,
                         ThinkingContent th => th.Thinking.Length,
-                        ToolCall tc => tc.Name.Length + PiJson.Stringify(tc.Arguments).Length,
+                        ToolCall tc => tc.Name.Length + IrisJson.Stringify(tc.Arguments).Length,
                         _ => 0,
                     };
                 }
@@ -100,7 +100,7 @@ public static class Estimate
     {
         var list = tools?.ToList();
         if (list is null || list.Count == 0) return 0;
-        return EstimateTextTokens(PiJson.Serialize(list));
+        return EstimateTextTokens(IrisJson.Serialize(list));
     }
 
     public static ContextUsageEstimate EstimateContextTokens(Context context)

@@ -50,7 +50,7 @@ public sealed record ShellToolConfig(
     IReadOnlyList<string>? PromptGuidelines,
     string TempFilePrefix);
 
-/// <summary>Local process execution shared by the built-in shell tools. Port of createLocalShellOperations.</summary>
+/// <summary>Local process execution shared by the built-in shell tools.</summary>
 public sealed class LocalShellOperations(string shellName, Func<ShellConfig> resolveShellConfig, string commandPrefix = "") : IBashOperations
 {
     private const long MaxTimeoutMs = 2_147_483_647;
@@ -180,7 +180,6 @@ public sealed class LocalShellOperations(string shellName, Func<ShellConfig> res
     }
 }
 
-/// <summary>Port of core/tools/bash.ts and powershell.ts.</summary>
 public static class ShellTool
 {
     public const int UpdateThrottleMs = 100;
@@ -189,20 +188,20 @@ public static class ShellTool
         "bash", "bash", "bash", "$",
         "Execute bash commands (ls, grep, find, etc.)",
         ["You can inspect PI_* environment variables for current model and session details."],
-        "pi-bash");
+        "iris-bash");
 
     public static readonly ShellToolConfig PowerShellConfig = new(
         "powershell", "powershell", "PowerShell", "PS>",
         "Execute PowerShell commands",
         ["You can inspect PI_* environment variables for current model and session details."],
-        "pi-powershell");
+        "iris-powershell");
 
     private static readonly JsonObject Schema = ToolSchema.Object([
         ("command", ToolSchema.String("Shell command to execute"), false),
         ("timeout", ToolSchema.Number("Timeout in seconds (optional, no default timeout)"), true),
     ]);
 
-    private static readonly string[] SessionEnvKeys = ["PI_SESSION_ID", "PI_SESSION_FILE", "PI_PROVIDER", "PI_MODEL", "PI_REASONING_LEVEL"];
+    private static readonly string[] SessionEnvKeys = ["IRIS_SESSION_ID", "IRIS_SESSION_FILE", "IRIS_PROVIDER", "IRIS_MODEL", "IRIS_REASONING_LEVEL"];
 
     private static BashSpawnContext ResolveSpawnContext(string command, string cwd, BashToolOptions options, ExtensionContext? ctx)
     {
@@ -212,15 +211,15 @@ public static class ShellTool
         {
             if (ctx.SessionManager is { } sessionManager)
             {
-                env["PI_SESSION_ID"] = sessionManager.SessionId;
-                if (!string.IsNullOrEmpty(sessionManager.SessionFile)) env["PI_SESSION_FILE"] = sessionManager.SessionFile;
+                env["IRIS_SESSION_ID"] = sessionManager.SessionId;
+                if (!string.IsNullOrEmpty(sessionManager.SessionFile)) env["IRIS_SESSION_FILE"] = sessionManager.SessionFile;
             }
             if (ctx.Model is { } model)
             {
-                env["PI_PROVIDER"] = model.Provider;
-                env["PI_MODEL"] = model.Id;
+                env["IRIS_PROVIDER"] = model.Provider;
+                env["IRIS_MODEL"] = model.Id;
             }
-            if (ctx.ThinkingLevel is { } level) env["PI_REASONING_LEVEL"] = ThinkingLevels.ToWire(level);
+            if (ctx.ThinkingLevel is { } level) env["IRIS_REASONING_LEVEL"] = ThinkingLevels.ToWire(level);
         }
         var baseContext = new BashSpawnContext(command, cwd, env);
         return options.SpawnHook is null ? baseContext : options.SpawnHook(baseContext);

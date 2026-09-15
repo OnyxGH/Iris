@@ -61,7 +61,9 @@ internal sealed class FakeTerminal : ITerminal
 /// <summary>Byte-level parity with pi-tui, using fixtures generated from the real package (gen-tui-fixtures.mjs).</summary>
 public class TuiParityTests
 {
-    private static JsonNode Fixtures { get; } = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "tui.json")))!;
+    // Fixtures were generated with pi's cursor marker; Iris uses its own marker sequence.
+    private static JsonNode Fixtures { get; } = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "tui.json"))
+        .Replace(@"\u001b_pi:c\u0007", System.Text.Json.JsonEncodedText.Encode(TuiBase.CursorMarker).ToString()))!;
 
     static TuiParityTests() => TerminalImage.SetCapabilities(new TerminalCapabilities(null, true, false));
 

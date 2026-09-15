@@ -42,7 +42,7 @@ public sealed class MarkdownOptions
     public bool RenderLatex { get; init; } = true;
 }
 
-/// <summary>Markdown renderer for terminal output. Port of pi-tui Markdown.</summary>
+/// <summary>Markdown renderer for terminal output.</summary>
 public sealed partial class MarkdownComponent : IComponent
 {
     private sealed record InlineStyleContext(Func<string, string> ApplyText, string StylePrefix);
@@ -697,7 +697,7 @@ public sealed class ImageOptions
     public int? ImageId { get; init; }
 }
 
-/// <summary>Inline terminal image with text fallback. Port of pi-tui Image.</summary>
+/// <summary>Inline terminal image with text fallback.</summary>
 public sealed class ImageComponent : IComponent
 {
     private readonly string _base64Data;

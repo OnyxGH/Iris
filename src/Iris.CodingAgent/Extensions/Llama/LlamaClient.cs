@@ -31,32 +31,32 @@ public sealed class LlamaModelInfo
 
     public static LlamaModelInfo? FromJson(JsonNode? node)
     {
-        if (node is not JsonObject obj || PiJson.GetString(obj["id"]) is not { } id) return null;
-        if (obj["status"] is not JsonObject status || PiJson.GetString(status["value"]) is not { } value) return null;
+        if (node is not JsonObject obj || IrisJson.GetString(obj["id"]) is not { } id) return null;
+        if (obj["status"] is not JsonObject status || IrisJson.GetString(status["value"]) is not { } value) return null;
         var meta = obj["meta"] as JsonObject;
         return new LlamaModelInfo
         {
             Id = id,
-            Aliases = (obj["aliases"] as JsonArray)?.Select(PiJson.GetString).OfType<string>().ToList(),
+            Aliases = (obj["aliases"] as JsonArray)?.Select(IrisJson.GetString).OfType<string>().ToList(),
             Status = new LlamaModelStatus
             {
                 Value = value,
-                Args = (status["args"] as JsonArray)?.Select(PiJson.GetString).OfType<string>().ToList(),
-                Failed = PiJson.GetBool(status["failed"]) == true,
-                ExitCode = PiJson.GetNumber(status["exit_code"]) is { } code ? (int)code : null,
+                Args = (status["args"] as JsonArray)?.Select(IrisJson.GetString).OfType<string>().ToList(),
+                Failed = IrisJson.GetBool(status["failed"]) == true,
+                ExitCode = IrisJson.GetNumber(status["exit_code"]) is { } code ? (int)code : null,
                 Progress = status["progress"] as JsonObject,
             },
-            InputModalities = ((obj["architecture"] as JsonObject)?["input_modalities"] as JsonArray)?.Select(PiJson.GetString).OfType<string>().ToList(),
-            Source = PiJson.GetString(obj["source"]),
-            ContextSize = PiJson.GetNumber(meta?["n_ctx"]) is { } nCtx ? (long)nCtx : null,
-            TrainContextSize = PiJson.GetNumber(meta?["n_ctx_train"]) is { } nTrain ? (long)nTrain : null,
+            InputModalities = ((obj["architecture"] as JsonObject)?["input_modalities"] as JsonArray)?.Select(IrisJson.GetString).OfType<string>().ToList(),
+            Source = IrisJson.GetString(obj["source"]),
+            ContextSize = IrisJson.GetNumber(meta?["n_ctx"]) is { } nCtx ? (long)nCtx : null,
+            TrainContextSize = IrisJson.GetNumber(meta?["n_ctx_train"]) is { } nTrain ? (long)nTrain : null,
         };
     }
 }
 
 public sealed record LlamaProgress(string Message, double? Ratio = null, string? Detail = null);
 
-/// <summary>llama.cpp router-mode HTTP client. Port of extensions/llama/client.ts.</summary>
+/// <summary>llama.cpp router-mode HTTP client.</summary>
 public sealed class LlamaClient
 {
     private const int RequestTimeoutMs = 15_000;
@@ -98,7 +98,7 @@ public sealed class LlamaClient
     }
 
     private static string ErrorMessage(JsonNode? payload, string fallback) =>
-        PiJson.GetString((payload as JsonObject)?["error"]?["message"]) is { Length: > 0 } message ? message : fallback;
+        IrisJson.GetString((payload as JsonObject)?["error"]?["message"]) is { Length: > 0 } message ? message : fallback;
 
     private HttpRequestMessage CreateRequest(HttpMethod method, string path, JsonNode? body = null)
     {
@@ -150,7 +150,7 @@ public sealed class LlamaClient
     public async Task<bool?> GetModelsAutoloadAsync(CancellationToken ct = default)
     {
         var payload = await RequestAsync(HttpMethod.Get, "/props", null, ct);
-        return PiJson.GetBool((payload as JsonObject)?["models_autoload"]);
+        return IrisJson.GetBool((payload as JsonObject)?["models_autoload"]);
     }
 
     public Task LoadAsync(string model, CancellationToken ct = default) => RequestAsync(HttpMethod.Post, "/models/load", new JsonObject { ["model"] = model }, ct);
@@ -185,7 +185,7 @@ public sealed class LlamaClient
                 {
                     try
                     {
-                        if (JsonNode.Parse(data.ToString()) is JsonObject evt && PiJson.GetString(evt["model"]) is { } model && PiJson.GetString(evt["event"]) is { } name)
+                        if (JsonNode.Parse(data.ToString()) is JsonObject evt && IrisJson.GetString(evt["model"]) is { } model && IrisJson.GetString(evt["event"]) is { } name)
                         {
                             onEvent(model, name, evt["data"]);
                         }
@@ -209,9 +209,9 @@ public sealed class LlamaClient
     private static LlamaProgress? ParseLoadProgress(JsonNode? data)
     {
         if ((data as JsonObject)?["progress"] is not JsonObject progress) return null;
-        var stage = PiJson.GetString(progress["current"]) ?? PiJson.GetString(progress["stage"]);
-        var stages = (progress["stages"] as JsonArray)?.Select(PiJson.GetString).OfType<string>().ToList() ?? [];
-        double? stageRatio = PiJson.GetNumber(progress["value"]) is { } v ? Math.Clamp(v, 0, 1) : null;
+        var stage = IrisJson.GetString(progress["current"]) ?? IrisJson.GetString(progress["stage"]);
+        var stages = (progress["stages"] as JsonArray)?.Select(IrisJson.GetString).OfType<string>().ToList() ?? [];
+        double? stageRatio = IrisJson.GetNumber(progress["value"]) is { } v ? Math.Clamp(v, 0, 1) : null;
         var ratio = stageRatio;
         if (stage is not null && stages.Count > 0)
         {
@@ -229,7 +229,7 @@ public sealed class LlamaClient
         _ = WatchAsync((eventModel, name, data) =>
         {
             if (eventModel != model || name is not ("model_status" or "status_change")) return;
-            var status = PiJson.GetString((data as JsonObject)?["status"]);
+            var status = IrisJson.GetString((data as JsonObject)?["status"]);
             if (status == "loaded") eventLoaded = true;
             if (status == "unloaded") eventError = "Model failed to load";
             if (ParseLoadProgress(data) is { } progress) onProgress(progress);

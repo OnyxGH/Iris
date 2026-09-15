@@ -5,7 +5,7 @@ using Iris.Tui;
 
 namespace Iris.CodingAgent.Core;
 
-/// <summary>Coding-agent keybinding definitions and keybindings.json loading. Port of core/keybindings.ts.</summary>
+/// <summary>Coding-agent keybinding definitions and keybindings.json loading.</summary>
 public static class AppKeybindings
 {
     public static bool UseWindowsKeybindings() =>

@@ -49,7 +49,7 @@ public sealed class SessionInfo
 }
 
 /// <summary>
-/// Manages conversation sessions as append-only trees stored in JSONL files. Port of core/session-manager.ts.
+/// Manages conversation sessions as append-only trees stored in JSONL files.
 /// </summary>
 public sealed partial class SessionManager
 {
@@ -107,7 +107,7 @@ public sealed partial class SessionManager
         return Guid.NewGuid().ToString();
     }
 
-    public static string SerializeEntry(FileEntry entry) => JsonSerializer.Serialize(entry, typeof(FileEntry), PiJson.Options);
+    public static string SerializeEntry(FileEntry entry) => JsonSerializer.Serialize(entry, typeof(FileEntry), IrisJson.Options);
 
     public static FileEntry? ParseEntryLine(string line)
     {
@@ -126,8 +126,8 @@ public sealed partial class SessionManager
 
     private static List<FileEntry> MigrateRaw(List<JsonObject> raw)
     {
-        var header = raw.FirstOrDefault(e => PiJson.GetString(e["type"]) == "session");
-        var version = PiJson.GetLong(header?["version"]) ?? 1;
+        var header = raw.FirstOrDefault(e => IrisJson.GetString(e["type"]) == "session");
+        var version = IrisJson.GetLong(header?["version"]) ?? 1;
         if (version >= CurrentSessionVersion) return raw.Select(o => FileEntryJsonConverter.FromObject(o)).ToList();
 
         if (version < 2)
@@ -136,7 +136,7 @@ public sealed partial class SessionManager
             string? prevId = null;
             foreach (var entry in raw)
             {
-                if (PiJson.GetString(entry["type"]) == "session")
+                if (IrisJson.GetString(entry["type"]) == "session")
                 {
                     entry["version"] = 2;
                     continue;
@@ -149,10 +149,10 @@ public sealed partial class SessionManager
             }
             foreach (var entry in raw)
             {
-                if (PiJson.GetString(entry["type"]) != "compaction") continue;
-                if (PiJson.GetLong(entry["firstKeptEntryIndex"]) is { } index)
+                if (IrisJson.GetString(entry["type"]) != "compaction") continue;
+                if (IrisJson.GetLong(entry["firstKeptEntryIndex"]) is { } index)
                 {
-                    if (index >= 0 && index < raw.Count && PiJson.GetString(raw[(int)index]["type"]) != "session")
+                    if (index >= 0 && index < raw.Count && IrisJson.GetString(raw[(int)index]["type"]) != "session")
                     {
                         entry["firstKeptEntryId"] = raw[(int)index]["id"]?.DeepClone();
                     }
@@ -164,12 +164,12 @@ public sealed partial class SessionManager
         {
             foreach (var entry in raw)
             {
-                if (PiJson.GetString(entry["type"]) == "session")
+                if (IrisJson.GetString(entry["type"]) == "session")
                 {
                     entry["version"] = 3;
                     continue;
                 }
-                if (PiJson.GetString(entry["type"]) == "message" && entry["message"] is JsonObject message && PiJson.GetString(message["role"]) == "hookMessage")
+                if (IrisJson.GetString(entry["type"]) == "message" && entry["message"] is JsonObject message && IrisJson.GetString(message["role"]) == "hookMessage")
                 {
                     message["role"] = "custom";
                 }
@@ -208,13 +208,13 @@ public sealed partial class SessionManager
         var raw = ParseRawLines(content.Split('\n'));
         if (raw.Count == 0) return (raw, false);
         var header = raw[0];
-        if (PiJson.GetString(header["type"]) != "session" || PiJson.GetString(header["id"]) is null) return ([], false);
+        if (IrisJson.GetString(header["type"]) != "session" || IrisJson.GetString(header["id"]) is null) return ([], false);
         if (content.Length > 0 && !content.EndsWith('\n'))
         {
             var lastLine = content[(content.LastIndexOf('\n') + 1)..];
             if (lastLine.Length > 0) File.AppendAllText(resolved, "\n");
         }
-        var version = PiJson.GetLong(header["version"]) ?? 1;
+        var version = IrisJson.GetLong(header["version"]) ?? 1;
         return (raw, version < CurrentSessionVersion);
     }
 

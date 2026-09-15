@@ -22,7 +22,7 @@ public sealed class CompactionResult
     public long? EstimatedTokensAfter { get; init; }
     public Usage? Usage { get; init; }
 
-    /// <summary>{ readFiles, modifiedFiles } for pi-generated compactions; extension-specific otherwise.</summary>
+    /// <summary>{ readFiles, modifiedFiles } for built-in compactions; extension-specific otherwise.</summary>
     public JsonNode? Details { get; init; }
 }
 
@@ -59,7 +59,7 @@ public sealed class SummarizationRequest
     public string? SessionId { get; init; }
 }
 
-/// <summary>Context compaction for long sessions. Port of core/compaction/compaction.ts.</summary>
+/// <summary>Context compaction for long sessions.</summary>
 public static class Compactor
 {
     private const int EstimatedImageChars = 4800;
@@ -349,7 +349,7 @@ public static class Compactor
 
         async Task<AssistantMessage> Produce() => streamFn is not null
             ? await (await streamFn(model, context, requestOptions)).Result()
-            : await PiAi.CompleteSimpleAsync(model, context, requestOptions);
+            : await IrisAi.CompleteSimpleAsync(model, context, requestOptions);
 
         return AssistantRetry.RetryAssistantCallAsync(Produce, retry, requestOptions.CancellationToken, callbacks);
     }
@@ -411,11 +411,11 @@ public static class Compactor
         {
             if (details["readFiles"] is JsonArray read)
             {
-                foreach (var f in read) if (PiJson.GetString(f) is { } s) fileOps.Read.Add(s);
+                foreach (var f in read) if (IrisJson.GetString(f) is { } s) fileOps.Read.Add(s);
             }
             if (details["modifiedFiles"] is JsonArray modified)
             {
-                foreach (var f in modified) if (PiJson.GetString(f) is { } s) fileOps.Edited.Add(s);
+                foreach (var f in modified) if (IrisJson.GetString(f) is { } s) fileOps.Edited.Add(s);
             }
         }
         foreach (var msg in messages) CompactionUtils.ExtractFileOpsFromMessage(msg, fileOps);

@@ -2,7 +2,7 @@ namespace Iris.CodingAgent.Utils;
 
 public sealed record GitPathsInfo(string RepoDir, string CommonGitDir, string HeadPath);
 
-/// <summary>Git repository discovery without spawning git. Port of findGitPaths from core/footer-data-provider.ts.</summary>
+/// <summary>Git repository discovery without spawning git.</summary>
 public static class GitPaths
 {
     public static GitPathsInfo? Find(string cwd)

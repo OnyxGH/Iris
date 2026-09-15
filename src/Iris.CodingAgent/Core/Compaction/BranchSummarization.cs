@@ -19,7 +19,7 @@ public sealed record BranchPreparation(List<Message> Messages, FileOperations Fi
 
 public sealed record CollectEntriesResult(List<SessionEntry> Entries, string? CommonAncestorId);
 
-/// <summary>Summaries of abandoned branches during tree navigation. Port of core/compaction/branch-summarization.ts.</summary>
+/// <summary>Summaries of abandoned branches during tree navigation.</summary>
 public static class BranchSummarization
 {
     private const string BranchSummaryPreamble = "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\n";
@@ -107,11 +107,11 @@ public static class BranchSummarization
             if (entry is not BranchSummaryEntry { FromHook: not true, Details: JsonObject details }) continue;
             if (details["readFiles"] is JsonArray read)
             {
-                foreach (var f in read) if (PiJson.GetString(f) is { } s) fileOps.Read.Add(s);
+                foreach (var f in read) if (IrisJson.GetString(f) is { } s) fileOps.Read.Add(s);
             }
             if (details["modifiedFiles"] is JsonArray modified)
             {
-                foreach (var f in modified) if (PiJson.GetString(f) is { } s) fileOps.Edited.Add(s);
+                foreach (var f in modified) if (IrisJson.GetString(f) is { } s) fileOps.Edited.Add(s);
             }
         }
 

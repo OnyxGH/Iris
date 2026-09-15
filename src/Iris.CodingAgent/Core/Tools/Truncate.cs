@@ -37,7 +37,7 @@ public sealed class TruncationResult
     };
 }
 
-/// <summary>Shared truncation utilities for tool outputs. Port of core/tools/truncate.ts.</summary>
+/// <summary>Shared truncation utilities for tool outputs.</summary>
 public static class Truncate
 {
     public const int DefaultMaxLines = 2000;

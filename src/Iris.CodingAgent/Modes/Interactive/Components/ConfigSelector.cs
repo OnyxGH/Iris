@@ -448,7 +448,7 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
             return rel == "." ? "" : rel;
         }
 
-        private static List<string> StringArray(JsonNode? node) => node is JsonArray arr ? arr.Select(PiJson.GetString).OfType<string>().ToList() : [];
+        private static List<string> StringArray(JsonNode? node) => node is JsonArray arr ? arr.Select(IrisJson.GetString).OfType<string>().ToList() : [];
 
         private static string PatternTarget(string entry) => entry.StartsWith('!') || entry.StartsWith('+') || entry.StartsWith('-') ? entry[1..] : entry;
 

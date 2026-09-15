@@ -14,7 +14,7 @@ public sealed class FileOperations
     // Insertion order is irrelevant: file lists are sorted before use.
 }
 
-/// <summary>Shared utilities for compaction and branch summarization. Port of core/compaction/utils.ts.</summary>
+/// <summary>Shared utilities for compaction and branch summarization.</summary>
 public static class CompactionUtils
 {
     private const int ToolResultMaxChars = 2000;
@@ -29,7 +29,7 @@ public static class CompactionUtils
         if (message is not AssistantMessage assistant) return;
         foreach (var call in assistant.Content.OfType<ToolCall>())
         {
-            if (PiJson.GetString(call.Arguments?["path"]) is not { Length: > 0 } path) continue;
+            if (IrisJson.GetString(call.Arguments?["path"]) is not { Length: > 0 } path) continue;
             switch (call.Name)
             {
                 case "read":
@@ -68,7 +68,7 @@ public static class CompactionUtils
     }
 
     /// <summary>JSON.stringify for tool arguments.</summary>
-    public static string Stringify(JsonNode? node) => node is null ? "null" : PiJson.Stringify(node);
+    public static string Stringify(JsonNode? node) => node is null ? "null" : IrisJson.Stringify(node);
 
     /// <summary>Serialize LLM messages to plain text so the summarizer does not continue the conversation.</summary>
     public static string SerializeConversation(IEnumerable<Message> messages)

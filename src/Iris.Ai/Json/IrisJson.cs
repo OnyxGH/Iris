@@ -9,7 +9,7 @@ namespace Iris.Ai.Json;
 /// Shared JSON settings. Mirrors JavaScript JSON.stringify output as closely as practical:
 /// camelCase names, omitted undefined (null) properties, no HTML escaping.
 /// </summary>
-public static class PiJson
+public static class IrisJson
 {
     public static readonly JsonSerializerOptions Options = CreateOptions(indented: false);
     public static readonly JsonSerializerOptions Indented = CreateOptions(indented: true);
