@@ -8,7 +8,7 @@ using Iris.Tui.Components;
 
 namespace Iris.CodingAgent.Modes.Interactive.Components;
 
-/// <summary>TUI for enabling and disabling package resources (`config` command). Port of components/config-selector.ts.</summary>
+/// <summary>TUI for enabling and disabling extensions, skills, prompts and themes (`config` command).</summary>
 public sealed class ConfigSelectorComponent : Container, IFocusable
 {
     private static readonly string[] ResourceTypes = ["extensions", "skills", "prompts", "themes"];
@@ -109,7 +109,6 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
 
     private static string GetGroupLabel(PathMetadata metadata, string agentDir)
     {
-        if (metadata.Origin == "package") return $"{metadata.Source} ({metadata.Scope})";
         if (metadata.Source == "auto")
         {
             if (metadata.BaseDir is not null) return metadata.Scope == "user" ? $"User ({FormatBaseDir(metadata.BaseDir)})" : $"Project ({FormatBaseDir(metadata.BaseDir)})";
@@ -156,7 +155,6 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
         var groups = groupOrder.ToList();
         groups.Sort((a, b) =>
         {
-            if (a.Origin != b.Origin) return a.Origin == "package" ? -1 : 1;
             if (a.Scope != b.Scope) return a.Scope == "user" ? -1 : 1;
             return NodeCompare.LocaleCompare(a.Source, b.Source);
         });
@@ -454,8 +452,6 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
 
         private static string PatternTarget(string entry) => entry.StartsWith('!') || entry.StartsWith('+') || entry.StartsWith('-') ? entry[1..] : entry;
 
-        private static string SourceOf(JsonNode? pkg) => pkg is JsonObject obj ? PiJson.GetString(obj["source"]) ?? "" : PiJson.GetString(pkg) ?? "";
-
         private bool? ToggleResource(ResourceItem item)
         {
             if (_writeScope == "project")
@@ -465,8 +461,7 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
                 return state == "inherit" ? GetInheritedEnabled(item) : state == "load";
             }
             var enabled = !item.Enabled;
-            if (item.Metadata.Origin == "top-level") ToggleTopLevelResource(item, enabled);
-            else TogglePackageResource(item, enabled);
+            ToggleTopLevelResource(item, enabled);
             return enabled;
         }
 
@@ -498,28 +493,6 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
             SetTopLevelPaths(scope, item.ResourceType, updated);
         }
 
-        private void TogglePackageResource(ResourceItem item, bool enabled)
-        {
-            var scope = item.Metadata.Scope;
-            var settings = scope == "project" ? _settingsManager.GetProjectSettings() : _settingsManager.GetGlobalSettings();
-            var packages = (settings["packages"] as JsonArray)?.Select(p => p!.DeepClone()).ToList() ?? [];
-            var pkgIndex = packages.FindIndex(pkg => SourceOf(pkg) == item.Metadata.Source);
-            if (pkgIndex == -1) return;
-            if (packages[pkgIndex] is not JsonObject pkg)
-            {
-                pkg = new JsonObject { ["source"] = SourceOf(packages[pkgIndex]) };
-                packages[pkgIndex] = pkg;
-            }
-            var pattern = GetPackageResourcePattern(item);
-            var updated = StringArray(pkg[item.ResourceType]).Where(p => PatternTarget(p) != pattern).ToList();
-            updated.Add(enabled ? $"+{pattern}" : $"-{pattern}");
-            if (updated.Count > 0) pkg[item.ResourceType] = new JsonArray(updated.Select(u => (JsonNode)JsonValue.Create(u)!).ToArray());
-            else pkg.Remove(item.ResourceType);
-            if (!ResourceTypes.Any(pkg.ContainsKey)) packages[pkgIndex] = JsonValue.Create(SourceOf(pkg))!;
-            if (scope == "project") _settingsManager.SetProjectPackages(packages);
-            else _settingsManager.SetPackages(packages);
-        }
-
         private string RenderCheckbox(ResourceItem item)
         {
             var theme = ThemeManager.Current;
@@ -545,8 +518,7 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
 
         private bool IsDimmedItem(ResourceItem item) => _writeScope == "project" && IsInheritedGlobalItem(item) && GetProjectOverrideState(item) == "inherit";
 
-        private bool SetProjectResourceOverride(ResourceItem item, string state) =>
-            item.Metadata.Origin == "top-level" ? SetProjectTopLevelOverride(item, state) : SetProjectPackageOverride(item, state);
+        private bool SetProjectResourceOverride(ResourceItem item, string state) => SetProjectTopLevelOverride(item, state);
 
         private bool SetProjectTopLevelOverride(ResourceItem item, string state)
         {
@@ -569,35 +541,6 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
             return true;
         }
 
-        private bool SetProjectPackageOverride(ResourceItem item, string state)
-        {
-            var packages = (_settingsManager.GetProjectSettings()["packages"] as JsonArray)?.Select(p => p!.DeepClone()).ToList() ?? [];
-            var pkgIndex = packages.FindIndex(pkg => PackageSourceStringMatches(item.Metadata.Source, GetItemScope(item), SourceOf(pkg), "project"));
-            if (pkgIndex == -1)
-            {
-                if (state == "inherit") return false;
-                packages.Add(CreatePackageOverrideSource(item));
-                pkgIndex = packages.Count - 1;
-            }
-            if (packages[pkgIndex] is not JsonObject pkg)
-            {
-                pkg = new JsonObject { ["source"] = SourceOf(packages[pkgIndex]) };
-                packages[pkgIndex] = pkg;
-            }
-            var pattern = GetPackageResourcePattern(item);
-            var updated = StringArray(pkg[item.ResourceType]).Where(entry => PatternTarget(entry) != pattern).ToList();
-            if (state != "inherit") updated.Add($"{(state == "load" ? "+" : "-")}{pattern}");
-            if (updated.Count > 0) pkg[item.ResourceType] = new JsonArray(updated.Select(u => (JsonNode)JsonValue.Create(u)!).ToArray());
-            else pkg.Remove(item.ResourceType);
-            if (!ResourceTypes.Any(pkg.ContainsKey))
-            {
-                if (PiJson.GetBool(pkg["autoload"]) == false) packages.RemoveAt(pkgIndex);
-                else packages[pkgIndex] = JsonValue.Create(SourceOf(pkg))!;
-            }
-            _settingsManager.SetProjectPackages(packages);
-            return true;
-        }
-
         private string GetNextOverrideState(ResourceItem item)
         {
             var state = GetProjectOverrideState(item);
@@ -613,12 +556,7 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
         private string GetProjectOverrideState(ResourceItem item)
         {
             if (_writeScope != "project") return "inherit";
-            if (item.Metadata.Origin == "top-level")
-            {
-                return GetOverrideStateFromEntries(StringArray(_settingsManager.GetProjectSettings()[item.ResourceType]), GetTopLevelOverridePatterns(item, "project"), false);
-            }
-            if (FindMatchingPackageSource(item, "project") is not JsonObject pkg || !pkg.TryGetPropertyValue(item.ResourceType, out var entries) || entries is null) return "inherit";
-            return GetOverrideStateFromEntries(StringArray(entries), [GetPackageResourcePattern(item)], PiJson.GetBool(pkg["autoload"]) != false);
+            return GetOverrideStateFromEntries(StringArray(_settingsManager.GetProjectSettings()[item.ResourceType]), GetTopLevelOverridePatterns(item, "project"), false);
         }
 
         private static string GetOverrideStateFromEntries(List<string> entries, HashSet<string> patterns, bool emptyArrayIsUnload)
@@ -653,30 +591,6 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
             return Relative(item.Metadata.BaseDir ?? GetTopLevelBaseDir(sourceScope), item.Path);
         }
 
-        private JsonNode CreatePackageOverrideSource(ResourceItem item)
-        {
-            var source = item.Metadata.Source;
-            if (!PathUtils.IsLocalPath(source)) return new JsonObject { ["source"] = source, ["autoload"] = false };
-            var sourcePath = PathUtils.ResolvePath(source, GetTopLevelBaseDir(GetItemScope(item)), new PathInputOptions { Trim = true });
-            var rel = Relative(GetTopLevelBaseDir("project"), sourcePath);
-            return new JsonObject { ["source"] = rel.Length > 0 ? rel : ".", ["autoload"] = false };
-        }
-
-        private bool PackageSourceStringMatches(string leftSource, string leftScope, string rightSource, string rightScope)
-        {
-            if (leftSource == rightSource) return true;
-            if (!PathUtils.IsLocalPath(leftSource) || !PathUtils.IsLocalPath(rightSource)) return false;
-            var left = PathUtils.ResolvePath(leftSource, GetTopLevelBaseDir(leftScope), new PathInputOptions { Trim = true });
-            var right = PathUtils.ResolvePath(rightSource, GetTopLevelBaseDir(rightScope), new PathInputOptions { Trim = true });
-            return left == right;
-        }
-
-        private JsonNode? FindMatchingPackageSource(ResourceItem item, string targetScope)
-        {
-            var settings = targetScope == "project" ? _settingsManager.GetProjectSettings() : _settingsManager.GetGlobalSettings();
-            return (settings["packages"] as JsonArray)?.FirstOrDefault(pkg => PackageSourceStringMatches(item.Metadata.Source, GetItemScope(item), SourceOf(pkg), targetScope));
-        }
-
         private static string GetResourceItemKey(ResourceItem item) => $"{item.ResourceType}:{PathUtils.CanonicalizePath(item.Path)}";
 
         private static string GetItemScope(ResourceItem item) => item.Metadata.Scope == "project" ? "project" : "user";
@@ -684,7 +598,5 @@ public sealed class ConfigSelectorComponent : Container, IFocusable
         private string GetTopLevelBaseDir(string scope) => scope == "project" ? System.IO.Path.Combine(_cwd, AppConfig.ConfigDirName) : _agentDir;
 
         private string GetResourcePattern(ResourceItem item) => Relative(item.Metadata.BaseDir ?? GetTopLevelBaseDir(item.Metadata.Scope), item.Path);
-
-        private static string GetPackageResourcePattern(ResourceItem item) => Relative(item.Metadata.BaseDir ?? System.IO.Path.GetDirectoryName(item.Path)!, item.Path);
     }
 }

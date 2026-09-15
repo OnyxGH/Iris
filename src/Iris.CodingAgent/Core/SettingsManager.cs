@@ -671,9 +671,7 @@ public sealed class SettingsManager
 
     public void SetShellCommandPrefix(string? prefix) => SetGlobal("shellCommandPrefix", prefix);
 
-    public List<string>? NpmCommand => StringList(Get("npmCommand"));
 
-    public void SetNpmCommand(IEnumerable<string>? command) => SetGlobal("npmCommand", command is null ? null : ToArray(command));
 
     public bool CollapseChangelog => GetBool("collapseChangelog") ?? false;
 
@@ -703,12 +701,8 @@ public sealed class SettingsManager
     }
 
     /// <summary>Package sources (strings or objects) as raw JSON.</summary>
-    public List<JsonNode> Packages => (Get("packages") as JsonArray)?.Where(n => n is not null).Select(n => n!.DeepClone()).ToList() ?? [];
 
-    public void SetPackages(IEnumerable<JsonNode> packages) => SetGlobal("packages", new JsonArray(packages.Select(p => p.DeepClone()).ToArray()));
 
-    public void SetProjectPackages(IEnumerable<JsonNode> packages) =>
-        UpdateProjectSettings("packages", s => s["packages"] = new JsonArray(packages.Select(p => p.DeepClone()).ToArray()));
 
     public List<string> ExtensionPaths => StringList(Get("extensions")) ?? [];
 

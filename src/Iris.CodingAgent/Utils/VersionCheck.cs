@@ -20,7 +20,10 @@ public static class VersionCheck
     public static string? LatestVersionUrl => Environment.GetEnvironmentVariable(LatestVersionUrlEnv) is { Length: > 0 } url ? url.Trim() : null;
 
     public static int? ComparePackageVersions(string left, string right) =>
-        NpmSemver.Valid(left) is { } l && NpmSemver.Valid(right) is { } r ? Semver.SemVersion.ComparePrecedence(l, r) : null;
+        ParseVersion(left) is { } l && ParseVersion(right) is { } r ? Semver.SemVersion.ComparePrecedence(l, r) : null;
+
+    private static Semver.SemVersion? ParseVersion(string version) =>
+        Semver.SemVersion.TryParse(version.Trim(), Semver.SemVersionStyles.AllowLowerV, out var parsed) ? parsed : null;
 
     public static bool IsNewerPackageVersion(string candidate, string current) =>
         ComparePackageVersions(candidate, current) is { } comparison ? comparison > 0 : candidate.Trim() != current.Trim();

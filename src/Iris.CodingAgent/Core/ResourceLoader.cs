@@ -71,7 +71,7 @@ public sealed class DefaultResourceLoader : IResourceLoader
     private readonly string _cwd;
     private readonly string _agentDir;
     private readonly SettingsManager _settingsManager;
-    private readonly PackageManager _packageManager;
+    private readonly ResourceResolver _resourceResolver;
 
     private List<ResolvedResource> _extensionEntries = [];
     private List<Skill> _skills = [];
@@ -99,7 +99,7 @@ public sealed class DefaultResourceLoader : IResourceLoader
         _cwd = PathUtils.ResolvePath(options.Cwd);
         _agentDir = PathUtils.ResolvePath(options.AgentDir);
         _settingsManager = options.SettingsManager ?? SettingsManager.Create(_cwd, _agentDir);
-        _packageManager = new PackageManager(_cwd, _agentDir, _settingsManager);
+        _resourceResolver = new ResourceResolver(_cwd, _agentDir, _settingsManager);
     }
 
     public IReadOnlyList<ResolvedResource> ExtensionEntries => _extensionEntries;
@@ -210,8 +210,8 @@ public sealed class DefaultResourceLoader : IResourceLoader
     public async Task ReloadAsync(CancellationToken cancellationToken = default)
     {
         await _settingsManager.ReloadAsync();
-        var resolvedPaths = await _packageManager.ResolveAsync();
-        var cliPaths = await _packageManager.ResolveExtensionSourcesAsync(_options.AdditionalExtensionPaths ?? [], temporary: true);
+        var resolvedPaths = await _resourceResolver.ResolveAsync();
+        var cliPaths = await _resourceResolver.ResolveExtensionSourcesAsync(_options.AdditionalExtensionPaths ?? []);
 
         _metadataByPath = [];
         _extensionSkillSourceInfos.Clear();

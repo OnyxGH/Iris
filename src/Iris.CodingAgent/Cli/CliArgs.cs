@@ -304,14 +304,9 @@ public sealed class CliArgs
         sb.AppendLine($"  {app} [options] [--] [@files...] [messages...]");
         sb.AppendLine();
         sb.AppendLine(Chalk.Bold("Commands:"));
-        sb.AppendLine($"  {app} install <source> [-l]     Install extension source and add to settings");
-        sb.AppendLine($"  {app} remove <source> [-l]      Remove extension source from settings");
-        sb.AppendLine($"  {app} uninstall <source> [-l]   Alias for remove");
-        sb.AppendLine($"  {app} update [source|self|iris] Update Iris, extensions, or model catalogs");
-        sb.AppendLine($"  {app} list                      List installed extensions from settings");
-        sb.AppendLine($"  {app} config [-l]               Open TUI to enable/disable package resources (Tab switches scope)");
+        sb.AppendLine($"  {app} config [-l]               Open TUI to enable/disable resources (Tab switches scope)");
         sb.AppendLine($"  {app} auth <command>            Print credentials or check provider readiness");
-        sb.AppendLine($"  {app} <command> --help          Show help for install/remove/uninstall/update/list/config/auth");
+        sb.AppendLine($"  {app} <command> --help          Show help for config/auth");
         sb.AppendLine();
         sb.AppendLine(Chalk.Bold("Options:"));
         sb.AppendLine("""

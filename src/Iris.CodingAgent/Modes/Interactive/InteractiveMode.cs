@@ -266,14 +266,6 @@ public sealed partial class InteractiveMode
         if (sourceInfo is null) return null;
         var scopePrefix = sourceInfo.Scope == "user" ? "u" : sourceInfo.Scope == "project" ? "p" : "t";
         var source = sourceInfo.Source.Trim();
-        if (source is "auto" or "local" or "cli") return scopePrefix;
-        if (source.StartsWith("npm:", StringComparison.Ordinal)) return $"{scopePrefix}:{source}";
-        // Simplified git source label (package sources are not ported yet): git:host/owner/repo[@ref].
-        var gitMatch = Regex.Match(source, @"^(?:git:)?\s*(?:(?:https?|ssh|git)://)?(?:[^@/]+@)?([^/:]+)[/:](.+?)(?:\.git)?(?:[#@]([^/]+))?$");
-        if ((source.StartsWith("git:", StringComparison.Ordinal) || Regex.IsMatch(source, "^(https?|ssh|git)://", RegexOptions.IgnoreCase)) && gitMatch.Success)
-        {
-            return $"{scopePrefix}:git:{gitMatch.Groups[1].Value}/{gitMatch.Groups[2].Value}{(gitMatch.Groups[3].Success ? "@" + gitMatch.Groups[3].Value : "")}";
-        }
         return scopePrefix;
     }
 
@@ -494,7 +486,6 @@ public sealed partial class InteractiveMode
         }
 
         _ = CheckForNewVersionInBackgroundAsync();
-        _ = CheckForPackageUpdatesInBackgroundAsync();
 
         foreach (var diagnostic in _options.StartupDiagnostics ?? [])
         {
@@ -516,35 +507,9 @@ public sealed partial class InteractiveMode
         if (await VersionCheck.CheckForNewVersionAsync(_version) is { } release) ShowNewVersionNotification(release);
     }
 
-    private async Task CheckForPackageUpdatesInBackgroundAsync()
-    {
-        try
-        {
-            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PI_OFFLINE"))) return;
-            List<PackageUpdate> updates;
-            try
-            {
-                // npm and git run as child processes; keep them off the UI thread.
-                var packageManager = new PackageManager(SessionManager.Cwd, AppConfig.AgentDir, SettingsManager);
-                updates = await Task.Run(packageManager.CheckForAvailableUpdatesAsync);
-            }
-            catch
-            {
-                updates = [];
-            }
-            if (updates.Count > 0) ShowPackageUpdateNotification(updates.Select(u => u.DisplayName).ToList());
-        }
-        finally
-        {
-            // On Windows, npm can overwrite the shared console title while checking package versions.
-            if (OperatingSystem.IsWindows() && _isInitialized) UpdateTerminalTitle();
-        }
-    }
-
     public void ShowNewVersionNotification(LatestRelease release)
     {
-        var action = Theme.Fg("accent", $"{AppConfig.AppName} update");
-        var updateInstruction = Theme.Fg("muted", $"New version {release.Version} is available. Run ") + action;
+        var updateInstruction = Theme.Fg("muted", $"New version {release.Version} is available.");
         _chatContainer.AddChild(new Spacer(1));
         _chatContainer.AddChild(new DynamicBorder(text => Theme.Fg("warning", text)));
         _chatContainer.AddChild(new Text($"{Theme.Bold(Theme.Fg("warning", "Update Available"))}\n{updateInstruction}", 1, 0));
@@ -554,18 +519,6 @@ public sealed partial class InteractiveMode
             _chatContainer.AddChild(new MarkdownComponent(note, 1, 0, GetMarkdownThemeWithSettings(), new DefaultTextStyle { Color = text => Theme.Fg("muted", text) }));
             _chatContainer.AddChild(new Spacer(1));
         }
-        _chatContainer.AddChild(new DynamicBorder(text => Theme.Fg("warning", text)));
-        _ui.RequestRender();
-    }
-
-    public void ShowPackageUpdateNotification(List<string> packages)
-    {
-        var action = Theme.Fg("accent", $"{AppConfig.AppName} update --extensions");
-        var updateInstruction = Theme.Fg("muted", "Package updates are available. Run ") + action;
-        var packageLines = string.Join("\n", packages.Select(pkg => $"- {pkg}"));
-        _chatContainer.AddChild(new Spacer(1));
-        _chatContainer.AddChild(new DynamicBorder(text => Theme.Fg("warning", text)));
-        _chatContainer.AddChild(new Text($"{Theme.Bold(Theme.Fg("warning", "Package Updates Available"))}\n{updateInstruction}\n{Theme.Fg("muted", "Packages:")}\n{packageLines}", 1, 0));
         _chatContainer.AddChild(new DynamicBorder(text => Theme.Fg("warning", text)));
         _ui.RequestRender();
     }
@@ -665,23 +618,7 @@ public sealed partial class InteractiveMode
 
     private bool GetStartupExpansionState() => _options.Verbose || _toolOutputExpanded;
 
-    private static bool IsPackageSource(SourceInfo? sourceInfo) => sourceInfo?.Source is { } s && (s.StartsWith("npm:", StringComparison.Ordinal) || s.StartsWith("git:", StringComparison.Ordinal));
-
-    private string GetShortPath(string fullPath, SourceInfo? sourceInfo)
-    {
-        var normalized = fullPath.Replace('\\', '/');
-        if (sourceInfo?.BaseDir is { } baseDir && IsPackageSource(sourceInfo))
-        {
-            var relative = Path.GetRelativePath(Path.GetFullPath(baseDir), Path.GetFullPath(fullPath));
-            if (relative.Length > 0 && relative != "." && !relative.StartsWith("..", StringComparison.Ordinal) && !Path.IsPathRooted(relative)) return relative.Replace('\\', '/');
-        }
-        var source = sourceInfo?.Source ?? "";
-        var npm = Regex.Match(normalized, "node_modules/(@?[^/]+(?:/[^/]+)?)/(.*)");
-        if (npm.Success && source.StartsWith("npm:", StringComparison.Ordinal)) return npm.Groups[2].Value;
-        var git = Regex.Match(normalized, "git/[^/]+/[^/]+/(.*)");
-        if (git.Success && source.StartsWith("git:", StringComparison.Ordinal)) return git.Groups[1].Value;
-        return FormatDisplayPath(fullPath);
-    }
+    private string GetShortPath(string fullPath, SourceInfo? sourceInfo) => FormatDisplayPath(fullPath);
 
     private string GetCompactPathLabel(string resourcePath, SourceInfo? sourceInfo)
     {
@@ -698,32 +635,18 @@ public sealed partial class InteractiveMode
         return scope is "user" or "project" ? scope : "path";
     }
 
-    private sealed record ScopeGroup(string Scope, List<(string Path, SourceInfo? SourceInfo)> Paths, SortedDictionary<string, List<(string Path, SourceInfo? SourceInfo)>> Packages);
+    private sealed record ScopeGroup(string Scope, List<(string Path, SourceInfo? SourceInfo)> Paths);
 
     private static List<ScopeGroup> BuildScopeGroups(IEnumerable<(string Path, SourceInfo? SourceInfo)> items)
     {
-        var comparer = Comparer<string>.Create(NodeCompare.LocaleCompare);
         var groups = new Dictionary<string, ScopeGroup>
         {
-            ["user"] = new("user", [], new(comparer)),
-            ["project"] = new("project", [], new(comparer)),
-            ["path"] = new("path", [], new(comparer)),
+            ["user"] = new("user", []),
+            ["project"] = new("project", []),
+            ["path"] = new("path", []),
         };
-        foreach (var item in items)
-        {
-            var group = groups[GetScopeGroup(item.SourceInfo)];
-            var source = item.SourceInfo?.Source ?? "local";
-            if (IsPackageSource(item.SourceInfo))
-            {
-                if (!group.Packages.TryGetValue(source, out var list)) group.Packages[source] = list = [];
-                list.Add(item);
-            }
-            else
-            {
-                group.Paths.Add(item);
-            }
-        }
-        return new[] { groups["project"], groups["user"], groups["path"] }.Where(g => g.Paths.Count > 0 || g.Packages.Count > 0).ToList();
+        foreach (var item in items) groups[GetScopeGroup(item.SourceInfo)].Paths.Add(item);
+        return new[] { groups["project"], groups["user"], groups["path"] }.Where(g => g.Paths.Count > 0).ToList();
     }
 
     private static string FormatScopeGroups(List<ScopeGroup> groups, Func<(string Path, SourceInfo? SourceInfo), string> formatPath, Func<(string Path, SourceInfo? SourceInfo), string, string> formatPackagePath)
@@ -733,11 +656,6 @@ public sealed partial class InteractiveMode
         {
             lines.Add($"  {Theme.Fg("accent", group.Scope)}");
             foreach (var item in group.Paths.OrderBy(i => i.Path, Comparer<string>.Create(NodeCompare.LocaleCompare))) lines.Add(Theme.Fg("dim", $"    {formatPath(item)}"));
-            foreach (var (source, items) in group.Packages)
-            {
-                lines.Add($"    {Theme.Fg("mdLink", source)}");
-                foreach (var item in items.OrderBy(i => i.Path, Comparer<string>.Create(NodeCompare.LocaleCompare))) lines.Add(Theme.Fg("dim", $"      {formatPackagePath(item, source)}"));
-            }
         }
         return string.Join("\n", lines);
     }

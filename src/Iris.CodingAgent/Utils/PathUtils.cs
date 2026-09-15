@@ -48,12 +48,11 @@ public static partial class PathUtils
         }
     }
 
-    /// <summary>True if the value is not a package source (npm:, git:, ...) or remote URL.</summary>
+    /// <summary>True if the value is not a remote URL.</summary>
     public static bool IsLocalPath(string value)
     {
         var trimmed = value.Trim();
-        return !(trimmed.StartsWith("npm:") || trimmed.StartsWith("git:") || trimmed.StartsWith("github:")
-            || trimmed.StartsWith("http:") || trimmed.StartsWith("https:") || trimmed.StartsWith("ssh:"));
+        return !(trimmed.StartsWith("http:") || trimmed.StartsWith("https:") || trimmed.StartsWith("ssh:"));
     }
 
     /// <summary>Convert Git Bash, MSYS, Cygwin and WSL drive paths to native Windows paths.</summary>

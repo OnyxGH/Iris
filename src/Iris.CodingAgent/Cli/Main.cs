@@ -258,8 +258,7 @@ public static class Main
         var bootstrapSettingsManager = SettingsManager.Create(cwd, agentDir, projectTrusted: false);
         EnvHttpProxy.ApplyHttpProxySetting(Iris.Ai.Json.PiJson.GetString(bootstrapSettingsManager.GetGlobalSettings()["httpProxy"]));
 
-        if (await PackageCommands.RunAsync(args) is { } packageExitCode) return packageExitCode;
-        if (await PackageCommands.RunConfigAsync(args) is { } configExitCode) return configExitCode;
+        if (await ConfigCommand.RunAsync(args) is { } configExitCode) return configExitCode;
 
         var parsed = CliArgs.Parse(args);
         foreach (var d in parsed.Diagnostics)
