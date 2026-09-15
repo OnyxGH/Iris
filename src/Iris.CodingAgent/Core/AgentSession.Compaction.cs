@@ -113,7 +113,7 @@ public sealed partial class AgentSession
             ExtensionCompaction? compaction = null;
             if (_extensionRunner.HasHandlers("session_before_compact"))
             {
-                var hookResult = await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_before_compact",
+                var hookResult = await _extensionRunner.EmitAsync(RunnerEvent.Of("session_before_compact",
                     ("preparation", preparation), ("branchEntries", pathEntries), ("customInstructions", customInstructions),
                     ("reason", "manual"), ("willRetry", false), ("signal", cts.Token)));
                 compaction = ReadExtensionCompaction(hookResult, out var cancel);
@@ -132,7 +132,7 @@ public sealed partial class AgentSession
             var compactionResult = SaveCompaction(compaction, fromExtension, out var savedEntry);
             if (savedEntry is not null)
             {
-                await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_compact",
+                await _extensionRunner.EmitAsync(RunnerEvent.Of("session_compact",
                     ("compactionEntry", savedEntry), ("fromExtension", fromExtension), ("reason", "manual"), ("willRetry", false)));
             }
 
@@ -271,7 +271,7 @@ public sealed partial class AgentSession
             ExtensionCompaction? compaction = null;
             if (_extensionRunner.HasHandlers("session_before_compact"))
             {
-                var hookResult = await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_before_compact",
+                var hookResult = await _extensionRunner.EmitAsync(RunnerEvent.Of("session_before_compact",
                     ("preparation", preparation), ("branchEntries", pathEntries), ("customInstructions", null),
                     ("reason", reason), ("willRetry", willRetry), ("signal", cts.Token)));
                 compaction = ReadExtensionCompaction(hookResult, out var cancel);
@@ -300,7 +300,7 @@ public sealed partial class AgentSession
             var compactionResult = SaveCompaction(compaction, fromExtension, out var savedEntry);
             if (savedEntry is not null)
             {
-                await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_compact",
+                await _extensionRunner.EmitAsync(RunnerEvent.Of("session_compact",
                     ("compactionEntry", savedEntry), ("fromExtension", fromExtension), ("reason", reason), ("willRetry", willRetry)));
             }
             Emit(new CompactionEndEvent(reason, compactionResult, Aborted: false, willRetry));

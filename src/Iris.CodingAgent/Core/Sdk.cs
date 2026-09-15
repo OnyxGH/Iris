@@ -174,7 +174,7 @@ public static class Sdk
                         var headers = ProviderAttribution.Merge(streamModel, settingsManager, streamOptions?.SessionId, requestHeaders) ?? [];
                         var runner = extensionRunnerRef.Current;
                         return runner?.HasHandlers("before_provider_headers") == true
-                            ? (await runner.EmitAsync(ExtensionEvent.Of("before_provider_headers", ("headers", headers)))) as Dictionary<string, string?> ?? headers
+                            ? (await runner.EmitAsync(RunnerEvent.Of("before_provider_headers", ("headers", headers)))) as Dictionary<string, string?> ?? headers
                             : headers;
                     },
                 };
@@ -195,13 +195,13 @@ public static class Sdk
             {
                 var runner = extensionRunnerRef.Current;
                 if (runner?.HasHandlers("before_provider_request") != true) return payload;
-                return await runner.EmitAsync(ExtensionEvent.Of("before_provider_request", ("payload", payload))) as System.Text.Json.Nodes.JsonNode ?? payload;
+                return await runner.EmitAsync(RunnerEvent.Of("before_provider_request", ("payload", payload))) as System.Text.Json.Nodes.JsonNode ?? payload;
             },
             OnResponse = async (response, _) =>
             {
                 var runner = extensionRunnerRef.Current;
                 if (runner?.HasHandlers("after_provider_response") != true) return;
-                await runner.EmitAsync(ExtensionEvent.Of("after_provider_response", ("status", response.Status), ("headers", response.Headers)));
+                await runner.EmitAsync(RunnerEvent.Of("after_provider_response", ("status", response.Status), ("headers", response.Headers)));
             },
             SessionId = sessionManager.SessionId,
             TransformContext = async (messages, _) =>

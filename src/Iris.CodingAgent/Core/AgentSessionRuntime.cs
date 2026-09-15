@@ -84,16 +84,37 @@ public static class AgentSessionServicesFactory
         var diagnostics = new List<AgentSessionRuntimeDiagnostic>();
         await modelRuntime.RefreshAsync(new ModelsRefreshOptions { AllowNetwork = false });
 
-        // Extension flags are registered by extensions; without an extension runtime every flag is unknown.
-        if (options.ExtensionFlagValues is { Count: > 0 } flags)
+        foreach (var error in resourceLoader.Extensions.Errors)
         {
-            var names = flags.Keys.Select(n => $"--{n}").ToList();
-            diagnostics.Add(new AgentSessionRuntimeDiagnostic("error", $"Unknown option{(names.Count == 1 ? "" : "s")}: {string.Join(", ", names)}"));
+            diagnostics.Add(new AgentSessionRuntimeDiagnostic("error", $"Extension \"{error.Path}\" failed to load: {error.Error}"));
         }
 
-        foreach (var entry in resourceLoader.ExtensionEntries)
+        // Unknown flags are only valid when a loaded extension registered them.
+        if (options.ExtensionFlagValues is { Count: > 0 } flags)
         {
-            diagnostics.Add(new AgentSessionRuntimeDiagnostic("warning", $"Extension \"{entry.Path}\" was not loaded: extensions are not supported by Iris yet"));
+            var registered = resourceLoader.Extensions.Extensions.SelectMany(e => e.Flags.Values).GroupBy(f => f.Name).ToDictionary(g => g.Key, g => g.First());
+            var unknown = new List<string>();
+            foreach (var (name, value) in flags)
+            {
+                if (!registered.TryGetValue(name, out var flag))
+                {
+                    unknown.Add($"--{name}");
+                    continue;
+                }
+                if (flag.Options.Type == Iris.Extensions.FlagType.Boolean)
+                {
+                    resourceLoader.Extensions.Runtime.FlagValues[name] = value is bool b ? b : !string.Equals(value?.ToString(), "false", StringComparison.OrdinalIgnoreCase);
+                }
+                else if (value is string text)
+                {
+                    resourceLoader.Extensions.Runtime.FlagValues[name] = text;
+                }
+                else
+                {
+                    diagnostics.Add(new AgentSessionRuntimeDiagnostic("error", $"Flag --{name} requires a value"));
+                }
+            }
+            if (unknown.Count > 0) diagnostics.Add(new AgentSessionRuntimeDiagnostic("error", $"Unknown option{(unknown.Count == 1 ? "" : "s")}: {string.Join(", ", unknown)}"));
         }
 
         return new AgentSessionServices(cwd, agentDir, modelRuntime, settingsManager, resourceLoader, diagnostics);
@@ -142,21 +163,21 @@ public sealed class AgentSessionRuntime
     {
         var runner = Session.ExtensionRunner;
         if (!runner.HasHandlers("session_before_switch")) return false;
-        return IsCancelled(await runner.EmitAsync(ExtensionEvent.Of("session_before_switch", ("reason", reason), ("targetSessionFile", targetSessionFile))));
+        return IsCancelled(await runner.EmitAsync(RunnerEvent.Of("session_before_switch", ("reason", reason), ("targetSessionFile", targetSessionFile))));
     }
 
     private async Task<bool> EmitBeforeForkAsync(string entryId, string position)
     {
         var runner = Session.ExtensionRunner;
         if (!runner.HasHandlers("session_before_fork")) return false;
-        return IsCancelled(await runner.EmitAsync(ExtensionEvent.Of("session_before_fork", ("entryId", entryId), ("position", position))));
+        return IsCancelled(await runner.EmitAsync(RunnerEvent.Of("session_before_fork", ("entryId", entryId), ("position", position))));
     }
 
     private async Task TeardownCurrentAsync(string reason, string? targetSessionFile = null)
     {
         // Settle the active response first so the aborted turn is persisted to the outgoing session.
         await Session.AbortAsync();
-        await Session.ExtensionRunner.EmitAsync(ExtensionEvent.Of("session_shutdown", ("reason", reason), ("targetSessionFile", targetSessionFile)));
+        await Session.ExtensionRunner.EmitAsync(RunnerEvent.Of("session_shutdown", ("reason", reason), ("targetSessionFile", targetSessionFile)));
         _beforeSessionInvalidate?.Invoke();
         Session.Dispose();
     }
@@ -291,7 +312,7 @@ public sealed class AgentSessionRuntime
 
     public async Task DisposeAsync()
     {
-        await Session.ExtensionRunner.EmitAsync(ExtensionEvent.Of("session_shutdown", ("reason", "quit")));
+        await Session.ExtensionRunner.EmitAsync(RunnerEvent.Of("session_shutdown", ("reason", "quit")));
         _beforeSessionInvalidate?.Invoke();
         Session.Dispose();
     }

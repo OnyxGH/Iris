@@ -9,7 +9,7 @@ public sealed partial class AgentSession
     private async Task EmitModelSelectAsync(Model nextModel, Model? previousModel, string source)
     {
         if (ModelUtils.ModelsAreEqual(previousModel, nextModel)) return;
-        await _extensionRunner.EmitAsync(ExtensionEvent.Of("model_select", ("model", nextModel), ("previousModel", previousModel), ("source", source)));
+        await _extensionRunner.EmitAsync(RunnerEvent.Of("model_select", ("model", nextModel), ("previousModel", previousModel), ("source", source)));
     }
 
     /// <summary>Set the model, saving it to the session; persists to global defaults when persist is true.</summary>
@@ -129,7 +129,7 @@ public sealed partial class AgentSession
         {
             SessionManager.AppendThinkingLevelChange(ThinkingLevels.ToWire(effective));
             Emit(new ThinkingLevelChangedEvent(effective));
-            _ = _extensionRunner.EmitAsync(ExtensionEvent.Of("thinking_level_select", ("level", effective), ("previousLevel", previous)));
+            _ = _extensionRunner.EmitAsync(RunnerEvent.Of("thinking_level_select", ("level", effective), ("previousLevel", previous)));
         }
     }
 

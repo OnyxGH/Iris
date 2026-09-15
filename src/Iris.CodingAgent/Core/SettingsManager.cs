@@ -440,6 +440,9 @@ public sealed class SettingsManager
 
     private bool? GetBool(string field) => IrisJson.GetBool(Get(field));
 
+    /// <summary>Built-in extensions are enabled unless <c>builtinExtensions.&lt;id&gt;</c> is false.</summary>
+    public bool IsBuiltinExtensionEnabled(string id) => IrisJson.GetBool(GetNested("builtinExtensions", id)) ?? true;
+
     private static List<string>? StringList(JsonNode? node) =>
         node is JsonArray arr ? arr.Select(x => IrisJson.GetString(x)).Where(x => x is not null).Select(x => x!).ToList() : null;
 

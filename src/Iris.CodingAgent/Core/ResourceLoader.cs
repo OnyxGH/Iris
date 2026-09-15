@@ -15,8 +15,11 @@ public sealed record ResourceExtensionPaths(
 
 public interface IResourceLoader
 {
-    /// <summary>Enabled extension entry points. Loading them is not supported yet (extension design pending).</summary>
+    /// <summary>Enabled extension entry points (.cs files, folders of .cs files, or DLLs).</summary>
     IReadOnlyList<ResolvedResource> ExtensionEntries { get; }
+
+    /// <summary>Extensions loaded by the last reload, including built-in extensions.</summary>
+    Iris.CodingAgent.Core.Extensions.ExtensionLoadResult Extensions { get; }
 
     (IReadOnlyList<Skill> Skills, IReadOnlyList<ResourceDiagnostic> Diagnostics) GetSkills();
 
@@ -73,6 +76,7 @@ public sealed class DefaultResourceLoader : IResourceLoader
     private readonly ResourceResolver _resourceResolver;
 
     private List<ResolvedResource> _extensionEntries = [];
+    private Iris.CodingAgent.Core.Extensions.ExtensionLoadResult _extensions = Iris.CodingAgent.Core.Extensions.ExtensionLoadResult.Empty;
     private List<Skill> _skills = [];
     private List<ResourceDiagnostic> _skillDiagnostics = [];
     private List<PromptTemplate> _prompts = [];
@@ -102,6 +106,8 @@ public sealed class DefaultResourceLoader : IResourceLoader
     }
 
     public IReadOnlyList<ResolvedResource> ExtensionEntries => _extensionEntries;
+
+    public Iris.CodingAgent.Core.Extensions.ExtensionLoadResult Extensions => _extensions;
 
     public (IReadOnlyList<Skill> Skills, IReadOnlyList<ResourceDiagnostic> Diagnostics) GetSkills() => (_skills, _skillDiagnostics);
 
@@ -237,6 +243,9 @@ public sealed class DefaultResourceLoader : IResourceLoader
         var cliThemes = Enabled(cliPaths.Themes).Select(r => r.Path).ToList();
 
         _extensionEntries = _options.NoExtensions ? cliExtensions : [.. cliExtensions, .. enabledExtensions];
+        var previousExtensions = _extensions;
+        _extensions = await Iris.CodingAgent.Core.Extensions.ExtensionLoader.LoadAsync(_extensionEntries, _cwd, _agentDir, _settingsManager, cancellationToken);
+        if (!ReferenceEquals(previousExtensions, Iris.CodingAgent.Core.Extensions.ExtensionLoadResult.Empty)) previousExtensions.Unload();
 
         var additionalSkills = _options.AdditionalSkillPaths ?? [];
         var skillPaths = _options.NoSkills ? MergePaths(cliSkills, additionalSkills) : MergePaths([.. cliSkills, .. enabledSkills], additionalSkills);

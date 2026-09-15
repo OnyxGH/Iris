@@ -1,3 +1,4 @@
+using Iris.Extensions;
 using System.Text.Json.Nodes;
 using Iris.Agent;
 using Iris.Ai;
@@ -9,13 +10,13 @@ namespace Iris.CodingAgent.Core.Extensions;
 /// An extension event. Until the Iris extension model is designed, events are carried as a type name plus named
 /// payload values.
 /// </summary>
-public sealed record ExtensionEvent(string Type, IReadOnlyDictionary<string, object?>? Data = null)
+public sealed record RunnerEvent(string Type, IReadOnlyDictionary<string, object?>? Data = null)
 {
-    public static ExtensionEvent Of(string type, params (string Key, object? Value)[] data) =>
+    public static RunnerEvent Of(string type, params (string Key, object? Value)[] data) =>
         new(type, data.ToDictionary(d => d.Key, d => d.Value));
 }
 
-public sealed record ExtensionError(string ExtensionPath, string Event, string Error);
+public sealed record ExtensionError(string ExtensionPath, string Event, string Error, string? Stack = null);
 
 public sealed record RegisteredTool(ToolDefinition Definition, SourceInfo SourceInfo);
 
@@ -32,11 +33,11 @@ public sealed record InputHookResult(string Action, string? Text = null, List<Im
 
 public sealed record BeforeAgentStartCustomMessage(string CustomType, UserContent? Content, bool Display, JsonNode? Details);
 
-public sealed record BeforeAgentStartResult(List<BeforeAgentStartCustomMessage>? Messages = null, string? SystemPrompt = null);
+public sealed record RunnerBeforeAgentStartResult(List<BeforeAgentStartCustomMessage>? Messages = null, string? SystemPrompt = null);
 
 public sealed record DiscoveredResourcePath(string Path, string ExtensionPath);
 
-public sealed record ResourcesDiscoverResult(List<DiscoveredResourcePath> SkillPaths, List<DiscoveredResourcePath> PromptPaths, List<DiscoveredResourcePath> ThemePaths);
+public sealed record RunnerResourcesDiscoverResult(List<DiscoveredResourcePath> SkillPaths, List<DiscoveredResourcePath> PromptPaths, List<DiscoveredResourcePath> ThemePaths);
 
 /// <summary>
 /// The surface AgentSession uses to talk to loaded extensions.
@@ -46,7 +47,7 @@ public interface IExtensionRunner
     bool HasHandlers(string eventType);
 
     /// <summary>Emit an event; returns the last non-null handler result (e.g. session_before_compact results).</summary>
-    Task<object?> EmitAsync(ExtensionEvent evt);
+    Task<object?> EmitAsync(RunnerEvent evt);
 
     Task<ToolCallHookResult?> EmitToolCallAsync(string toolName, string toolCallId, JsonObject input);
 
@@ -57,9 +58,9 @@ public interface IExtensionRunner
 
     Task<InputHookResult> EmitInputAsync(string text, List<ImageContent>? images, string source, string? streamingBehavior);
 
-    Task<BeforeAgentStartResult?> EmitBeforeAgentStartAsync(string prompt, List<ImageContent>? images, string systemPrompt, BuildSystemPromptOptions systemPromptOptions);
+    Task<RunnerBeforeAgentStartResult?> EmitBeforeAgentStartAsync(string prompt, List<ImageContent>? images, string systemPrompt, BuildSystemPromptOptions systemPromptOptions);
 
-    Task<ResourcesDiscoverResult> EmitResourcesDiscoverAsync(string cwd, string reason);
+    Task<RunnerResourcesDiscoverResult> EmitResourcesDiscoverAsync(string cwd, string reason);
 
     Task<List<Message>> EmitContextAsync(List<Message> messages);
 
@@ -90,7 +91,7 @@ public sealed class NullExtensionRunner(Func<ExtensionContext>? contextFactory =
 
     public bool HasHandlers(string eventType) => false;
 
-    public Task<object?> EmitAsync(ExtensionEvent evt) => Task.FromResult<object?>(null);
+    public Task<object?> EmitAsync(RunnerEvent evt) => Task.FromResult<object?>(null);
 
     public Task<ToolCallHookResult?> EmitToolCallAsync(string toolName, string toolCallId, JsonObject input) => Task.FromResult<ToolCallHookResult?>(null);
 
@@ -102,10 +103,10 @@ public sealed class NullExtensionRunner(Func<ExtensionContext>? contextFactory =
     public Task<InputHookResult> EmitInputAsync(string text, List<ImageContent>? images, string source, string? streamingBehavior) =>
         Task.FromResult(new InputHookResult("continue"));
 
-    public Task<BeforeAgentStartResult?> EmitBeforeAgentStartAsync(string prompt, List<ImageContent>? images, string systemPrompt, BuildSystemPromptOptions systemPromptOptions) =>
-        Task.FromResult<BeforeAgentStartResult?>(null);
+    public Task<RunnerBeforeAgentStartResult?> EmitBeforeAgentStartAsync(string prompt, List<ImageContent>? images, string systemPrompt, BuildSystemPromptOptions systemPromptOptions) =>
+        Task.FromResult<RunnerBeforeAgentStartResult?>(null);
 
-    public Task<ResourcesDiscoverResult> EmitResourcesDiscoverAsync(string cwd, string reason) => Task.FromResult(new ResourcesDiscoverResult([], [], []));
+    public Task<RunnerResourcesDiscoverResult> EmitResourcesDiscoverAsync(string cwd, string reason) => Task.FromResult(new RunnerResourcesDiscoverResult([], [], []));
 
     public Task<List<Message>> EmitContextAsync(List<Message> messages) => Task.FromResult(messages);
 

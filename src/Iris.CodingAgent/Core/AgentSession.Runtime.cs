@@ -1,3 +1,4 @@
+using Iris.Extensions;
 using Iris.Agent;
 using Iris.Ai;
 using Iris.Ai.Utils;
@@ -31,7 +32,7 @@ public sealed partial class AgentSession
     {
         if (onError is not null) _extensionErrorListener = onError;
         ApplyExtensionBindings(_extensionRunner);
-        await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_start", ("reason", _config.SessionStartReason)));
+        await _extensionRunner.EmitAsync(RunnerEvent.Of("session_start", ("reason", _config.SessionStartReason)));
         await ExtendResourcesFromExtensionsAsync(_config.SessionStartReason == "reload" ? "reload" : "startup");
     }
 
@@ -144,7 +145,9 @@ public sealed partial class AgentSession
                 Bash = new BashToolOptions { CommandPrefix = SettingsManager.ShellCommandPrefix, ShellPath = SettingsManager.ShellPath },
             });
 
-        _extensionRunner = _config.ExtensionRunnerFactory?.Invoke(this) ?? new NullExtensionRunner(CreateExtensionContext);
+        var loaded = _resourceLoader.Extensions;
+        _extensionRunner = _config.ExtensionRunnerFactory?.Invoke(this)
+            ?? (loaded.Extensions.Count > 0 ? new ExtensionRunner(loaded.Extensions, loaded.Runtime, this) : new NullExtensionRunner(CreateExtensionContext));
         if (_config.ExtensionRunnerRef is not null) _config.ExtensionRunnerRef.Current = _extensionRunner;
         ApplyExtensionBindings(_extensionRunner);
 
@@ -156,7 +159,7 @@ public sealed partial class AgentSession
     public async Task ReloadAsync()
     {
         var oldRunner = _extensionRunner;
-        await oldRunner.EmitAsync(ExtensionEvent.Of("session_shutdown", ("reason", "reload")));
+        await oldRunner.EmitAsync(RunnerEvent.Of("session_shutdown", ("reason", "reload")));
         oldRunner.Invalidate();
         await SettingsManager.ReloadAsync();
         SyncQueueModesFromSettings();
@@ -165,7 +168,7 @@ public sealed partial class AgentSession
 
         if (_extensionErrorListener is not null)
         {
-            await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_start", ("reason", "reload")));
+            await _extensionRunner.EmitAsync(RunnerEvent.Of("session_start", ("reason", "reload")));
             await ExtendResourcesFromExtensionsAsync("reload");
         }
     }
@@ -265,7 +268,7 @@ public sealed partial class AgentSession
         SessionManager.AppendSessionInfo(name);
         var sessionName = SessionManager.SessionName;
         Emit(new SessionInfoChangedEvent(sessionName));
-        _ = _extensionRunner.EmitAsync(ExtensionEvent.Of("session_info_changed", ("name", sessionName)));
+        _ = _extensionRunner.EmitAsync(RunnerEvent.Of("session_info_changed", ("name", sessionName)));
     }
 
     /// <summary>Navigate to another node in the session tree, optionally summarizing the abandoned branch.</summary>
@@ -290,7 +293,7 @@ public sealed partial class AgentSession
 
             if (_extensionRunner.HasHandlers("session_before_tree"))
             {
-                var hookResult = await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_before_tree",
+                var hookResult = await _extensionRunner.EmitAsync(RunnerEvent.Of("session_before_tree",
                     ("preparation", new Dictionary<string, object?>
                     {
                         ["targetId"] = targetId, ["oldLeafId"] = oldLeafId, ["commonAncestorId"] = commonAncestorId,
@@ -382,7 +385,7 @@ public sealed partial class AgentSession
 
             Agent.State.Messages = SessionManager.BuildSessionContext().Messages;
 
-            await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_tree",
+            await _extensionRunner.EmitAsync(RunnerEvent.Of("session_tree",
                 ("newLeafId", SessionManager.LeafId), ("oldLeafId", oldLeafId), ("summaryEntry", summaryEntry),
                 ("fromExtension", string.IsNullOrEmpty(summaryText) ? null : fromExtension)));
 

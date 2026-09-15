@@ -286,7 +286,7 @@ public sealed partial class AgentSession : IDisposable
     private async Task EmitSessionCompactFailedAsync(string reason, string? errorMessage, bool aborted, bool willRetry, bool fromExtension)
     {
         if (!_extensionRunner.HasHandlers("session_compact_failed")) return;
-        await _extensionRunner.EmitAsync(ExtensionEvent.Of("session_compact_failed",
+        await _extensionRunner.EmitAsync(RunnerEvent.Of("session_compact_failed",
             ("reason", reason), ("errorMessage", errorMessage), ("aborted", aborted), ("willRetry", willRetry), ("fromExtension", fromExtension)));
     }
 
@@ -301,7 +301,7 @@ public sealed partial class AgentSession : IDisposable
         _isAgentRunActive = false;
         try
         {
-            await _extensionRunner.EmitAsync(new ExtensionEvent("agent_settled"));
+            await _extensionRunner.EmitAsync(new RunnerEvent("agent_settled"));
             Emit(new AgentSettledEvent());
         }
         finally
@@ -392,23 +392,23 @@ public sealed partial class AgentSession : IDisposable
         {
             case AgentStartEvent:
                 _turnIndex = 0;
-                await runner.EmitAsync(new ExtensionEvent("agent_start"));
+                await runner.EmitAsync(new RunnerEvent("agent_start"));
                 break;
             case AgentEndEvent end:
-                await runner.EmitAsync(ExtensionEvent.Of("agent_end", ("messages", end.Messages)));
+                await runner.EmitAsync(RunnerEvent.Of("agent_end", ("messages", end.Messages)));
                 break;
             case TurnStartEvent:
-                await runner.EmitAsync(ExtensionEvent.Of("turn_start", ("turnIndex", _turnIndex), ("timestamp", TimeUtil.NowMs())));
+                await runner.EmitAsync(RunnerEvent.Of("turn_start", ("turnIndex", _turnIndex), ("timestamp", TimeUtil.NowMs())));
                 break;
             case TurnEndEvent turnEnd:
-                await runner.EmitAsync(ExtensionEvent.Of("turn_end", ("turnIndex", _turnIndex), ("message", turnEnd.Message), ("toolResults", turnEnd.ToolResults)));
+                await runner.EmitAsync(RunnerEvent.Of("turn_end", ("turnIndex", _turnIndex), ("message", turnEnd.Message), ("toolResults", turnEnd.ToolResults)));
                 _turnIndex++;
                 break;
             case MessageStartEvent start:
-                await runner.EmitAsync(ExtensionEvent.Of("message_start", ("message", start.Message)));
+                await runner.EmitAsync(RunnerEvent.Of("message_start", ("message", start.Message)));
                 break;
             case MessageUpdateEvent update:
-                await runner.EmitAsync(ExtensionEvent.Of("message_update", ("message", update.Message), ("assistantMessageEvent", update.AssistantMessageEvent)));
+                await runner.EmitAsync(RunnerEvent.Of("message_update", ("message", update.Message), ("assistantMessageEvent", update.AssistantMessageEvent)));
                 break;
             case MessageEndEvent messageEnd:
             {
@@ -424,13 +424,13 @@ public sealed partial class AgentSession : IDisposable
                 break;
             }
             case ToolExecutionStartEvent toolStart:
-                await runner.EmitAsync(ExtensionEvent.Of("tool_execution_start", ("toolCallId", toolStart.ToolCallId), ("toolName", toolStart.ToolName), ("args", toolStart.Args)));
+                await runner.EmitAsync(RunnerEvent.Of("tool_execution_start", ("toolCallId", toolStart.ToolCallId), ("toolName", toolStart.ToolName), ("args", toolStart.Args)));
                 break;
             case ToolExecutionUpdateEvent toolUpdate:
-                await runner.EmitAsync(ExtensionEvent.Of("tool_execution_update", ("toolCallId", toolUpdate.ToolCallId), ("toolName", toolUpdate.ToolName), ("args", toolUpdate.Args), ("partialResult", toolUpdate.PartialResult)));
+                await runner.EmitAsync(RunnerEvent.Of("tool_execution_update", ("toolCallId", toolUpdate.ToolCallId), ("toolName", toolUpdate.ToolName), ("args", toolUpdate.Args), ("partialResult", toolUpdate.PartialResult)));
                 break;
             case ToolExecutionEndEvent toolEnd:
-                await runner.EmitAsync(ExtensionEvent.Of("tool_execution_end", ("toolCallId", toolEnd.ToolCallId), ("toolName", toolEnd.ToolName), ("result", toolEnd.Result), ("isError", toolEnd.IsError)));
+                await runner.EmitAsync(RunnerEvent.Of("tool_execution_end", ("toolCallId", toolEnd.ToolCallId), ("toolName", toolEnd.ToolName), ("result", toolEnd.Result), ("isError", toolEnd.IsError)));
                 break;
         }
         return evt;
@@ -498,6 +498,10 @@ public sealed partial class AgentSession : IDisposable
     public int RetryAttempt => _retryAttempt;
 
     public List<string> GetActiveToolNames() => Agent.State.Tools.Select(t => t.Name).ToList();
+
+    /// <summary>All registered tools (built-in, extension and SDK) with their sources.</summary>
+    public List<Iris.Extensions.ToolInfo> GetAllToolInfos() =>
+        _toolDefinitions.Values.Select(e => new Iris.Extensions.ToolInfo(e.Definition.Name, e.Definition.Description, e.SourceInfo)).ToList();
 
     public List<ToolInfo> GetAllTools() =>
         _toolDefinitions.Values.Select(e => new ToolInfo(e.Definition.Name, e.Definition.Description, e.Definition.Parameters, e.Definition.PromptGuidelines, e.SourceInfo)).ToList();

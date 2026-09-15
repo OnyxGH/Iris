@@ -230,7 +230,7 @@ public sealed class ResourceResolver(string cwd, string agentDir, SettingsManage
     private static List<string> CollectResourceFiles(string dir, string type) => type switch
     {
         "skills" => CollectSkillEntries(dir, "root"),
-        "extensions" => CollectAutoExtensionEntries(dir),
+        "extensions" => ResolveExtensionEntries(dir) ?? CollectAutoExtensionEntries(dir),
         "themes" => CollectFiles(dir, ".json", null, null),
         _ => CollectFiles(dir, ".md", null, null),
     };
@@ -355,20 +355,24 @@ public sealed class ResourceResolver(string cwd, string agentDir, SettingsManage
         return entries;
     }
 
+    /// <summary>A folder is one extension when it has a DLL named after it or contains C# sources.</summary>
     private static List<string>? ResolveExtensionEntries(string dir)
     {
-        var indexTs = Path.Combine(dir, "index.ts");
-        if (File.Exists(indexTs)) return [indexTs];
-        var indexJs = Path.Combine(dir, "index.js");
-        if (File.Exists(indexJs)) return [indexJs];
-        return null;
+        try
+        {
+            if (File.Exists(Path.Combine(dir, Path.GetFileName(dir) + ".dll"))) return [dir];
+            return Directory.EnumerateFiles(dir, "*.cs", SearchOption.TopDirectoryOnly).Any() ? [dir] : null;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private static List<string> CollectAutoExtensionEntries(string dir)
     {
         var entries = new List<string>();
         if (!Directory.Exists(dir)) return entries;
-        if (ResolveExtensionEntries(dir) is { } rootEntries) return rootEntries;
 
         var ig = new IgnoreMatcher();
         ig.AddIgnoreFiles(dir, dir);
@@ -380,7 +384,7 @@ public sealed class ResourceResolver(string cwd, string agentDir, SettingsManage
                 if (ResourcePaths.Stat(entry) is not { } stat) continue;
                 var relPath = ToPosix(Path.GetRelativePath(dir, entry.FullName));
                 if (ig.Ignores(stat.IsDirectory ? relPath + "/" : relPath)) continue;
-                if (stat.IsFile && (entry.Name.EndsWith(".ts", StringComparison.Ordinal) || entry.Name.EndsWith(".js", StringComparison.Ordinal)))
+                if (stat.IsFile && (entry.Name.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
                 {
                     entries.Add(entry.FullName);
                 }

@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using Iris.Agent;
 using Iris.Ai;
 using Iris.CodingAgent.Utils;
+using Iris.Extensions;
 
 namespace Iris.CodingAgent.Core.Tools;
 

@@ -1,52 +1,9 @@
 using System.Text.Json.Nodes;
 using Iris.Agent;
 using Iris.Ai;
+using Iris.Extensions;
 
 namespace Iris.CodingAgent.Core.Tools;
-
-/// <summary>
-/// Context passed to tool and extension handlers.
-/// added together with the extension runtime.
-/// </summary>
-public class ExtensionContext
-{
-    /// <summary>"tui" | "print" | "json" | "rpc".</summary>
-    public string Mode { get; init; } = "print";
-
-    public bool HasUI { get; init; }
-
-    public required string Cwd { get; init; }
-
-    public SessionManager? SessionManager { get; init; }
-
-    public ModelRegistry? ModelRegistry { get; init; }
-
-    public Func<Model?> GetModel { get; init; } = () => null;
-
-    public Model? Model => GetModel();
-
-    public Func<IReadOnlyList<ScopedModel>> GetScopedModels { get; init; } = () => [];
-
-    public IReadOnlyList<ScopedModel> ScopedModels => GetScopedModels();
-
-    public Func<ThinkingLevel?> GetThinkingLevel { get; init; } = () => null;
-
-    public ThinkingLevel? ThinkingLevel => GetThinkingLevel();
-
-    public Func<bool> IsIdle { get; init; } = () => true;
-
-    public Func<bool> IsProjectTrusted { get; init; } = () => false;
-
-    public Func<CancellationToken?> GetSignal { get; init; } = () => null;
-
-    public Action Abort { get; init; } = () => { };
-
-    public Func<bool> HasPendingMessages { get; init; } = () => false;
-
-    public Action Shutdown { get; init; } = () => { };
-
-    public Func<string> GetSystemPrompt { get; init; } = () => "";
-}
 
 public delegate Task<AgentToolResult> ToolDefinitionExecute(
     string toolCallId,
