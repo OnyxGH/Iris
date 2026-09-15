@@ -1,0 +1,2 @@
+{ "providers": { "fake": { "baseUrl": "http://127.0.0.1:8690/v1", "api": "openai-completions", "apiKey": "none",
+  "models": [ { "id": "Fake", "name": "Fake", "reasoning": true, "input": ["text"], "contextWindow": 32000, "maxTokens": 4000 } ] } } }

@@ -1,0 +1,22 @@
+wait 4000
+send run it\r
+wait 1200
+screen streaming
+wait 5000
+screen done
+send \x0f
+wait 500
+screen expanded
+send \x14
+wait 500
+screen thinking-hidden
+send \e
+wait 100
+send \e
+wait 1000
+screen fork
+send \r
+wait 1500
+screen forked
+send \x04
+wait 2000
