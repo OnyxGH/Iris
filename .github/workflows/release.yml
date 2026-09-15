@@ -1,0 +1,70 @@
+name: Release
+
+# Push a tag like v0.1.0 to build, test, pack and publish the iris-agent .NET tool.
+# Publishing uses nuget.org trusted publishing (policy: owner OnyxGH, repository Iris, workflow release.yml).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write # create the GitHub release
+      id-token: write # request the OIDC token for nuget.org
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Resolve version from tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          project_version=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props)
+          if [ "$version" != "$project_version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match <Version>$project_version</Version> in Directory.Build.props"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: dotnet build Iris.slnx -c Release
+
+      - name: Test
+        run: dotnet test Iris.slnx -c Release --no-build
+
+      - name: Pack
+        run: dotnet pack src/Iris.Cli -c Release -o artifacts
+
+      - name: NuGet login (OIDC to temporary API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: Onyx # nuget.org profile name
+
+      - name: Push to NuGet
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: |
+          source=https://api.nuget.org/v3/index.json
+          main="artifacts/iris-agent.$VERSION.nupkg"
+          # Platform packages first, so the top-level package never points at missing packages.
+          for package in artifacts/*.nupkg; do
+            if [ "$package" != "$main" ]; then
+              dotnet nuget push "$package" --api-key "$NUGET_API_KEY" --source "$source" --skip-duplicate
+            fi
+          done
+          dotnet nuget push "$main" --api-key "$NUGET_API_KEY" --source "$source" --skip-duplicate
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" artifacts/*.nupkg --title "Iris $VERSION" --generate-notes
