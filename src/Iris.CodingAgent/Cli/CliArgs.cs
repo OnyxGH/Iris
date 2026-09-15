@@ -305,8 +305,9 @@ public sealed class CliArgs
         sb.AppendLine();
         sb.AppendLine(Chalk.Bold("Commands:"));
         sb.AppendLine($"  {app} config [-l]               Open TUI to enable/disable resources (Tab switches scope)");
+        sb.AppendLine($"  {app} update [--check]          Update Iris (dotnet tool update)");
         sb.AppendLine($"  {app} auth <command>            Print credentials or check provider readiness");
-        sb.AppendLine($"  {app} <command> --help          Show help for config/auth");
+        sb.AppendLine($"  {app} <command> --help          Show help for config/update/auth");
         sb.AppendLine();
         sb.AppendLine(Chalk.Bold("Options:"));
         sb.AppendLine("""

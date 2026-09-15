@@ -122,8 +122,8 @@ Interactive-mode deviations from pi (intentional or pending):
 - Syntax highlighting uses VS Code TextMate grammars (TextMateSharp) with Dark Modern token colors, and Light Modern for light
   themes; languages without a bundled grammar use the heuristic tokenizer with the same palette. pi uses highlight.js with the
   theme's syntax* colors. Mermaid diagrams are not rendered.
-- Version checks read IRIS_LATEST_VERSION_URL (same JSON shape as pi's endpoint) and are skipped when unset; there is no
-  update command (releases will come from GitHub releases).
+- Distribution: .NET tool package `iris-agent` (command `iris`, one package per platform). Version checks read the NuGet
+  version index (IRIS_VERSION_INDEX_URL overrides it); `iris update` runs `dotnet tool update` (after exit on Windows).
 - Encoded image bytes differ from Photon's (different codec); dimensions, size limits and hints match.
 - /login works for API-key providers and llama.cpp; OAuth providers (Anthropic, Copilot, Codex, Kimi, OpenRouter) report "login is not yet supported" because the OAuth flows are not ported. /share and HTML /export show errors.
 - After `/login llama.cpp`, guidance waits for the catalog refresh (pi reports "no models are loaded" before refreshing) and is shown as a status when models are loaded.

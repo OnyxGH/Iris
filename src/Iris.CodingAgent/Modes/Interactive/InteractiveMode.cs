@@ -507,16 +507,10 @@ public sealed partial class InteractiveMode
 
     public void ShowNewVersionNotification(LatestRelease release)
     {
-        var updateInstruction = Theme.Fg("muted", $"New version {release.Version} is available.");
+        var updateInstruction = Theme.Fg("muted", $"New version {release.Version} is available. Run ") + Theme.Fg("accent", $"{AppConfig.AppName} update");
         _chatContainer.AddChild(new Spacer(1));
         _chatContainer.AddChild(new DynamicBorder(text => Theme.Fg("warning", text)));
         _chatContainer.AddChild(new Text($"{Theme.Bold(Theme.Fg("warning", "Update Available"))}\n{updateInstruction}", 1, 0));
-        if (release.Note?.Trim() is { Length: > 0 } note)
-        {
-            _chatContainer.AddChild(new Spacer(1));
-            _chatContainer.AddChild(new MarkdownComponent(note, 1, 0, GetMarkdownThemeWithSettings(), new DefaultTextStyle { Color = text => Theme.Fg("muted", text) }));
-            _chatContainer.AddChild(new Spacer(1));
-        }
         _chatContainer.AddChild(new DynamicBorder(text => Theme.Fg("warning", text)));
         _ui.RequestRender();
     }

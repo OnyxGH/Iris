@@ -8,6 +8,9 @@ namespace Iris.CodingAgent.Config;
 /// </summary>
 public static class AppConfig
 {
+    /// <summary>NuGet package id of the Iris .NET tool.</summary>
+    public const string PackageId = "iris-agent";
+
     /// <summary>Application name.</summary>
     public const string AppName = "iris";
 

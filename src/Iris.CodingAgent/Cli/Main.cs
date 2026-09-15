@@ -259,6 +259,7 @@ public static class Main
         EnvHttpProxy.ApplyHttpProxySetting(Iris.Ai.Json.IrisJson.GetString(bootstrapSettingsManager.GetGlobalSettings()["httpProxy"]));
 
         if (await ConfigCommand.RunAsync(args) is { } configExitCode) return configExitCode;
+        if (await UpdateCommand.RunAsync(args) is { } updateExitCode) return updateExitCode;
 
         var parsed = CliArgs.Parse(args);
         foreach (var d in parsed.Diagnostics)

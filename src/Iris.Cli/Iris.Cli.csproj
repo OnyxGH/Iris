@@ -9,6 +9,29 @@
     <RootNamespace>Iris.Cli</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>iris</ToolCommandName>
+    <PackageId>iris-agent</PackageId>
+    <Authors>Onyx</Authors>
+    <Description>Iris, a terminal coding agent with read, bash, edit and write tools, fullscreen TUI and C# extensions.</Description>
+    <PackageTags>ai;agent;coding-agent;cli;tui;llm</PackageTags>
+    <PackageProjectUrl>https://github.com/OnyxGH/Iris</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/OnyxGH/Iris.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- One small package per platform instead of every native library in one package (.NET 10 RID-specific tools). -->
+    <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;linux-musl-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <ToolPackageRuntimeIdentifiers>$(RuntimeIdentifiers)</ToolPackageRuntimeIdentifiers>
+    <SelfContained>false</SelfContained>
+  </PropertyGroup>
+
+  <!-- Native debug symbols from dependencies (e.g. libSkiaSharp.pdb, ~100 MB per Windows architecture) are not shipped. -->
+  <Target Name="RemoveNativeDebugSymbols" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb' And '%(ResolvedFileToPublish.AssetType)' == 'native'" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <ProjectReference Include="..\Iris.CodingAgent\Iris.CodingAgent.csproj" />
   </ItemGroup>
