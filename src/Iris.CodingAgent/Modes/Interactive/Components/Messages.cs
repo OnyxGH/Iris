@@ -456,7 +456,14 @@ public sealed partial class FooterComponent(AgentSession session, FooterDataProv
     private AgentSession _session = session;
     private bool _autoCompactEnabled = true;
 
-    public void SetSession(AgentSession session) => _session = session;
+    /// <summary>Iris: latest response token rate, shown before the token stats.</summary>
+    public TokenRateMeter TokenRate { get; } = new();
+
+    public void SetSession(AgentSession session)
+    {
+        _session = session;
+        TokenRate.Reset();
+    }
 
     public void SetAutoCompactEnabled(bool enabled) => _autoCompactEnabled = enabled;
 
@@ -543,6 +550,7 @@ public sealed partial class FooterComponent(AgentSession session, FooterDataProv
         if (_session.SessionManager.SessionName is { Length: > 0 } sessionName) pwd = $"{pwd} • {sessionName}";
 
         var statsParts = new List<string>();
+        if (TokenRate.Rate is { } tokenRate) statsParts.Add(TokenRateMeter.Format(tokenRate));
         if (input != 0) statsParts.Add($"↑{FormatTokens(input)}");
         if (output != 0) statsParts.Add($"↓{FormatTokens(output)}");
         if (cacheRead != 0) statsParts.Add($"R{FormatTokens(cacheRead)}");

@@ -1245,6 +1245,7 @@ public sealed partial class InteractiveMode
                 break;
 
             case "message_start" when agentEvent is MessageStartEvent start:
+                _footer.TokenRate.Handle(start);
                 if (start.Message is CustomMessage)
                 {
                     AddMessageToChat(start.Message);
@@ -1267,6 +1268,7 @@ public sealed partial class InteractiveMode
                 break;
 
             case "message_update" when agentEvent is MessageUpdateEvent { Message: AssistantMessage updated }:
+                _footer.TokenRate.Handle(agentEvent);
                 if (_streamingComponent is null) break;
                 _ = RefreshLlamaModelMetadataAsync();
                 _streamingMessage = updated;
@@ -1289,6 +1291,7 @@ public sealed partial class InteractiveMode
                 break;
 
             case "message_end" when agentEvent is MessageEndEvent end:
+                _footer.TokenRate.Handle(end);
                 if (end.Message is UserMessage) break;
                 if (_streamingComponent is not null && end.Message is AssistantMessage finished)
                 {
