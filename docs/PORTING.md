@@ -10,7 +10,9 @@ pi stays the parity baseline, but Iris deliberately deviates in a few places (se
 
 ## Iris deviations (intentional)
 
-- Name and paths: executable `iris`, config `~/.iris/agent` and project `.iris/`, env `IRIS_CODING_AGENT_DIR` etc.
+- Name and paths: executable `iris`, config `~/.iris/agent` and project `.iris/`, env `IRIS_CODING_AGENT_DIR` etc. The system
+  prompt, startup tip, `update` help and HTTP User-Agent say Iris where pi says pi (provider attribution headers and
+  pi.dev service URLs are unchanged).
 - Fullscreen (`tuiMode`) is the default: transcript in a scroll view, input dock (pending messages, status, editor, footer)
   fixed at the bottom. pi defaults to regular. Changing the TUI mode in /settings applies on the next start (pi swaps
   renderers live).

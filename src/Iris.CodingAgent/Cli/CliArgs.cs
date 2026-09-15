@@ -307,7 +307,7 @@ public sealed class CliArgs
         sb.AppendLine($"  {app} install <source> [-l]     Install extension source and add to settings");
         sb.AppendLine($"  {app} remove <source> [-l]      Remove extension source from settings");
         sb.AppendLine($"  {app} uninstall <source> [-l]   Alias for remove");
-        sb.AppendLine($"  {app} update [source|self|pi]   Update pi, extensions, or model catalogs");
+        sb.AppendLine($"  {app} update [source|self|iris] Update Iris, extensions, or model catalogs");
         sb.AppendLine($"  {app} list                      List installed extensions from settings");
         sb.AppendLine($"  {app} config [-l]               Open TUI to enable/disable package resources (Tab switches scope)");
         sb.AppendLine($"  {app} auth <command>            Print credentials or check provider readiness");

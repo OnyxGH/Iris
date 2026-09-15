@@ -434,7 +434,7 @@ public sealed partial class InteractiveMode
                 Raw("!", "bash"),
                 Hint("app.tools.expand", "more"));
             var compactOnboarding = Theme.Fg("dim", $"Press {KeyText("app.tools.expand")} to show full startup help and loaded resources.");
-            var onboarding = Theme.Fg("dim", "Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.");
+            var onboarding = Theme.Fg("dim", "Iris can explain its own features and look up its docs. Ask it how to use or extend Iris.");
             _builtInHeader = new ExpandableText(
                 () => $"{compactInstructions}\n{compactOnboarding}\n\n{onboarding}",
                 () => $"{expandedInstructions}\n\n{onboarding}",

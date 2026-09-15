@@ -114,6 +114,15 @@ public class ResourceFixtureTests : IDisposable
         }
     }
 
+    /// <summary>Iris names itself where pi's prompt says "pi"; everything else must match pi exactly.</summary>
+    private static string IrisNaming(string piPrompt) => piPrompt
+        .Replace("operating inside pi,", "operating inside Iris,")
+        .Replace("Pi documentation (read only when the user asks about pi itself,", "Iris documentation (read only when the user asks about Iris itself,")
+        .Replace("When reading pi docs", "When reading Iris docs")
+        .Replace("pi packages (docs/packages.md)", "Iris packages (docs/packages.md)")
+        .Replace("When working on pi topics", "When working on Iris topics")
+        .Replace("Always read pi .md files", "Always read Iris .md files");
+
     [Fact]
     public void SystemPromptMatchesPi()
     {
@@ -137,7 +146,7 @@ public class ResourceFixtureTests : IDisposable
                 .Replace(AppConfig.DocsPath, "<DOCS>")
                 .Replace(AppConfig.ExamplesPath, "<EXAMPLES>")
                 .Replace(_tree, "<TREE>");
-            Assert.Equal(Str(c["prompt"]), actual);
+            Assert.Equal(IrisNaming(Str(c["prompt"])!), actual);
         }
     }
 }

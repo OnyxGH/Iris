@@ -40,7 +40,7 @@ public static class PackageCommands
     {
         "install" => $"{App} install <source> [-l] [--approve|--no-approve]",
         "remove" => $"{App} remove <source> [-l] [--approve|--no-approve]",
-        "update" => $"{App} update [source|self|pi] [--self|--extensions|--models|--all] [--extension <source>] [--approve|--no-approve] [--force]",
+        "update" => $"{App} update [source|self|iris] [--self|--extensions|--models|--all] [--extension <source>] [--approve|--no-approve] [--force]",
         _ => $"{App} list [--approve|--no-approve]",
     };
 
@@ -111,24 +111,24 @@ public static class PackageCommands
                     {Chalk.Bold("Usage:")}
                       {Usage("update")}
 
-                    Update pi, installed packages, or model catalogs.
+                    Update Iris, installed packages, or model catalogs.
 
                     Options:
-                      --self                  Update pi only (default when no target is given)
+                      --self                  Update Iris only (default when no target is given)
                       --extensions            Update installed packages only
                       --models                Refresh model catalogs only
-                      --all                   Update pi and installed packages
+                      --all                   Update Iris and installed packages
                       --extension <source>    Update one package only
                       -a, --approve           Trust project-local files for this command
                       -na, --no-approve       Ignore project-local files for this command
-                      --force                 Reinstall pi even if the current version is latest
+                      --force                 Reinstall Iris even if the current version is latest
 
                     Short forms:
-                      {App} update                Update pi only
-                      {App} update --all          Update pi and all extensions
+                      {App} update                Update Iris only
+                      {App} update --all          Update Iris and all extensions
                       {App} update --models       Refresh model catalogs only
                       {App} update <source>       Update one package
-                      {App} update pi             Update pi only (self works as alias to pi)
+                      {App} update iris           Update Iris only (self works as alias to iris)
 
                     """);
                 return;
@@ -259,7 +259,7 @@ public static class PackageCommands
             }
             else if (source is not null)
             {
-                if (source is "self" or "pi")
+                if (source is "self" or "iris")
                 {
                     options.UpdateTarget = extensionsFlag ? "all" : "self";
                 }

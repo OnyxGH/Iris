@@ -164,7 +164,7 @@ public static class PiUserAgent
             Architecture.Arm => "arm",
             var other => other.ToString().ToLowerInvariant(),
         };
-        return $"pi ({platform} {Environment.OSVersion.Version}; {arch})";
+        return $"iris ({platform} {Environment.OSVersion.Version}; {arch})";
     });
 
     public static string Get() => Value.Value;
