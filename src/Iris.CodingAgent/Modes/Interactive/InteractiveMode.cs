@@ -311,7 +311,6 @@ public sealed partial class InteractiveMode
 
         if (_options.Verbose || !SettingsManager.QuietStartup)
         {
-            var logo = Theme.Bold(Theme.Fg("accent", AppConfig.AppName)) + Theme.Fg("dim", $" v{_version}");
             string Hint(string keybinding, string description) => KeyHints.KeyHint(keybinding, description);
             string Raw(string key, string description) => KeyHints.RawKeyHint(key, description);
             string KeyText(string keybinding) => KeyHints.KeyText(keybinding);
@@ -345,9 +344,12 @@ public sealed partial class InteractiveMode
             var compactOnboarding = Theme.Fg("dim", $"Press {KeyText("app.tools.expand")} to show full startup help and loaded resources.");
             var onboarding = Theme.Fg("dim", "Pi can explain its own features and look up its docs. Ask it how to use or extend Pi.");
             _builtInHeader = new ExpandableText(
-                () => $"{logo}\n{compactInstructions}\n{compactOnboarding}\n\n{onboarding}",
-                () => $"{logo}\n{expandedInstructions}\n\n{onboarding}",
+                () => $"{compactInstructions}\n{compactOnboarding}\n\n{onboarding}",
+                () => $"{expandedInstructions}\n\n{onboarding}",
                 GetStartupExpansionState(), 1, 0);
+            _headerContainer.AddChild(new Spacer(1));
+            // Iris: gradient banner instead of the one-line pi logo.
+            _headerContainer.AddChild(new IrisBanner(_version));
             _headerContainer.AddChild(new Spacer(1));
             _headerContainer.AddChild(_builtInHeader);
             _headerContainer.AddChild(new Spacer(1));
