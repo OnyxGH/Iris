@@ -51,6 +51,10 @@ public sealed partial class TuiAltScreen : TuiBase
     private const string FocusOut = "\e[O";
     private const string BeginSynchronizedOutput = "\e[?2026h";
     private const string EndSynchronizedOutput = "\e[?2026l";
+    private const string ShowCursorSequence = "\e[?25h";
+    private const string ClearLineSequence = "\r\e[2K";
+    private const string ResetStyleSequence = "\e[0m";
+    private const string CrLf = "\r\n";
     private const int PageScrollOverlap = 4;
     private const int AltWheelScrollMultiplier = 5;
     private const int DoubleClickIntervalMs = 500;
@@ -255,38 +259,40 @@ public sealed partial class TuiAltScreen : TuiBase
         ClearComponentMouseGesture();
         _flashes.Dispose();
         if (!_altScreenActive) return;
-        Terminal.Write($"{BeginSynchronizedOutput}{(_mouseEnabled ? DisableMouse : "")}{EnableAutowrap}{EndSynchronizedOutput}");
+        _altScreenActive = false;
+        // Leave the alternate screen before the terminal is stopped: stopping restores the console's original output
+        // code page on Windows, which would garble the UTF-8 transcript written below.
+        var buffer = new StringBuilder($"{BeginSynchronizedOutput}{(_mouseEnabled ? DisableMouse : "")}{EnableAutowrap}");
+        if (preserveScreen)
+        {
+            buffer.Append($"{ExitAltScreen}{ShowCursorSequence}{EndSynchronizedOutput}");
+            Terminal.Write(buffer.ToString());
+            return;
+        }
+
+        // Print the mounted components (full transcript, then the input dock) to the main screen so the conversation stays
+        // in the terminal scrollback. The fullscreen layout root cannot be used here: its transcript has no natural height.
+        var width = Math.Max(1, Terminal.Columns);
+        var documentLines = RenderChildren(width).Select(line => LayoutEngine.Osc133ZonePrefix().Replace(line, "").Replace(CursorMarker, "", StringComparison.Ordinal)).ToList();
+        var lastDocument = ApplyLineResets(documentLines)
+            .Select(line => TerminalImage.IsImageLine(line) || TextUtils.VisibleWidth(line) <= width ? line : TextUtils.SliceByColumn(line, 0, width, true))
+            .ToList();
+        buffer.Append($"{ExitAltScreen}{DisableAutowrap}");
+        for (var row = 0; row < lastDocument.Count; row++)
+        {
+            if (row > 0) buffer.Append(CrLf);
+            buffer.Append(ClearLineSequence).Append(lastDocument[row]);
+        }
+        buffer.Append($"{ResetStyleSequence}{EnableAutowrap}{CrLf}{ShowCursorSequence}{EndSynchronizedOutput}");
+        Terminal.Write(buffer.ToString());
     }
 
     protected override void AfterTerminalStop(bool preserveScreen)
     {
-        if (!_altScreenActive) return;
-        _altScreenActive = false;
-        if (_savedCapabilities is not null)
-        {
-            TerminalImage.SetCapabilities(_savedCapabilities);
-            _savedCapabilities = null;
-            Invalidate();
-        }
-        if (preserveScreen)
-        {
-            Terminal.Write($"{BeginSynchronizedOutput}{ExitAltScreen}\e[?25h{EndSynchronizedOutput}");
-            return;
-        }
-        // Print the whole document to the main screen so it stays in the terminal scrollback after exit.
-        var width = Math.Max(1, Terminal.Columns);
-        var documentLines = Render(width).Select(line => LayoutEngine.Osc133ZonePrefix().Replace(line, "").Replace(CursorMarker, "", StringComparison.Ordinal)).ToList();
-        var lastDocument = ApplyLineResets(documentLines)
-            .Select(line => TerminalImage.IsImageLine(line) || TextUtils.VisibleWidth(line) <= width ? line : TextUtils.SliceByColumn(line, 0, width, true))
-            .ToList();
-        var buffer = new StringBuilder($"{BeginSynchronizedOutput}{ExitAltScreen}{DisableAutowrap}");
-        for (var row = 0; row < lastDocument.Count; row++)
-        {
-            if (row > 0) buffer.Append("\r\n");
-            buffer.Append("\r\e[2K").Append(lastDocument[row]);
-        }
-        buffer.Append($"\e[0m{EnableAutowrap}\r\n\e[?25h{EndSynchronizedOutput}");
-        Terminal.Write(buffer.ToString());
+        if (_savedCapabilities is null) return;
+        TerminalImage.SetCapabilities(_savedCapabilities);
+        _savedCapabilities = null;
+        Invalidate();
     }
 
     protected override void ResetRenderState()
