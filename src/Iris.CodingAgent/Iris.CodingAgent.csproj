@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Iris.CodingAgent.Tests" />
+    <InternalsVisibleTo Include="Iris.WebAccess.Tests" />
   </ItemGroup>
 
 </Project>

@@ -32,6 +32,7 @@ iris -p "Summarize the changes in the last commit"
 - **Sessions:** saved as JSONL, resumable (`iris --resume`), with branching (`/tree`), forking and compaction.
 - **Customization:** skills, prompt templates, themes, keybindings and settings (`/settings`, `iris config`).
 - **Modes:** interactive, print (`-p`), JSON event stream (`--mode json`) and an RPC mode for editor integrations.
+- **Web access:** `web_search`, `fetch_content` (readable pages, PDFs, GitHub repositories) and `get_search_content`, working without API keys; see [docs/WEB-ACCESS.md](docs/WEB-ACCESS.md).
 - **llama.cpp:** list, load and unload router models with `/llama`.
 
 Run `iris --help` for all options and `/hotkeys` inside Iris for keyboard shortcuts.
@@ -43,7 +44,8 @@ User settings, credentials and sessions live in `~/.iris/agent/`. Project-specif
 
 ## Extensions
 
-Extensions will be written in C#; see [docs/EXTENSIONS.md](docs/EXTENSIONS.md) for the design in progress.
+Extensions are written in C#, as single `.cs` files, folders of sources, or prebuilt assemblies, and placed in
+`~/.iris/agent/extensions/`. See [docs/EXTENSIONS.md](docs/EXTENSIONS.md).
 
 ## Building from source
 
@@ -54,4 +56,5 @@ dotnet test Iris.slnx
 
 ## License
 
-MIT. Iris is derived from [pi](https://github.com/earendil-works/pi) by Mario Zechner; see [LICENSE](LICENSE).
+MIT. Iris is derived from [pi](https://github.com/earendil-works/pi) by Mario Zechner, and its web access extension from
+[pi-web-access](https://github.com/nicobailon/pi-web-access) by Nico Bailon; see [LICENSE](LICENSE).

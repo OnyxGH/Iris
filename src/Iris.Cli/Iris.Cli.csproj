@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Iris.CodingAgent\Iris.CodingAgent.csproj" />
+    <ProjectReference Include="..\Iris.WebAccess\Iris.WebAccess.csproj" />
   </ItemGroup>
 
 </Project>
