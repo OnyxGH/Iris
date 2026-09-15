@@ -19,6 +19,7 @@
     <PackageProjectUrl>https://github.com/OnyxGH/Iris</PackageProjectUrl>
     <RepositoryUrl>https://github.com/OnyxGH/Iris.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- One small package per platform instead of every native library in one package (.NET 10 RID-specific tools). -->
     <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;linux-musl-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <ToolPackageRuntimeIdentifiers>$(RuntimeIdentifiers)</ToolPackageRuntimeIdentifiers>
@@ -31,6 +32,11 @@
       <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb' And '%(ResolvedFileToPublish.AssetType)' == 'native'" />
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <!-- Ships the full license text, including the notice of the project Iris is derived from. -->
+    <None Include="$(MSBuildThisFileDirectory)../../LICENSE" Pack="true" PackagePath="" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Iris.CodingAgent\Iris.CodingAgent.csproj" />
