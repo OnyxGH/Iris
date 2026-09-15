@@ -220,6 +220,9 @@ internal static class ToolParameterBinding
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
     };
 
+    /// <summary>Schema generation reads numbers strictly; binding still accepts numeric strings from models.</summary>
+    private static readonly JsonSerializerOptions SchemaOptions = new(Options) { NumberHandling = JsonNumberHandling.Strict };
+
     public static JsonObject SchemaFor(Type type)
     {
         var exporterOptions = new JsonSchemaExporterOptions
@@ -227,17 +230,58 @@ internal static class ToolParameterBinding
             TreatNullObliviousAsNonNullable = true,
             TransformSchemaNode = (context, node) =>
             {
-                if (node is not JsonObject obj) return node;
+                // An untyped property (JsonNode, object) exports as the schema `true`; use an object so it can carry a description.
+                var obj = node as JsonObject ?? (node is JsonValue value && value.GetValueKind() == JsonValueKind.True ? new JsonObject() : null);
+                if (obj is null) return node;
                 ICustomAttributeProvider? provider = context.PropertyInfo is { } property ? property.AttributeProvider : context.TypeInfo.Type;
-                if (provider?.GetCustomAttributes(typeof(DescriptionAttribute), inherit: true).FirstOrDefault() is DescriptionAttribute description)
-                {
-                    obj.Insert(0, "description", description.Description);
-                }
+                AddDescription(obj, provider);
+                if (context.PropertyInfo is not null) NormalizeOptionalProperty(obj);
                 return obj;
             },
         };
-        return Options.GetJsonSchemaAsNode(type, exporterOptions) as JsonObject
+        var schema = SchemaOptions.GetJsonSchemaAsNode(type, exporterOptions) as JsonObject
             ?? throw new InvalidOperationException($"Tool parameters type {type.Name} must be an object type.");
+        // Some property schemas (untyped values with defaults) are rebuilt after the transform; fix up the top level again.
+        if (schema["properties"] is JsonObject properties)
+        {
+            foreach (var property in SchemaOptions.GetTypeInfo(type).Properties)
+            {
+                if (properties[property.Name] is not JsonObject propertySchema) continue;
+                AddDescription(propertySchema, property.AttributeProvider);
+                NormalizeOptionalProperty(propertySchema);
+            }
+        }
+        return schema;
+    }
+
+    private static void AddDescription(JsonObject schema, ICustomAttributeProvider? provider)
+    {
+        if (schema.ContainsKey("description")) return;
+        if (provider?.GetCustomAttributes(typeof(DescriptionAttribute), inherit: true).FirstOrDefault() is DescriptionAttribute description)
+        {
+            schema.Insert(0, "description", description.Description);
+        }
+    }
+
+    /// <summary>Models omit optional arguments rather than sending null, and some providers reject type unions and null defaults.</summary>
+    private static void NormalizeOptionalProperty(JsonObject schema)
+    {
+        if (schema.TryGetPropertyValue("default", out var defaultValue) && defaultValue is null) schema.Remove("default");
+        if (schema["type"] is JsonArray types && types.Any(t => t?.GetValue<string>() == "null"))
+        {
+            var nonNull = types.Where(t => t?.GetValue<string>() != "null").Select(t => t!.GetValue<string>()).ToList();
+            schema["type"] = nonNull.Count == 1 ? JsonValue.Create(nonNull[0]) : new JsonArray([.. nonNull.Select(t => (JsonNode)JsonValue.Create(t))]);
+        }
+        if (schema["enum"] is JsonArray values && values.Any(v => v is null))
+        {
+            var nonNull = values.Where(v => v is not null).Select(v => v!.DeepClone()).ToList();
+            schema["enum"] = new JsonArray([.. nonNull]);
+            if (!schema.ContainsKey("type") && nonNull.All(v => v.GetValueKind() == JsonValueKind.String))
+            {
+                var index = schema.ContainsKey("description") ? 1 : 0;
+                schema.Insert(index, "type", "string");
+            }
+        }
     }
 
     public static T Bind<T>(JsonObject args) =>
