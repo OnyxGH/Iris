@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Iris.Agent/Iris.Agent.csproj" />
+    <Project Path="src/Iris.Ai/Iris.Ai.csproj" />
+    <Project Path="src/Iris.Cli/Iris.Cli.csproj" />
+    <Project Path="src/Iris.CodingAgent/Iris.CodingAgent.csproj" />
+    <Project Path="src/Iris.Tui/Iris.Tui.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Iris.Agent.Tests/Iris.Agent.Tests.csproj" />
+    <Project Path="tests/Iris.Ai.Tests/Iris.Ai.Tests.csproj" />
+    <Project Path="tests/Iris.CodingAgent.Tests/Iris.CodingAgent.Tests.csproj" />
+    <Project Path="tests/Iris.Tui.Tests/Iris.Tui.Tests.csproj" />
+  </Folder>
+</Solution>

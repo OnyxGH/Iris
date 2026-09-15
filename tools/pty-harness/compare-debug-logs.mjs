@@ -11,7 +11,7 @@ const load = (f) => {
 };
 const a = load(process.argv[2]), b = load(process.argv[3]);
 const vis = (s) => s.replace(/\x1b/g, "⎋");
-console.log(`pi lines=${a.length} pisharp lines=${b.length}`);
+console.log(`pi lines=${a.length} iris lines=${b.length}`);
 // align from the "run it" user message
 const ia = a.findIndex((l) => l.includes("run it")), ib = b.findIndex((l) => l.includes("run it"));
 let diffs = 0;

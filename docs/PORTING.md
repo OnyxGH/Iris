@@ -1,6 +1,6 @@
-# PiSharp porting plan
+# Iris porting plan
 
-PiSharp is a C# (.NET 10) port of [pi](https://pi.dev) — the `@earendil-works/pi-coding-agent` CLI and the
+Iris is a C# (.NET 10) port of [pi](https://pi.dev) — the `@earendil-works/pi-coding-agent` CLI and the
 packages it depends on. The reference TypeScript source lives in `reference/pi` (v0.85.1).
 
 Goal: behave the same as pi. Same CLI flags, slash commands, keybindings, TUI layout, session JSONL format,
@@ -10,7 +10,7 @@ settings/auth/models JSON formats, system prompt, tools, compaction, RPC/JSON pr
 
 | Topic | Decision |
 |-------|----------|
-| Config dir | Same file formats, but default to `~/.pisharp/agent` and project `.pisharp/` so the port never touches real pi data. |
+| Config dir | Same file formats, but default to `~/.iris/agent` and project `.iris/` so the port never touches real pi data. |
 | Providers | Core APIs first: `openai-completions`, `anthropic-messages`, `openai-responses`, `google-generative-ai`, faux. Then Bedrock, Vertex, Mistral, Codex, Azure, OAuth logins. |
 | In scope | Interactive (regular TUI), print, json, rpc modes; HTML export and `/share`; llama.cpp `/llama`. |
 | Out of scope (for now) | `--tui-mode fullscreen`, `packages/{server,client,protocol,chord,telemetry,evals}`, `coding-agent/src/experimental`. |
@@ -22,16 +22,16 @@ settings/auth/models JSON formats, system prompt, tools, compaction, RPC/JSON pr
 
 ## Project map
 
-| pi package | PiSharp project |
+| pi package | Iris project |
 |------------|-----------------|
-| `packages/ai` (pi-ai) | `src/PiSharp.Ai` |
-| `packages/agent` (pi-agent-core: `agent.ts`, `agent-loop.ts`, compaction, branch summarization, tools utils) | `src/PiSharp.Agent` |
-| `packages/tui` (pi-tui) | `src/PiSharp.Tui` |
-| `packages/coding-agent` | `src/PiSharp.CodingAgent` (library) + `src/PiSharp.Cli` (executable `pisharp`) |
+| `packages/ai` (pi-ai) | `src/Iris.Ai` |
+| `packages/agent` (pi-agent-core: `agent.ts`, `agent-loop.ts`, compaction, branch summarization, tools utils) | `src/Iris.Agent` |
+| `packages/tui` (pi-tui) | `src/Iris.Tui` |
+| `packages/coding-agent` | `src/Iris.CodingAgent` (library) + `src/Iris.Cli` (executable `iris`) |
 
 ## Progress
 
-### PiSharp.Ai
+### Iris.Ai
 - [x] Core types (messages, content, model, usage, options, events), JSON converters
 - [x] Event stream (`AssistantMessageEventStream`, lazy streams)
 - [x] Utils: partial JSON, repair, surrogate sanitize, short hash, uuidv7, estimate, overflow, retry classification, provider HTTP/SSE/retry, error formatting
@@ -46,22 +46,22 @@ settings/auth/models JSON formats, system prompt, tools, compaction, RPC/JSON pr
 - [x] Tool argument validation (JSON Schema subset validator + coercion)
 - [x] `PiAi` compat facade (api registry dispatch, env API keys)
 - [ ] Later: `azure-openai-responses`, `openai-codex-responses`, `mistral-conversations`, `bedrock-converse-stream`, `google-vertex`, `pi-messages`, OAuth flows, images API, deferred responses
-- [~] Unit tests (core subset in tests/PiSharp.Ai.Tests)
+- [~] Unit tests (core subset in tests/Iris.Ai.Tests)
 
-### PiSharp.Agent
+### Iris.Agent
 - [x] `Agent`, agent loop, events, tool execution, steering/follow-up queues
 - [x] Compaction + branch summarization (in CodingAgent/Core/Compaction, as in pi; fixture-tested)
 - [x] Truncation/shell-output utilities used by tools (live in CodingAgent, as in pi)
 
-### PiSharp.Tui
+### Iris.Tui
 - [x] Terminal abstraction (Windows console VT / POSIX termios), stdin buffer, key parsing, keybindings, UiDispatcher event loop
 - [x] Differential renderer (main screen), overlays
 - [x] Components: text, box, spacer, markdown (marked 18 lexer port + LaTeX), editor, input, select list, settings list, loader, image
 - [x] Autocomplete, fuzzy matching, word navigation (ICU word segmentation approximated; Han/kana runs grouped)
-- [x] Parity tests against pi-tui fixtures (tests/PiSharp.Tui.Tests, generator: scratchpad gen-tui-fixtures.mjs)
+- [x] Parity tests against pi-tui fixtures (tests/Iris.Tui.Tests, generator: scratchpad gen-tui-fixtures.mjs)
 - [ ] Mouse / alt-screen (fullscreen mode is out of scope)
 
-### PiSharp.CodingAgent / Cli
+### Iris.CodingAgent / Cli
 - [x] Config paths, settings manager, auth storage, models.json, model registry/runtime/resolver
 - [x] Session manager (JSONL tree format), migrations
 - [x] Tools: read, bash, powershell, edit, write, grep, find, ls
@@ -86,21 +86,21 @@ Tui 8, CodingAgent 25). Interactive mode was driven through ConPTY with tools/pt
 model/thinking/settings/scoped-models/tree/session/trust selectors, `!`/`!!` bash, streaming with thinking + tool calls +
 markdown, retry countdown, Ctrl+O/Ctrl+T toggles, double-Escape, /name /export(jsonl) /reload /new /hotkeys /session /debug,
 `--resume` picker, startup trust prompt, exit with resume hint. Against a fake streaming server, `/debug` render dumps from pi
-and pisharp are byte-identical (ANSI included) from the first user message to the footer.
+and iris are byte-identical (ANSI included) from the first user message to the footer.
 
 Threading model: interactive mode runs on a UiDispatcher thread (StartupUi.RunOnUiThreadAsync). Ai/Agent/CodingAgent no longer
 use ConfigureAwait(false) (except AuthStorage/FileLock), so session work started from the UI thread stays on it, matching
 Node's single thread. Print/rpc modes have no synchronization context and are unaffected.
 
-To try it without touching ~/.pisharp: set PISHARP_CODING_AGENT_DIR to a scratch dir containing a models.json, then run
-`src/PiSharp.Cli/bin/Debug/net10.0/pisharp.exe` (interactive) or add `--model llama/Iris -p "..."`.
+To try it without touching ~/.iris: set IRIS_CODING_AGENT_DIR to a scratch dir containing a models.json, then run
+`src/Iris.Cli/bin/Debug/net10.0/iris.exe` (interactive) or add `--model llama/Iris -p "..."`.
 
 Interactive-mode deviations from pi (intentional or pending):
 - Syntax highlighting uses VS Code TextMate grammars (TextMateSharp) with Dark Modern token colors, and Light Modern for light
   themes; languages without a bundled grammar use the heuristic tokenizer with the same palette. pi uses highlight.js with the
   theme's syntax* colors. Mermaid diagrams are not rendered.
-- Version checks read PISHARP_LATEST_VERSION_URL (same JSON shape as pi's endpoint) and are skipped when unset; `update --self`
-  reports that PiSharp cannot self-update. The changelog link in the update notice is omitted.
+- Version checks read IRIS_LATEST_VERSION_URL (same JSON shape as pi's endpoint) and are skipped when unset; `update --self`
+  reports that Iris cannot self-update. The changelog link in the update notice is omitted.
 - Encoded image bytes differ from Photon's (different codec); dimensions, size limits and hints match.
 - /login works for API-key providers and llama.cpp; OAuth providers (Anthropic, Copilot, Codex, Kimi, OpenRouter) report "login is not yet supported" because the OAuth flows are not ported. /share and HTML /export show errors.
 - After `/login llama.cpp`, guidance waits for the catalog refresh (pi reports "no models are loaded" before refreshing) and is shown as a status when models are loaded.
@@ -110,7 +110,7 @@ Interactive-mode deviations from pi (intentional or pending):
 - Ctrl+Z suspend is unsupported on Windows (status message).
 
 Recently done (fixture-tested against the installed pi where noted):
-- PiSharp.Tui (parity tests), interactive components/selectors/theme, InteractiveMode, StartupUi, Main wiring.
+- Iris.Tui (parity tests), interactive components/selectors/theme, InteractiveMode, StartupUi, Main wiring.
 - Tools, ToolsManager, image mime sniffing (fixtures).
 - Skills, PromptTemplates, SystemPrompt, PackageManager.ResolveAsync, DefaultResourceLoader (fixtures).
 - Compaction + branch summarization (fixtures).
@@ -131,5 +131,5 @@ Next steps, in order:
 4. OAuth login flows.
 
 Open questions to raise with the user when relevant:
-- Where PiSharp releases will be published (for PISHARP_LATEST_VERSION_URL and a real self-update).
+- Where Iris releases will be published (for IRIS_LATEST_VERSION_URL and a real self-update).
 - Extension model (their real setup uses pi-localllm-provider, pi-mcp-adapter, ...).
