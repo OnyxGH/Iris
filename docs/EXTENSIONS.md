@@ -135,7 +135,7 @@ A blocked tool call is not executed and does not emit `tool_result`.
    flags, session/agent/turn/message/tool events, `ctx` basics, load errors as diagnostics.
 2. **Interactive UI (done):** dialogs, notify, status, widgets, working message, title, custom components and overlays,
    shortcuts, message renderers, tool `RenderCall`/`RenderResult`, terminal input.
-3. **Web access (core done):** bundled port of pi-web-access (`web_search`, `fetch_content`, `get_search_content`);
-   see [WEB-ACCESS.md](WEB-ACCESS.md). Next: the search curator as a TUI overlay.
+3. **Web access (done):** bundled port of pi-web-access (`web_search`, `fetch_content`, `get_search_content`) with the
+   search curator as a TUI overlay; see [WEB-ACCESS.md](WEB-ACCESS.md).
 4. **Remaining:** RPC-mode UI requests, entry renderers, markdown transformers, autocomplete providers, header/footer
    replacement, moving the built-in llama.cpp provider onto the extension API, example extensions.

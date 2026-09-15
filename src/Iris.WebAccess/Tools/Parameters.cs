@@ -12,6 +12,15 @@ public enum RecencyFilter
     Year,
 }
 
+public enum SearchWorkflow
+{
+    None,
+    [JsonStringEnumMemberName("summary-review")]
+    SummaryReview,
+    [JsonStringEnumMemberName("auto-summary")]
+    AutoSummary,
+}
+
 public enum FetchMode
 {
     Readable,
@@ -40,7 +49,9 @@ public sealed record WebSearchParams(
     [property: Description("Limit to domains (prefix with - to exclude)")]
     List<string>? DomainFilter = null,
     [property: Description("Search provider (auto, all, exa, brave, tavily, perplexity, searxng, duckduckgo) or a non-empty list of providers to search simultaneously. Omit this field to use the configured provider.")]
-    JsonNode? Provider = null);
+    JsonNode? Provider = null,
+    [property: Description("Search workflow: none = return the results (default); summary-review = open the curator so the user can pick results and approve a summary; auto-summary = generate a summary without the curator.")]
+    SearchWorkflow? Workflow = null);
 
 public sealed record FetchContentParams(
     [property: Description("Single URL to fetch")]

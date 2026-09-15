@@ -2,6 +2,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Iris.Extensions;
+using Iris.Tui;
+using Iris.WebAccess.Curator;
 using Iris.WebAccess.Search;
 using Iris.WebAccess.Tools;
 
@@ -16,6 +18,7 @@ public sealed partial class WebAccessExtension
         Description =
             "Search the web with SearXNG, Exa, Brave, Tavily, Perplexity, or DuckDuckGo. Provider lists run simultaneously; \"all\" searches every configured provider except DuckDuckGo. " +
             "Returns source-linked search results or provider answers. For comprehensive research, prefer queries (plural) with 2-4 varied angles over a single query. " +
+            "Searches return without the interactive curator by default; set workflow to \"summary-review\" to let the user pick results and approve a summary, or \"auto-summary\" to summarize without the curator. " +
             "When includeContent is true, full page content is fetched in the background. The configured provider is used when provider is omitted or set to auto; omit provider unless explicitly overriding it.",
         PromptSnippet = "Use for web research questions. Prefer {queries:[...]} with 2-4 varied angles over a single query for broader coverage. Omit provider unless explicitly overriding the configured default.",
         ExecuteAsync = ExecuteWebSearchAsync,
@@ -88,16 +91,167 @@ public sealed partial class WebAccessExtension
             foreach (var source in result.Results) if (!urls.Contains(source.Url)) urls.Add(source.Url);
             if (content is not null) inline.AddRange(content);
         }
-        return BuildSearchReturn(queries, results, urls, includeContent, inline.Count > 0 ? inline : null);
+        var workflow = ResolveWorkflow(args.Workflow, ctx);
+        if (workflow == SearchWorkflow.None) return BuildSearchReturn(new SearchReturn(queries, results, urls, includeContent, inline.Count > 0 ? inline : null));
+
+        var summaryModels = SummaryGenerator.Candidates(ctx.ModelRegistry, ctx.Model, null);
+        if (summaryModels.Count == 0 && workflow == SearchWorkflow.AutoSummary)
+        {
+            return BuildSearchReturn(new SearchReturn(queries, results, urls, includeContent, inline.Count > 0 ? inline : null));
+        }
+
+        call.Update(ToolResult.Text("Generating summary...", new JsonObject { ["phase"] = "generating-summary", ["progress"] = 1 }));
+        var draft = await SummaryGenerator.GenerateAsync(results, ctx.ModelRegistry, ctx.Model, null, null, call.CancellationToken);
+        if (workflow == SearchWorkflow.AutoSummary)
+        {
+            return BuildSearchReturn(new SearchReturn(queries, results, urls, includeContent, inline.Count > 0 ? inline : null)
+            {
+                Workflow = "auto-summary",
+                ApprovedSummary = draft.Summary,
+                SummaryMeta = draft.Meta,
+            });
+        }
+        return await CurateAsync(call, ctx, queries, results, inline, includeContent, draft);
     }
 
-    private ToolResult BuildSearchReturn(List<string> queries, List<QueryResultData> results, List<string> urls, bool includeContent, List<ExtractedContent>? inline)
+    /// <summary>The curator needs a terminal; without one a requested review degrades to an automatic summary.</summary>
+    private static SearchWorkflow ResolveWorkflow(SearchWorkflow? requested, ExtensionContext ctx)
     {
-        var output = new StringBuilder();
-        foreach (var result in results)
+        var workflow = requested ?? WebConfig.GetString("workflow") switch
         {
-            if (queries.Count > 1) output.Append($"## Query: \"{result.Query}\"\n\n");
-            output.Append(result.Error is not null ? $"Error: {result.Error}\n\n" : $"{FormatSearchSummary(result.Results, result.Answer)}\n\n");
+            "summary-review" => SearchWorkflow.SummaryReview,
+            "auto-summary" => SearchWorkflow.AutoSummary,
+            _ => SearchWorkflow.None,
+        };
+        return workflow == SearchWorkflow.SummaryReview && !ctx.HasUI ? SearchWorkflow.AutoSummary : workflow;
+    }
+
+    private async Task<ToolResult> CurateAsync(
+        ToolCallContext call,
+        ExtensionContext ctx,
+        List<string> queries,
+        List<QueryResultData> results,
+        List<ExtractedContent> inline,
+        bool includeContent,
+        SummaryDraft draft)
+    {
+        var state = new CuratorState(results) { Summary = draft.Summary, Meta = draft.Meta };
+        if (draft.Meta.FallbackUsed) state.Status = $"Summary model unavailable ({draft.Meta.FallbackReason}); showing a generated outline.";
+
+        while (true)
+        {
+            call.CancellationToken.ThrowIfCancellationRequested();
+            var action = await ctx.UI.CustomAsync<CuratorAction>(
+                context => new CuratorModal(context, state),
+                new CustomUIOptions
+                {
+                    Overlay = true,
+                    OverlayOptions = new OverlayOptions { Width = SizeValue.Percent(85), MinWidth = 50, MaxHeight = SizeValue.Percent(90) },
+                });
+
+            // A closed overlay yields the default action, Cancel.
+            switch (action)
+            {
+                case CuratorAction.Cancel:
+                    var message = "Search curation cancelled (user).";
+                    return Error(message, message, new JsonObject { ["cancelled"] = true, ["cancelReason"] = "user", ["queryCount"] = queries.Count });
+
+                case CuratorAction.Submit:
+                    var selected = state.Selected();
+                    var summary = state.Summary.Trim();
+                    var meta = state.Meta;
+                    if (summary.Length == 0)
+                    {
+                        var deterministic = SummaryGenerator.Deterministic(selected);
+                        (summary, meta) = (deterministic.Summary, deterministic.Meta);
+                    }
+                    var selectedUrls = new List<string>();
+                    foreach (var url in selected.SelectMany(r => r.Results.Select(source => source.Url)))
+                    {
+                        if (!selectedUrls.Contains(url)) selectedUrls.Add(url);
+                    }
+                    var selectedInline = inline.Where(c => selectedUrls.Contains(c.Url)).ToList();
+                    return BuildSearchReturn(new SearchReturn([.. selected.Select(r => r.Query)], selected, selectedUrls, includeContent, selectedInline.Count > 0 ? selectedInline : null)
+                    {
+                        Curated = true,
+                        CuratedFrom = queries.Count,
+                        Workflow = "summary-review",
+                        ApprovedSummary = summary,
+                        SummaryMeta = meta,
+                    });
+
+                case CuratorAction.Feedback:
+                    var feedback = await ctx.UI.InputAsync("Feedback for the summary", cancellationToken: call.CancellationToken);
+                    if (string.IsNullOrWhiteSpace(feedback)) break;
+                    state.Feedback = feedback.Trim();
+                    await RegenerateAsync(call, ctx, state);
+                    break;
+
+                case CuratorAction.Regenerate:
+                    await RegenerateAsync(call, ctx, state);
+                    break;
+
+                case CuratorAction.Edit:
+                    var edited = await ctx.UI.EditorAsync("Edit the summary", state.Summary);
+                    if (edited is null) break;
+                    state.Summary = edited.Trim();
+                    state.Meta = state.Meta with { Edited = true, TokenEstimate = SummaryGenerator.EstimateTokens(state.Summary) };
+                    state.Status = "Summary edited.";
+                    state.SummaryScroll = 0;
+                    break;
+            }
+        }
+    }
+
+    private static async Task RegenerateAsync(ToolCallContext call, ExtensionContext ctx, CuratorState state)
+    {
+        var selected = state.Selected();
+        if (selected.Count == 0)
+        {
+            state.Status = "Select at least one query before generating a summary.";
+            return;
+        }
+        call.Update(ToolResult.Text("Generating summary...", new JsonObject { ["phase"] = "generating-summary", ["progress"] = 1 }));
+        var draft = await SummaryGenerator.GenerateAsync(selected, ctx.ModelRegistry, ctx.Model, null, state.Feedback, call.CancellationToken);
+        state.Summary = draft.Summary;
+        state.Meta = draft.Meta;
+        state.SummaryScroll = 0;
+        state.Status = draft.Meta.FallbackUsed
+            ? $"Summary model unavailable ({draft.Meta.FallbackReason}); showing a generated outline."
+            : state.Feedback is not null ? "Summary regenerated with your feedback." : "Summary regenerated.";
+    }
+
+    private sealed record SearchReturn(List<string> Queries, List<QueryResultData> Results, List<string> Urls, bool IncludeContent, List<ExtractedContent>? Inline)
+    {
+        public bool Curated { get; init; }
+
+        public int CuratedFrom { get; init; }
+
+        public string? Workflow { get; init; }
+
+        public string? ApprovedSummary { get; init; }
+
+        public SummaryMeta? SummaryMeta { get; init; }
+    }
+
+    private ToolResult BuildSearchReturn(SearchReturn options)
+    {
+        var (queries, results, urls, includeContent, inline) = options;
+        var approvedSummary = options.ApprovedSummary?.Trim();
+        var hasApprovedSummary = approvedSummary is { Length: > 0 };
+        var output = new StringBuilder();
+        if (hasApprovedSummary)
+        {
+            output.Append(approvedSummary);
+        }
+        else
+        {
+            if (options.Curated) output.Append("[These results were manually curated by the user. Use them as-is — do not re-search or discard.]\n\n");
+            foreach (var result in results)
+            {
+                if (queries.Count > 1) output.Append($"## Query: \"{result.Query}\"\n\n");
+                output.Append(result.Error is not null ? $"Error: {result.Error}\n\n" : $"{FormatSearchSummary(result.Results, result.Answer)}\n\n");
+            }
         }
 
         var coveredUrls = inline?.Select(c => c.Url).ToHashSet();
@@ -107,17 +261,17 @@ public sealed partial class WebAccessExtension
         {
             fetchId = ResultStore.GenerateId();
             _iris.AppendEntry(ResultStore.EntryType, _store.StoreFetch(fetchId, inline!));
-            output.Append($"---\nFull content for {inline!.Count} sources available [{fetchId}].");
+            if (!hasApprovedSummary) output.Append($"---\nFull content for {inline!.Count} sources available [{fetchId}].");
         }
         else if (includeContent)
         {
             fetchId = StartBackgroundFetch(urls);
-            if (fetchId is not null) output.Append($"---\nContent fetching in background [{fetchId}]. Will notify when ready.");
+            if (fetchId is not null && !hasApprovedSummary) output.Append($"---\nContent fetching in background [{fetchId}]. Will notify when ready.");
         }
 
         var searchId = ResultStore.GenerateId();
         _iris.AppendEntry(ResultStore.EntryType, _store.StoreSearch(searchId, results));
-        output.Append($"\n---\nResults stored as responseId \"{searchId}\". Use {GetSearchContentTool}({{ responseId: \"{searchId}\", queryIndex: 0 }}) to retrieve them.");
+        if (!hasApprovedSummary) output.Append($"\n---\nResults stored as responseId \"{searchId}\". Use {GetSearchContentTool}({{ responseId: \"{searchId}\", queryIndex: 0 }}) to retrieve them.");
 
         var details = new JsonObject
         {
@@ -130,6 +284,35 @@ public sealed partial class WebAccessExtension
             ["searchId"] = searchId,
         };
         if (fetchId is not null && !hasInlineReady) details["fetchUrls"] = new JsonArray([.. urls.Select(u => (JsonNode)u)]);
+        if (options.Curated)
+        {
+            details["curated"] = true;
+            details["curatedFrom"] = options.CuratedFrom;
+            details["curatedQueries"] = new JsonArray([.. results.Select(r => (JsonNode)new JsonObject
+            {
+                ["query"] = r.Query,
+                ["provider"] = r.Provider,
+                ["answer"] = r.Answer.Length > 0 ? r.Answer : null,
+                ["error"] = r.Error,
+                ["sources"] = new JsonArray([.. r.Results.Select(source => (JsonNode)new JsonObject { ["title"] = source.Title, ["url"] = source.Url })]),
+            })]);
+        }
+        if (hasApprovedSummary && options.Workflow is { } workflow)
+        {
+            var meta = options.SummaryMeta;
+            details["summary"] = new JsonObject
+            {
+                ["text"] = approvedSummary,
+                ["workflow"] = workflow,
+                ["model"] = meta?.Model,
+                ["durationMs"] = meta?.DurationMs ?? 0,
+                ["tokenEstimate"] = meta?.TokenEstimate ?? SummaryGenerator.EstimateTokens(approvedSummary!),
+                ["fallbackUsed"] = meta?.FallbackUsed ?? false,
+                ["fallbackReason"] = meta?.FallbackReason,
+                ["phase"] = meta?.Phase,
+                ["edited"] = meta?.Edited ?? false,
+            };
+        }
         return ToolResult.Text(output.ToString().Trim(), details);
     }
 

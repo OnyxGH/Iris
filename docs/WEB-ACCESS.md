@@ -4,7 +4,7 @@ Iris ships a built-in extension (`src/Iris.WebAccess`) that gives the model thre
 
 | Tool | Does |
 |------|------|
-| `web_search` | Searches the web for one query or several (`queries`, three at a time). Returns answers with source links. With `includeContent: true` it fetches the result pages in the background and tells the model when they are ready. |
+| `web_search` | Searches the web for one query or several (`queries`, three at a time). Returns answers with source links. With `includeContent: true` it fetches the result pages in the background and tells the model when they are ready. With `workflow: "summary-review"` it opens the curator so you can pick the results and approve the summary the model receives. |
 | `fetch_content` | Fetches one or more URLs. HTML pages are reduced to their readable article and converted to Markdown, PDFs are extracted to a Markdown file in the temp directory, and GitHub repository URLs are shallow-cloned so the model can explore real files. `mode: "raw"` returns text responses unchanged. |
 | `get_search_content` | Reads stored results by `responseId`: a query's results, slices of fetched content (`offset`/`limit`), or passages matching `findText` (exact, case-insensitive or fuzzy). |
 
@@ -44,6 +44,29 @@ with `exaBaseUrl`, `braveBaseUrl`, `tavilyBaseUrl` or the matching `*_BASE_URL` 
 API key values can be literal, `$NAME` or `${NAME}` (an environment variable), or `!command` (the command's output, for
 password managers). Start a literal with `$$` or `$!` to escape it.
 
+### Curator
+
+`web_search` takes a `workflow`:
+
+| Workflow | Does |
+|----------|------|
+| `none` (default) | Returns the results to the model. |
+| `summary-review` | Writes a summary draft, then opens the curator modal so you can review it. What you approve is what the model sees. |
+| `auto-summary` | Writes the summary and returns it without opening the curator. |
+
+Set a different default with `"workflow": "summary-review"` in web-search.json. Without a terminal (print, json and rpc
+modes) a review falls back to `auto-summary`.
+
+In the curator, ↑↓ move, space toggles the query or source under the cursor, tab folds a query, and a/n select or clear
+everything. Deselected sources are dropped from the results the model receives; a query with no sources left is dropped
+too. g writes the summary again from the current selection, f asks for feedback and regenerates with it, e opens the
+summary in the editor, page up/down scroll it, enter submits, and escape cancels the search.
+
+Summaries are written by the first model that answers of: `summaryModel` in web-search.json (`provider/model-id`),
+Claude Haiku 4.5, Gemini 3.6 Flash, GPT-5 mini, DeepSeek V4 Flash, then the session's own model — restricted to models
+you have configured. When no model is available, or generation fails or takes longer than 30 seconds, the curator shows
+a deterministic outline of the selected results instead, and says so.
+
 ### Fetching
 
 | Key | Default | Meaning |
@@ -72,6 +95,6 @@ check for proxied hosts (literal private addresses and localhost stay blocked).
 
 ## Not yet ported
 
-The search curator (planned as a TUI overlay), OpenAI, Gemini and the other hosted search providers, YouTube and video
-understanding, page answer mode, hosted page extraction fallbacks (Firecrawl, Jina, ...), authenticated fetching with
-browser cookies, per-call proxies, and the activity widget.
+OpenAI, Gemini and the other hosted search providers, YouTube and video understanding, page answer mode, hosted page
+extraction fallbacks (Firecrawl, Jina, ...), authenticated fetching with browser cookies, per-call proxies, source
+checking, and the activity widget. pi's curator runs in a browser; Iris reviews searches in the terminal instead.

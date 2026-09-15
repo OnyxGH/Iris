@@ -81,6 +81,10 @@ public sealed partial class WebAccessExtension
         var queryCount = DetailInt(details, "queryCount") ?? 1;
         var queryInfo = queryCount == 1 ? "" : $"{DetailInt(details, "successfulQueries") ?? 0}/{queryCount} queries, ";
         var statusLine = theme.Fg("success", $"{queryInfo}{DetailInt(details, "totalResults") ?? 0} sources");
+        if (DetailBool(details, "curated") && DetailInt(details, "curatedFrom") is { } curatedFrom)
+        {
+            statusLine += theme.Fg("muted", $" ({queryCount}/{curatedFrom} queries curated)");
+        }
         var fetchUrls = details?["fetchUrls"] as JsonArray;
         if (DetailString(details, "fetchId") is not null)
         {
@@ -88,18 +92,77 @@ public sealed partial class WebAccessExtension
         }
 
         var text = FirstText(result);
+        var summary = details?["summary"];
+        var summaryText = DetailString(summary, "text")?.Trim() ?? "";
+        var curatedQueries = details?["curatedQueries"] as JsonArray;
         if (!options.Expanded)
         {
             var box = new Box(1, 0);
             box.AddChild(new Text(statusLine, 0, 0));
-            var firstLine = text.Split('\n').Select(l => l.Trim()).FirstOrDefault(l => l.Length > 0 && !l.StartsWith('[') && !l.StartsWith('#') && !l.StartsWith("---", StringComparison.Ordinal));
-            if (firstLine is not null) box.AddChild(new Text(theme.Fg("dim", Ellipsize(firstLine.Replace("**", "", StringComparison.Ordinal), 120)), 0, 0));
+            if (summaryText.Length > 0)
+            {
+                box.AddChild(new Text(theme.Fg("dim", Ellipsize(summaryText.Split('\n')[0], 120)), 0, 0));
+            }
+            else if (curatedQueries is { Count: > 0 })
+            {
+                foreach (var query in curatedQueries.Take(3))
+                {
+                    var sources = query?["sources"] as JsonArray;
+                    var suffix = DetailString(query, "error") is not null ? theme.Fg("error", " (error)") : theme.Fg("dim", $" · {sources?.Count ?? 0} sources");
+                    box.AddChild(new Text(theme.Fg("accent", $"  \"{Ellipsize(DetailString(query, "query") ?? "", 55)}\"") + suffix, 0, 0));
+                }
+                if (curatedQueries.Count > 3) box.AddChild(new Text(theme.Fg("dim", $"  ... and {curatedQueries.Count - 3} more"), 0, 0));
+            }
+            else
+            {
+                var firstLine = text.Split('\n').Select(l => l.Trim()).FirstOrDefault(l => l.Length > 0 && !l.StartsWith('[') && !l.StartsWith('#') && !l.StartsWith("---", StringComparison.Ordinal));
+                if (firstLine is not null) box.AddChild(new Text(theme.Fg("dim", Ellipsize(firstLine.Replace("**", "", StringComparison.Ordinal), 120)), 0, 0));
+            }
             box.AddChild(new Text(theme.Fg("muted", $"... ({KeyHints.KeyText("app.tools.expand")} to expand)"), 0, 0));
             return box;
         }
 
         var lines = new List<string> { statusLine };
-        lines.AddRange(Ellipsize(text, 500).Split('\n').Select(l => theme.Fg("dim", l)));
+        if (summaryText.Length > 0)
+        {
+            lines.Add("");
+            lines.Add(theme.Fg("accent", $"── Summary ({DetailString(summary, "workflow") ?? "summary-review"}) " + new string('─', 32)));
+            lines.Add("");
+            lines.AddRange(summaryText.Split('\n').Select(line => $"  {line}"));
+            lines.Add("");
+            var meta = new List<string>
+            {
+                DetailString(summary, "model") is { } model ? $"model={model}" : "model=deterministic",
+                $"duration={DetailInt(summary, "durationMs") ?? 0}ms",
+                $"tokens~{DetailInt(summary, "tokenEstimate") ?? 0}",
+                $"fallback={(DetailBool(summary, "fallbackUsed") ? "true" : "false")}",
+                $"edited={(DetailBool(summary, "edited") ? "true" : "false")}",
+            };
+            if (DetailString(summary, "fallbackReason") is { } reason) meta.Add($"reason={reason}");
+            lines.Add(theme.Fg("dim", "  " + string.Join(" · ", meta)));
+        }
+        if (curatedQueries is { Count: > 0 })
+        {
+            lines.Add("");
+            lines.Add(theme.Fg("accent", $"── Curated results ({curatedQueries.Count} of {DetailInt(details, "curatedFrom") ?? curatedQueries.Count} queries kept) " + new string('─', 20)));
+            foreach (var query in curatedQueries)
+            {
+                lines.Add("");
+                var provider = DetailString(query, "provider") is { } name ? $" ({name})" : "";
+                lines.Add(theme.Fg("accent", $"  \"{Ellipsize(DetailString(query, "query") ?? "", 65)}\"{provider}"));
+                if (DetailString(query, "error") is { } error) lines.Add(theme.Fg("error", $"  {error}"));
+                foreach (var source in (query?["sources"] as JsonArray) ?? [])
+                {
+                    var url = DetailString(source, "url") ?? "";
+                    var domain = Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.Host : url;
+                    lines.Add(theme.Fg("muted", $"  ▸ {Ellipsize(DetailString(source, "title") ?? "", 50)}") + theme.Fg("dim", $" · {domain}"));
+                }
+            }
+        }
+        else
+        {
+            lines.AddRange(Ellipsize(text, 500).Split('\n').Select(l => theme.Fg("dim", l)));
+        }
         if (fetchUrls is { Count: > 0 })
         {
             lines.Add(theme.Fg("muted", "Fetching:"));

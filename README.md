@@ -32,7 +32,9 @@ iris -p "Summarize the changes in the last commit"
 - **Sessions:** saved as JSONL, resumable (`iris --resume`), with branching (`/tree`), forking and compaction.
 - **Customization:** skills, prompt templates, themes, keybindings and settings (`/settings`, `iris config`).
 - **Modes:** interactive, print (`-p`), JSON event stream (`--mode json`) and an RPC mode for editor integrations.
-- **Web access:** `web_search`, `fetch_content` (readable pages, PDFs, GitHub repositories) and `get_search_content`, working without API keys; see [docs/WEB-ACCESS.md](docs/WEB-ACCESS.md).
+- **Web access:** `web_search` (with an optional curator for reviewing results and approving the summary),
+  `fetch_content` (readable pages, PDFs, GitHub repositories) and `get_search_content`, working without API keys; see
+  [docs/WEB-ACCESS.md](docs/WEB-ACCESS.md).
 - **llama.cpp:** list, load and unload router models with `/llama`.
 
 Run `iris --help` for all options and `/hotkeys` inside Iris for keyboard shortcuts.
