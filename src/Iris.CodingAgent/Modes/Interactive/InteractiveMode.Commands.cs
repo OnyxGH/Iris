@@ -1375,18 +1375,31 @@ public sealed partial class InteractiveMode
         }
 
         var dismissed = false;
-        try
+        var chatRestored = false;
+        void RestoreChat()
         {
-            await Session.ReloadAsync();
+            if (chatRestored) return;
+            chatRestored = true;
             _hideThinkingBlock = SettingsManager.HideThinkingBlock;
             _outputPad = SettingsManager.OutputPad;
             RebuildChatFromMessages();
+        }
+
+        try
+        {
+            await Session.ReloadAsync(() =>
+            {
+                RestoreChat();
+                return Task.CompletedTask;
+            });
+            RestoreChat();
             AppKeybindings.Reload(_keybindings, _runtimeHost.Services.AgentDir);
             if (_builtInHeader is IExpandable header) header.SetExpanded(_toolOutputExpanded);
             ThemeManager.SetRegisteredThemes(Session.ResourceLoader.GetThemes().Themes.Select(ThemeManager.CreateThemeFromResource));
             ApplyRuntimeSettings();
             await _themeController.ApplyFromSettingsAsync();
             SetupAutocompleteProvider();
+            SetupExtensionShortcuts();
             ShowLoadedResources(false, true);
             var savedImplicitProjectTrust = MaybeSaveImplicitProjectTrustAfterReload();
             if (Session.ModelRuntime.GetError() is { Length: > 0 } modelsJsonError) ShowError($"models.json error: {modelsJsonError}");

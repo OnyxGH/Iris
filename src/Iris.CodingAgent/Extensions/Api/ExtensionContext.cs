@@ -135,11 +135,13 @@ public interface IExtensionUI
     /// <summary>Override the working indicator message while the agent runs; null restores the default.</summary>
     void SetWorkingMessage(string? message);
 
-    /// <summary>Set or clear (null) a text widget above or below the editor.</summary>
-    void SetWidget(string key, IReadOnlyList<string>? lines, WidgetPlacement placement = WidgetPlacement.AboveEditor);
+    /// <summary>Show a text widget above or below the editor, replacing any widget with the same key.</summary>
+    void SetWidget(string key, IReadOnlyList<string> lines, WidgetPlacement placement = WidgetPlacement.AboveEditor);
 
-    /// <summary>Set or clear (null) a component widget above or below the editor.</summary>
-    void SetWidget(string key, Func<TuiBase, Theme, IComponent>? factory, WidgetPlacement placement = WidgetPlacement.AboveEditor);
+    /// <summary>Show a component widget above or below the editor, replacing any widget with the same key.</summary>
+    void SetWidget(string key, Func<TuiBase, Theme, IComponent> factory, WidgetPlacement placement = WidgetPlacement.AboveEditor);
+
+    void ClearWidget(string key);
 
     void SetTitle(string title);
 
@@ -183,11 +185,15 @@ public sealed class NoOpExtensionUI : IExtensionUI
     {
     }
 
-    public void SetWidget(string key, IReadOnlyList<string>? lines, WidgetPlacement placement = WidgetPlacement.AboveEditor)
+    public void SetWidget(string key, IReadOnlyList<string> lines, WidgetPlacement placement = WidgetPlacement.AboveEditor)
     {
     }
 
-    public void SetWidget(string key, Func<TuiBase, Theme, IComponent>? factory, WidgetPlacement placement = WidgetPlacement.AboveEditor)
+    public void SetWidget(string key, Func<TuiBase, Theme, IComponent> factory, WidgetPlacement placement = WidgetPlacement.AboveEditor)
+    {
+    }
+
+    public void ClearWidget(string key)
     {
     }
 

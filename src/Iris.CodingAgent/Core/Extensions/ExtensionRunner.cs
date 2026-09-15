@@ -1,14 +1,14 @@
-using Iris.Extensions;
 using System.Text.Json.Nodes;
 using Iris.Agent;
 using Iris.Ai;
 using Iris.CodingAgent.Core.Tools;
+using Iris.Extensions;
 
 namespace Iris.CodingAgent.Core.Extensions;
 
 /// <summary>
-/// An extension event. Until the Iris extension model is designed, events are carried as a type name plus named
-/// payload values.
+/// An event raised by AgentSession, carried as a wire name plus named payload values. The runner converts it to the
+/// typed <see cref="Iris.Extensions.ExtensionEvent"/> handed to extensions.
 /// </summary>
 public sealed record RunnerEvent(string Type, IReadOnlyDictionary<string, object?>? Data = null)
 {
@@ -17,6 +17,24 @@ public sealed record RunnerEvent(string Type, IReadOnlyDictionary<string, object
 }
 
 public sealed record ExtensionError(string ExtensionPath, string Event, string Error, string? Stack = null);
+
+/// <summary>What a mode provides to extensions. Kept by the session and reapplied whenever the runner is rebuilt.</summary>
+public sealed class ExtensionBindings
+{
+    /// <summary>Null for modes without an interactive UI.</summary>
+    public IExtensionUI? UI { get; init; }
+
+    /// <summary>See <see cref="ExtensionModes"/>.</summary>
+    public string Mode { get; init; } = ExtensionModes.Print;
+
+    /// <summary>Called when an extension requests shutdown (ctx.Shutdown()).</summary>
+    public Action? ShutdownHandler { get; init; }
+
+    /// <summary>Reloads settings, resources and extensions the way the mode's /reload does.</summary>
+    public Func<Task>? ReloadHandler { get; init; }
+
+    public Action<ExtensionError>? OnError { get; init; }
+}
 
 public sealed record RegisteredTool(ToolDefinition Definition, SourceInfo SourceInfo);
 

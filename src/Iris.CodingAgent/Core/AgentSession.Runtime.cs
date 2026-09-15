@@ -27,10 +27,10 @@ public sealed partial class AgentSession
         GetSystemPrompt = () => SystemPrompt,
     };
 
-    /// <summary>Bind an error listener and emit session_start / resources_discover to extensions.</summary>
-    public async Task BindExtensionsAsync(Action<ExtensionError>? onError = null)
+    /// <summary>Bind the mode's UI, handlers and error listener, then emit session_start / resources_discover to extensions.</summary>
+    public async Task BindExtensionsAsync(ExtensionBindings bindings)
     {
-        if (onError is not null) _extensionErrorListener = onError;
+        _extensionBindings = bindings;
         ApplyExtensionBindings(_extensionRunner);
         await _extensionRunner.EmitAsync(RunnerEvent.Of("session_start", ("reason", _config.SessionStartReason)));
         await ExtendResourcesFromExtensionsAsync(_config.SessionStartReason == "reload" ? "reload" : "startup");
@@ -38,8 +38,14 @@ public sealed partial class AgentSession
 
     private void ApplyExtensionBindings(IExtensionRunner runner)
     {
+        if (runner is ExtensionRunner extensionRunner && _extensionBindings is { } bindings)
+        {
+            extensionRunner.SetUIContext(bindings.UI, bindings.Mode);
+            extensionRunner.ShutdownRequested = bindings.ShutdownHandler;
+            extensionRunner.ReloadRequested = bindings.ReloadHandler;
+        }
         _extensionErrorSubscription?.Dispose();
-        _extensionErrorSubscription = _extensionErrorListener is null ? null : runner.OnError(_extensionErrorListener);
+        _extensionErrorSubscription = _extensionBindings?.OnError is { } onError ? runner.OnError(onError) : null;
     }
 
     private async Task ExtendResourcesFromExtensionsAsync(string reason)
@@ -52,7 +58,7 @@ public sealed partial class AgentSession
         {
             var source = e.ExtensionPath.StartsWith('<')
                 ? $"extension:{e.ExtensionPath.Replace("<", "").Replace(">", "")}"
-                : $"extension:{System.Text.RegularExpressions.Regex.Replace(Path.GetFileName(e.ExtensionPath), @"\.(ts|js)$", "")}";
+                : $"extension:{System.Text.RegularExpressions.Regex.Replace(Path.GetFileName(e.ExtensionPath), @"\.(cs|dll)$", "")}";
             var baseDir = e.ExtensionPath.StartsWith('<') ? null : Path.GetDirectoryName(e.ExtensionPath);
             return (e.Path, new PathMetadata(source, "temporary", "top-level", baseDir));
         }).ToList();
@@ -156,18 +162,25 @@ public sealed partial class AgentSession
     }
 
     /// <summary>Reload settings, resources and the extension runtime, keeping the active tool set.</summary>
-    public async Task ReloadAsync()
+    /// <summary>Reload settings, resources and extensions; beforeSessionStart runs before the new extensions receive session_start.</summary>
+    public async Task ReloadAsync(Func<Task>? beforeSessionStart = null)
     {
         var oldRunner = _extensionRunner;
+        var previousFlagValues = oldRunner.GetFlagValues();
         await oldRunner.EmitAsync(RunnerEvent.Of("session_shutdown", ("reason", "reload")));
         oldRunner.Invalidate();
         await SettingsManager.ReloadAsync();
         SyncQueueModesFromSettings();
         await _resourceLoader.ReloadAsync();
+        if (_resourceLoader.Extensions.Extensions.Count > 0)
+        {
+            foreach (var (name, value) in previousFlagValues) _resourceLoader.Extensions.Runtime.FlagValues[name] = value;
+        }
         BuildRuntime(GetActiveToolNames(), includeAllExtensionTools: true);
 
-        if (_extensionErrorListener is not null)
+        if (_extensionBindings is not null)
         {
+            if (beforeSessionStart is not null) await beforeSessionStart();
             await _extensionRunner.EmitAsync(RunnerEvent.Of("session_start", ("reason", "reload")));
             await ExtendResourcesFromExtensionsAsync("reload");
         }

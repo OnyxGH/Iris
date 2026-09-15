@@ -815,9 +815,10 @@ public sealed partial class InteractiveMode
 
     private async Task BindCurrentSessionExtensionsAsync()
     {
-        await Session.BindExtensionsAsync(error => _dispatcher.Invoke(() => ShowExtensionError(error.ExtensionPath, error.Error, null)));
+        await Session.BindExtensionsAsync(CreateExtensionBindings());
         ThemeManager.SetRegisteredThemes(Session.ResourceLoader.GetThemes().Themes.Select(ThemeManager.CreateThemeFromResource));
         SetupAutocompleteProvider();
+        SetupExtensionShortcuts();
         ShowLoadedResources(false, true);
         ShowStartupNoticesIfNeeded();
     }
@@ -941,20 +942,14 @@ public sealed partial class InteractiveMode
         _ui.RequestRender();
     }
 
-    private void RenderWidgets()
-    {
-        _widgetContainerAbove.Clear();
-        _widgetContainerAbove.AddChild(new Spacer(1));
-        _widgetContainerBelow.Clear();
-        _ui.RequestRender();
-    }
-
     private void ResetExtensionUI()
     {
         if (_extensionSelector is not null) HideExtensionSelector();
         if (_extensionInput is not null) HideExtensionInput();
         if (_extensionEditor is not null) HideExtensionEditor();
         _ui.HideOverlay();
+        ClearExtensionTerminalInputListeners();
+        ClearExtensionWidgets();
         _footerDataProvider.ClearExtensionStatuses();
         _footer.Invalidate();
         SetupAutocompleteProvider();
@@ -984,10 +979,18 @@ public sealed partial class InteractiveMode
 
     // ----- Dialogs -----
 
-    private Task<string?> ShowExtensionSelectorAsync(string title, List<string> options)
+    private Task<string?> ShowExtensionSelectorAsync(string title, List<string> options, CancellationToken cancellationToken = default)
     {
         var tcs = new TaskCompletionSource<string?>();
-        _extensionSelector = new ExtensionSelectorComponent(title, options,
+        if (cancellationToken.IsCancellationRequested) return Task.FromResult<string?>(null);
+        ExtensionSelectorComponent? selector = null;
+        var registration = cancellationToken.Register(() => _dispatcher.Invoke(() =>
+        {
+            if (!tcs.TrySetResult(null) || !ReferenceEquals(_extensionSelector, selector)) return;
+            HideExtensionSelector();
+        }));
+        _ = tcs.Task.ContinueWith(_ => registration.Dispose(), TaskScheduler.Default);
+        _extensionSelector = selector = new ExtensionSelectorComponent(title, options,
             option =>
             {
                 HideExtensionSelector();
@@ -1035,10 +1038,18 @@ public sealed partial class InteractiveMode
     private async Task<string?> PromptForMissingSessionCwdAsync(MissingSessionCwdException error) =>
         await ShowExtensionConfirmAsync("Session cwd not found", error.Issue.PromptMessage) ? error.Issue.FallbackCwd : null;
 
-    private Task<string?> ShowExtensionInputAsync(string title)
+    private Task<string?> ShowExtensionInputAsync(string title, CancellationToken cancellationToken = default)
     {
         var tcs = new TaskCompletionSource<string?>();
-        _extensionInput = new ExtensionInputComponent(title,
+        if (cancellationToken.IsCancellationRequested) return Task.FromResult<string?>(null);
+        ExtensionInputComponent? input = null;
+        var registration = cancellationToken.Register(() => _dispatcher.Invoke(() =>
+        {
+            if (!tcs.TrySetResult(null) || !ReferenceEquals(_extensionInput, input)) return;
+            HideExtensionInput();
+        }));
+        _ = tcs.Task.ContinueWith(_ => registration.Dispose(), TaskScheduler.Default);
+        _extensionInput = input = new ExtensionInputComponent(title,
             value =>
             {
                 HideExtensionInput();
@@ -1513,7 +1524,7 @@ public sealed partial class InteractiveMode
             case CustomMessage custom:
                 if (custom.Display)
                 {
-                    var component = new CustomMessageComponent(custom, null, GetMarkdownThemeWithSettings(), _outputPad);
+                    var component = new CustomMessageComponent(custom, GetExtensionMessageRenderer(custom.CustomType), GetMarkdownThemeWithSettings(), _outputPad);
                     component.SetExpanded(_toolOutputExpanded);
                     _chatContainer.AddChild(component);
                 }

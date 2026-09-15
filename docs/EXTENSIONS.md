@@ -1,7 +1,7 @@
 # Iris extensions
 
-Status: phase 1 (loader, runner, hooks, tools, commands, flags) is implemented. The interactive UI context and the
-bundled web-access extension are in progress.
+Status: phases 1 and 2 (loader, runner, hooks, tools, commands, flags, interactive UI) are implemented. The bundled
+web-access extension is in progress.
 
 ## Decisions
 
@@ -66,8 +66,9 @@ public sealed record CountWordsParams([property: Description("File path, relativ
 ```
 
 Source extensions get implicit usings for `System`, `System.Collections.Generic`, `System.IO`, `System.Linq`,
-`System.Net.Http`, `System.Threading`, `System.Threading.Tasks`, `System.Text.Json`, `System.Text.Json.Nodes`, `Iris.Ai`
-and `Iris.Extensions`, with nullable reference types enabled.
+`System.Net.Http`, `System.Threading`, `System.Threading.Tasks`, `System.Text.Json`, `System.Text.Json.Nodes`, `Iris.Ai`,
+`Iris.Extensions`, `Iris.Tui`, `Iris.Tui.Components` and `Iris.CodingAgent.Modes.Interactive` (themes), with nullable
+reference types enabled.
 
 ### Surface
 
@@ -87,9 +88,13 @@ The public API lives in the `Iris.Extensions` namespace of the `Iris.CodingAgent
 - `ExtensionContext`: `UI`, `HasUI`, `Mode`, `Cwd`, `SessionManager`, `ModelRegistry`, `Model`, `IsIdle`, `Abort`,
   `Compact`, `GetContextUsage`, `GetSystemPrompt`, `Shutdown`; command handlers get a `CommandContext` with
   `WaitForIdleAsync` and `ReloadAsync`.
-- `ctx.UI`: `SelectAsync`, `ConfirmAsync`, `InputAsync`, `EditorAsync`, `Notify`, `SetStatus`, `SetWorkingMessage`,
-  `SetWidget`, `SetTitle`, `CustomAsync<T>` (any `Iris.Tui` component, optionally as an overlay), editor text access and
-  terminal input listeners. Without a UI (print/json mode) dialogs return defaults.
+- `ctx.UI`: `SelectAsync`, `ConfirmAsync`, `InputAsync` (cancellable), `EditorAsync`, `Notify`, `SetStatus` (footer),
+  `SetWorkingMessage`, `SetWidget` / `ClearWidget` (text lines or a component, above or below the editor), `SetTitle`,
+  `CustomAsync<T>` (any `Iris.Tui` component in place of the editor, or as an overlay), `Get/SetEditorText`,
+  `PasteToEditor` and `OnTerminalInput`. It is safe to call from any thread. Without a UI (print, json and rpc modes)
+  dialogs return null/false and the rest does nothing.
+- UI state (statuses, widgets, overlays, shortcuts, input listeners) is cleared on `/reload`, `/new`, `/resume` and
+  `/fork`; extensions set it again from `SessionStartEvent`. Flag values survive `/reload`.
 
 Hook semantics follow pi: extensions run in load order; `tool_call` stops at the first block and handler errors
 propagate (a broken guard cannot let a tool run); `tool_result` and `message_end` chain modifications;
@@ -128,7 +133,7 @@ A blocked tool call is not executed and does not emit `tool_result`.
 
 1. **Core (done):** loader (source, DLL, cache, reload), runner with the hooks AgentSession calls, tools, commands,
    flags, session/agent/turn/message/tool events, `ctx` basics, load errors as diagnostics.
-2. **Interactive UI:** dialogs, notify, status, widgets, working message, title, custom components and overlays,
+2. **Interactive UI (done):** dialogs, notify, status, widgets, working message, title, custom components and overlays,
    shortcuts, message renderers, tool `RenderCall`/`RenderResult`, terminal input.
 3. **Web access:** bundled port of pi-web-access (`web_search`, `fetch_content`, `get_search_content`), later the
    curator as a TUI overlay.

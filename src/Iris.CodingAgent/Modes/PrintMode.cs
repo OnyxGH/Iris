@@ -1,7 +1,9 @@
 using Iris.Ai;
 using Iris.Ai.Json;
 using Iris.CodingAgent.Core;
+using Iris.CodingAgent.Core.Extensions;
 using Iris.CodingAgent.Utils;
+using Iris.Extensions;
 
 namespace Iris.CodingAgent.Modes;
 
@@ -37,7 +39,11 @@ public static class PrintMode
         async Task RebindSessionAsync()
         {
             session = runtime.Session;
-            await session.BindExtensionsAsync(err => Console.Error.WriteLine($"Extension error ({err.ExtensionPath}): {err.Error}"));
+            await session.BindExtensionsAsync(new ExtensionBindings
+            {
+                Mode = mode == "json" ? ExtensionModes.Json : ExtensionModes.Print,
+                OnError = err => Console.Error.WriteLine($"Extension error ({err.ExtensionPath}): {err.Error}"),
+            });
             subscription?.Dispose();
             subscription = session.Subscribe(evt =>
             {

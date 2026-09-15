@@ -86,7 +86,7 @@ public static class AgentSessionServicesFactory
 
         foreach (var error in resourceLoader.Extensions.Errors)
         {
-            diagnostics.Add(new AgentSessionRuntimeDiagnostic("error", $"Extension \"{error.Path}\" failed to load: {error.Error}"));
+            diagnostics.Add(new AgentSessionRuntimeDiagnostic("error", $"Failed to load extension \"{error.Path}\": {error.Error}"));
         }
 
         // Unknown flags are only valid when a loaded extension registered them.

@@ -98,7 +98,7 @@ public sealed partial class AgentSession : IDisposable
     private readonly HashSet<string>? _allowedToolNames;
     private readonly HashSet<string>? _excludedToolNames;
     private IDisposable? _extensionErrorSubscription;
-    private Action<ExtensionError>? _extensionErrorListener;
+    private ExtensionBindings? _extensionBindings;
 
     private readonly ModelRuntime _modelRuntime;
 

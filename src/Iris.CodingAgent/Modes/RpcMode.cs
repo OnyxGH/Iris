@@ -5,8 +5,10 @@ using Iris.Agent;
 using Iris.Ai;
 using Iris.Ai.Json;
 using Iris.CodingAgent.Core;
+using Iris.CodingAgent.Core.Extensions;
 using Iris.CodingAgent.Core.Compaction;
 using Iris.CodingAgent.Utils;
+using Iris.Extensions;
 
 namespace Iris.CodingAgent.Modes;
 
@@ -68,10 +70,14 @@ public sealed class RpcMode
     private async Task RebindSessionAsync()
     {
         _session = _runtime.Session;
-        await _session.BindExtensionsAsync(err => Output(new JsonObject
+        await _session.BindExtensionsAsync(new ExtensionBindings
         {
-            ["type"] = "extension_error", ["extensionPath"] = err.ExtensionPath, ["event"] = err.Event, ["error"] = err.Error,
-        }));
+            Mode = ExtensionModes.Rpc,
+            OnError = err => Output(new JsonObject
+            {
+                ["type"] = "extension_error", ["extensionPath"] = err.ExtensionPath, ["event"] = err.Event, ["error"] = err.Error,
+            }),
+        });
         _subscription?.Dispose();
         _subscription = _session.Subscribe(evt => Output(JsonEvents.ToJson(evt)));
     }

@@ -88,7 +88,8 @@ public static class ExtensionLoader
     private static readonly string[] ImplicitUsings =
     [
         "System", "System.Collections.Generic", "System.IO", "System.Linq", "System.Net.Http", "System.Threading",
-        "System.Threading.Tasks", "System.Text.Json", "System.Text.Json.Nodes", "Iris.Ai", "Iris.Extensions",
+        "System.Threading.Tasks", "System.Text.Json", "System.Text.Json.Nodes", "Iris.Ai", "Iris.Extensions", "Iris.Tui",
+        "Iris.Tui.Components", "Iris.CodingAgent.Modes.Interactive",
     ];
 
     private static readonly Lazy<IReadOnlyList<MetadataReference>> HostReferences = new(CreateHostReferences);
@@ -134,7 +135,7 @@ public static class ExtensionLoader
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                errors.Add(new ExtensionLoadError(entry.Path, $"Failed to load extension: {ex.Message}"));
+                errors.Add(new ExtensionLoadError(entry.Path, ex.Message));
             }
         }
         return new ExtensionLoadResult(extensions, errors, runtime, contexts);

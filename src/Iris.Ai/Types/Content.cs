@@ -133,4 +133,7 @@ public sealed class UserContent
         Blocks ?? (IReadOnlyList<ContentBlock>)[new TextContent(Text ?? "")];
 
     public UserContent Clone() => Text is not null ? FromText(Text) : FromBlocks(Blocks!.Select(b => b.Clone()));
+
+    /// <summary>The text, or the concatenated text blocks.</summary>
+    public override string ToString() => Text ?? string.Concat(Blocks!.OfType<TextContent>().Select(b => b.Text));
 }
