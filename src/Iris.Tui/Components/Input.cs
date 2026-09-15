@@ -1,8 +1,10 @@
 namespace Iris.Tui.Components;
 
 /// <summary>Single-line text input with horizontal scrolling. Port of pi-tui Input.</summary>
-public sealed class Input : IInputComponent, IFocusable
+public sealed class Input : IInputComponent, IFocusable, IMouseComponent
 {
+    private int _renderedStartColumn;
+
     private sealed record State(string Value, int Cursor);
 
     private string _value = "";
@@ -298,6 +300,28 @@ public sealed class Input : IInputComponent, IFocusable
     {
     }
 
+    public TuiMouseEventResult? HandleMouse(TuiMouseEvent mouseEvent)
+    {
+        if (mouseEvent.Type != TuiMouseEventType.Press || mouseEvent.Button != TuiMouseButton.Left || mouseEvent.Y != 0) return null;
+        var targetColumn = _renderedStartColumn + Math.Max(0, mouseEvent.X - 2);
+        var currentColumn = 0;
+        _cursor = _value.Length;
+        var index = 0;
+        foreach (var grapheme in TextUtils.Graphemes(_value))
+        {
+            var nextColumn = currentColumn + TextUtils.VisibleWidth(grapheme);
+            if (targetColumn < nextColumn)
+            {
+                _cursor = index;
+                break;
+            }
+            currentColumn = nextColumn;
+            index += grapheme.Length;
+        }
+        _lastAction = null;
+        return TuiMouseEventResult.HandledFocus;
+    }
+
     public List<string> Render(int width)
     {
         var available = width - TextUtils.VisibleWidth(_prompt);
@@ -316,6 +340,7 @@ public sealed class Input : IInputComponent, IFocusable
         string visibleText;
         var cursorDisplay = _cursor;
         var totalWidth = TextUtils.VisibleWidth(_value);
+        _renderedStartColumn = 0;
         if (totalWidth < available)
         {
             visibleText = _value;
@@ -331,6 +356,7 @@ public sealed class Input : IInputComponent, IFocusable
                 if (cursorCol < half) startCol = 0;
                 else if (cursorCol > totalWidth - half) startCol = Math.Max(0, totalWidth - scrollWidth);
                 else startCol = Math.Max(0, cursorCol - half);
+                _renderedStartColumn = startCol;
                 visibleText = TextUtils.SliceByColumn(_value, startCol, scrollWidth, true);
                 cursorDisplay = TextUtils.SliceByColumn(_value, startCol, Math.Max(0, cursorCol - startCol), true).Length;
             }

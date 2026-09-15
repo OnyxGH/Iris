@@ -573,7 +573,7 @@ public sealed partial class InteractiveMode
                 QuietStartup = SettingsManager.QuietStartup,
                 ClearOnShrink = SettingsManager.ClearOnShrink,
                 ShowTerminalProgress = SettingsManager.ShowTerminalProgress,
-                TuiMode = "regular",
+                TuiMode = _ui.Mode,
                 FullscreenExitOutput = SettingsManager.FullscreenExitOutput,
                 FullscreenScrollbar = SettingsManager.FullscreenScrollbar,
                 FullscreenCopyOnSelect = SettingsManager.FullscreenCopyOnSelect,
@@ -717,12 +717,21 @@ public sealed partial class InteractiveMode
                 OnShowTerminalProgressChange = SettingsManager.SetShowTerminalProgress,
                 OnTuiModeChange = mode =>
                 {
-                    selector?.GetSettingsList().UpdateValue("tui-mode", "regular");
-                    if (mode != "regular") ShowStatus("Fullscreen TUI mode is not supported in Iris");
+                    // Iris: renderers are not swapped live; the new mode applies on the next start.
+                    SettingsManager.SetTuiMode(mode);
+                    ShowStatus(mode == _ui.Mode ? $"TUI mode: {mode}" : $"TUI mode set to {mode}; restart Iris to apply");
                 },
                 OnFullscreenExitOutputChange = SettingsManager.SetFullscreenExitOutput,
-                OnFullscreenScrollbarChange = SettingsManager.SetFullscreenScrollbar,
-                OnFullscreenCopyOnSelectChange = SettingsManager.SetFullscreenCopyOnSelect,
+                OnFullscreenScrollbarChange = mode =>
+                {
+                    SettingsManager.SetFullscreenScrollbar(mode);
+                    _transcriptScrollView?.SetScrollbar(ParseScrollbarSetting(mode));
+                },
+                OnFullscreenCopyOnSelectChange = enabled =>
+                {
+                    SettingsManager.SetFullscreenCopyOnSelect(enabled);
+                    if (_ui is TuiAltScreen altScreen) altScreen.CopyOnSelect = enabled;
+                },
                 OnWarningsChange = SettingsManager.SetWarnings,
                 OnCancel = () =>
                 {
@@ -1486,8 +1495,13 @@ public sealed partial class InteractiveMode
 
     private void HandleShareCommand() => ShowError("/share is not available in Iris yet.");
 
-    private async Task HandleCopyCommandAsync()
+    private async Task HandleCopyCommandAsync(bool flashConfirmation = false, bool preferSelection = false)
     {
+        if (preferSelection && _ui is TuiAltScreen { CopyOnSelect: false } selectionUi && selectionUi.HasActiveSelection())
+        {
+            await selectionUi.CopyActiveSelectionToClipboardAsync();
+            return;
+        }
         var text = Session.GetLastAssistantText();
         if (string.IsNullOrEmpty(text))
         {
@@ -1497,7 +1511,8 @@ public sealed partial class InteractiveMode
         try
         {
             await Clipboard.CopyAsync(text);
-            ShowStatus("Copied last agent message to clipboard");
+            if (flashConfirmation && _ui is TuiAltScreen flashUi) flashUi.Flash("Copied!");
+            else ShowStatus("Copied last agent message to clipboard");
         }
         catch (Exception ex)
         {
@@ -1806,7 +1821,8 @@ public sealed partial class InteractiveMode
         _unsubscribe = null;
         if (_isInitialized)
         {
-            _ui.Stop();
+            // Fullscreen: "transcript" prints the conversation to the main screen on exit; "resume-hint" leaves it clean.
+            _ui.Stop(preserveScreen: _ui is TuiAltScreen && SettingsManager.FullscreenExitOutput != "transcript");
             _isInitialized = false;
         }
         UnregisterSignalHandlers();

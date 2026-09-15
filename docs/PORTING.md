@@ -6,14 +6,29 @@ packages it depends on. The reference TypeScript source lives in `reference/pi` 
 Goal: behave the same as pi. Same CLI flags, slash commands, keybindings, TUI layout, session JSONL format,
 settings/auth/models JSON formats, system prompt, tools, compaction, RPC/JSON protocols.
 
+pi stays the parity baseline, but Iris deliberately deviates in a few places (see "Iris deviations" below).
+
+## Iris deviations (intentional)
+
+- Name and paths: executable `iris`, config `~/.iris/agent` and project `.iris/`, env `IRIS_CODING_AGENT_DIR` etc.
+- Fullscreen (`tuiMode`) is the default: transcript in a scroll view, input dock (pending messages, status, editor, footer)
+  fixed at the bottom. pi defaults to regular. Changing the TUI mode in /settings applies on the next start (pi swaps
+  renderers live).
+- Fullscreen selection that starts outside a scroll view stays inside the section (editor, footer, overlay...) where it
+  started, like OpenCode's per-section selection; pi selects across screen rows.
+- Footer starts with the latest response's output token rate (`120tok/s`), measured from the first streamed delta.
+- Startup header shows a gradient IRIS block-letter banner instead of the one-line logo.
+- llama.cpp models selected while unloaded get their real context size once they answer (catalog re-read); pi keeps the
+  128k placeholder.
+
 ## Decisions
 
 | Topic | Decision |
 |-------|----------|
 | Config dir | Same file formats, but default to `~/.iris/agent` and project `.iris/` so the port never touches real pi data. |
 | Providers | Core APIs first: `openai-completions`, `anthropic-messages`, `openai-responses`, `google-generative-ai`, faux. Then Bedrock, Vertex, Mistral, Codex, Azure, OAuth logins. |
-| In scope | Interactive (regular TUI), print, json, rpc modes; HTML export and `/share`; llama.cpp `/llama`. |
-| Out of scope (for now) | `--tui-mode fullscreen`, `packages/{server,client,protocol,chord,telemetry,evals}`, `coding-agent/src/experimental`. |
+| In scope | Interactive (fullscreen and regular TUI), print, json, rpc modes; HTML export and `/share`; llama.cpp `/llama`. |
+| Out of scope (for now) | `packages/{server,client,protocol,chord,telemetry,evals}`, `coding-agent/src/experimental`. |
 | Extensions | Deferred. To be designed together with the user (TypeScript extensions cannot run as-is). |
 | HTTP | Raw `HttpClient` + SSE parsing, no vendor SDKs, so request bodies match pi exactly. SDK error message formats are emulated because overflow/retry detection depends on them. |
 | JSON | `System.Text.Json` with `JsonNode` for dynamic data (tool args, schemas, details, compat). Messages/content use role/type discriminators via extensible converters. |
@@ -59,7 +74,7 @@ settings/auth/models JSON formats, system prompt, tools, compaction, RPC/JSON pr
 - [x] Components: text, box, spacer, markdown (marked 18 lexer port + LaTeX), editor, input, select list, settings list, loader, image
 - [x] Autocomplete, fuzzy matching, word navigation (ICU word segmentation approximated; Han/kana runs grouped)
 - [x] Parity tests against pi-tui fixtures (tests/Iris.Tui.Tests, generator: scratchpad gen-tui-fixtures.mjs)
-- [ ] Mouse / alt-screen (fullscreen mode is out of scope)
+- [x] Mouse events, layout engine (VStack/HStack/ScrollView), alternate-screen renderer with selection, copy-on-select, transcript search, scrollbar (tests/Iris.Tui.Tests/AltScreenTests.cs)
 
 ### Iris.CodingAgent / Cli
 - [x] Config paths, settings manager, auth storage, models.json, model registry/runtime/resolver
@@ -104,7 +119,8 @@ Interactive-mode deviations from pi (intentional or pending):
 - Encoded image bytes differ from Photon's (different codec); dimensions, size limits and hints match.
 - /login works for API-key providers and llama.cpp; OAuth providers (Anthropic, Copilot, Codex, Kimi, OpenRouter) report "login is not yet supported" because the OAuth flows are not ported. /share and HTML /export show errors.
 - After `/login llama.cpp`, guidance waits for the catalog refresh (pi reports "no models are loaded" before refreshing) and is shown as a status when models are loaded.
-- Fullscreen TUI mode (tui-mode setting) is not supported; the setting stays "regular".
+- Fullscreen: inline images are disabled while the alternate screen is active (pi caches Kitty placements); clicking a thinking
+  block to toggle it is not ported (clicking a tool result toggles expansion).
 - Extension UI hooks (widgets, custom editors/headers/footers, shortcuts, terminal input listeners) are not wired, pending the extension design.
 - Easter egg commands, tmux keyboard check and install telemetry are skipped.
 - Ctrl+Z suspend is unsupported on Windows (status message).

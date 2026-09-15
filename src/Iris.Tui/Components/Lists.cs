@@ -23,8 +23,10 @@ public sealed class SelectListLayoutOptions
 }
 
 /// <summary>Scrollable selection list with optional descriptions. Port of pi-tui SelectList.</summary>
-public sealed partial class SelectList : IInputComponent
+public sealed partial class SelectList : IInputComponent, IMouseComponent
 {
+    private int? _mousePressedIndex;
+
     private const int DefaultPrimaryColumnWidth = 32;
     private const int PrimaryColumnGap = 2;
     private const int MinDescriptionWidth = 10;
@@ -106,6 +108,40 @@ public sealed partial class SelectList : IInputComponent
         {
             OnCancel?.Invoke();
         }
+    }
+
+    public TuiMouseEventResult? HandleMouse(TuiMouseEvent mouseEvent)
+    {
+        if (_filtered.Count == 0) return null;
+        if (mouseEvent.Type == TuiMouseEventType.Wheel && mouseEvent.WheelDelta is { } delta && delta != 0)
+        {
+            var previous = _selectedIndex;
+            _selectedIndex = Math.Max(0, Math.Min(_filtered.Count - 1, _selectedIndex + (delta < 0 ? -1 : 1)));
+            if (_selectedIndex != previous) NotifySelectionChange();
+            return new TuiMouseEventResult { Handled = true, Render = _selectedIndex != previous };
+        }
+        // Hover must not change selection: the visible range is centered on it.
+        if (mouseEvent.Button != TuiMouseButton.Left || mouseEvent.Type is not (TuiMouseEventType.Press or TuiMouseEventType.Click)) return null;
+        var (start, end) = GetVisibleRange();
+        var itemIndex = start + mouseEvent.Y;
+        if (itemIndex < start || itemIndex >= end) return null;
+        if (mouseEvent.Type == TuiMouseEventType.Press)
+        {
+            _mousePressedIndex = itemIndex;
+            if (_selectedIndex != itemIndex)
+            {
+                _selectedIndex = itemIndex;
+                NotifySelectionChange();
+            }
+            return TuiMouseEventResult.HandledFocus;
+        }
+        var clicked = _mousePressedIndex ?? itemIndex;
+        _mousePressedIndex = null;
+        var changed = _selectedIndex != clicked;
+        _selectedIndex = clicked;
+        if (changed) NotifySelectionChange();
+        if (GetSelectedItem() is { } selected) OnSelect?.Invoke(selected);
+        return TuiMouseEventResult.HandledResult;
     }
 
     private (int Start, int End) GetVisibleRange()
@@ -193,8 +229,10 @@ public sealed class SettingsListTheme
 }
 
 /// <summary>Settings list with value cycling, submenus and optional search. Port of pi-tui SettingsList.</summary>
-public sealed class SettingsList : IInputComponent
+public sealed class SettingsList : IInputComponent, IMouseComponent
 {
+    private int? _mousePressedIndex;
+
     private readonly List<SettingItem> _items;
     private List<SettingItem> _filtered;
     private readonly SettingsListTheme _theme;
@@ -328,6 +366,48 @@ public sealed class SettingsList : IInputComponent
             _filtered = Fuzzy.Filter(_items, _searchInput.GetValue(), i => i.Label);
             _selectedIndex = 0;
         }
+    }
+
+    public TuiMouseEventResult? HandleMouse(TuiMouseEvent mouseEvent)
+    {
+        if (_submenu is not null)
+        {
+            var submenuResult = (_submenu as IMouseComponent)?.HandleMouse(mouseEvent);
+            return submenuResult is null ? null : submenuResult with { Focus = true };
+        }
+        if (_searchEnabled && _searchInput is not null)
+        {
+            if (mouseEvent.Y == 0)
+            {
+                var inputResult = _searchInput.HandleMouse(mouseEvent);
+                return inputResult is null ? null : inputResult with { Focus = true };
+            }
+            if (mouseEvent.Y == 1) return null;
+        }
+        var display = DisplayItems;
+        if (display.Count == 0) return null;
+        if (mouseEvent.Type == TuiMouseEventType.Wheel && mouseEvent.WheelDelta is { } delta && delta != 0)
+        {
+            var previous = _selectedIndex;
+            _selectedIndex = Math.Max(0, Math.Min(display.Count - 1, _selectedIndex + (delta < 0 ? -1 : 1)));
+            return new TuiMouseEventResult { Handled = true, Render = _selectedIndex != previous };
+        }
+        // Hover must not change selection: the visible range is centered on it.
+        if (mouseEvent.Button != TuiMouseButton.Left || mouseEvent.Type is not (TuiMouseEventType.Press or TuiMouseEventType.Click)) return null;
+        var rowOffset = _searchEnabled ? 2 : 0;
+        var (start, end) = GetVisibleRange(display);
+        var itemIndex = start + mouseEvent.Y - rowOffset;
+        if (itemIndex < start || itemIndex >= end) return null;
+        if (mouseEvent.Type == TuiMouseEventType.Press)
+        {
+            _mousePressedIndex = itemIndex;
+            _selectedIndex = itemIndex;
+            return TuiMouseEventResult.HandledFocus;
+        }
+        _selectedIndex = _mousePressedIndex ?? itemIndex;
+        _mousePressedIndex = null;
+        ActivateItem();
+        return TuiMouseEventResult.HandledResult;
     }
 
     private (int Start, int End) GetVisibleRange(List<SettingItem> display)

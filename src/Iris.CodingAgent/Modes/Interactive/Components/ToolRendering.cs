@@ -809,12 +809,20 @@ public sealed class ToolExecutionComponent : Container, IExpandable
         AddChild(new Spacer(1));
         _contentBox = new Box(1, 1, t => ThemeManager.Current.Bg("toolPendingBg", t));
         _contentText = new Text("", 1, 1, t => ThemeManager.Current.Bg("toolPendingBg", t));
-        if (_renderers is not null) AddChild(RenderShell == "self" ? _selfRenderContainer : _contentBox);
-        else AddChild(_contentText);
+        if (_renderers is not null && RenderShell == "self") AddChild(_selfRenderContainer);
+        else AddChild(CreateResultRegion(_renderers is not null ? _contentBox : _contentText));
         UpdateDisplay();
     }
 
     private string RenderShell => _renderers?.RenderShell ?? "default";
+
+    /// <summary>Fullscreen mode: clicking a finished tool toggles its expanded output (pi wraps the result region the same way).</summary>
+    private MouseRegion CreateResultRegion(IComponent component) => new(component, mouseEvent =>
+    {
+        if (_result is null || mouseEvent.Type != TuiMouseEventType.Click || mouseEvent.Button != TuiMouseButton.Left) return null;
+        SetExpanded(!_expanded);
+        return TuiMouseEventResult.HandledResult;
+    });
 
     private ToolRenderContext Context(IComponent? lastComponent) => new()
     {

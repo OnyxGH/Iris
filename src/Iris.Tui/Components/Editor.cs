@@ -57,7 +57,7 @@ public sealed class EditorOptions
 }
 
 /// <summary>Multi-line editor with word wrap, autocomplete, history, kill ring and undo. Port of pi-tui Editor.</summary>
-public partial class Editor : IEditorComponent, IFocusable
+public partial class Editor : IEditorComponent, IFocusable, IMouseComponent
 {
     [GeneratedRegex(@"\[paste #(\d+)( (\+\d+ lines|\d+ chars))?\]")]
     private static partial Regex PasteMarkerRegex();
@@ -106,6 +106,8 @@ public partial class Editor : IEditorComponent, IFocusable
     private int _paddingX;
     private int _lastWidth = 80;
     private int _scrollOffset;
+    private int _renderedVisibleLineCount;
+    private int _renderedAutocompleteHeight;
 
     public Func<string, string>? BorderColor { get; set; }
 
@@ -443,6 +445,8 @@ public partial class Editor : IEditorComponent, IFocusable
         _scrollOffset = Math.Max(0, Math.Min(_scrollOffset, maxScroll));
 
         var visibleLines = layoutLines.Skip(_scrollOffset).Take(maxVisibleLines).ToList();
+        _renderedVisibleLineCount = visibleLines.Count;
+        _renderedAutocompleteHeight = 0;
         var result = new List<string>();
         var leftPadding = new string(' ', paddingX);
         var rightPadding = leftPadding;
@@ -485,7 +489,9 @@ public partial class Editor : IEditorComponent, IFocusable
 
         if (_autocompleteState is not null && _autocompleteList is not null)
         {
-            foreach (var line in _autocompleteList.Render(contentWidth))
+            var autocompleteLines = _autocompleteList.Render(contentWidth);
+            _renderedAutocompleteHeight = autocompleteLines.Count;
+            foreach (var line in autocompleteLines)
             {
                 var linePadding = new string(' ', Math.Max(0, contentWidth - TextUtils.VisibleWidth(line)));
                 result.Add($"{leftPadding}{line}{linePadding}{rightPadding}");
@@ -493,6 +499,64 @@ public partial class Editor : IEditorComponent, IFocusable
         }
 
         return result;
+    }
+
+    public virtual TuiMouseEventResult? HandleMouse(TuiMouseEvent mouseEvent)
+    {
+        var maxPadding = Math.Max(0, (mouseEvent.Width - 1) / 2);
+        var paddingX = Math.Min(_paddingX, maxPadding);
+        var autocompleteStartRow = _renderedVisibleLineCount + 2;
+        if (_autocompleteState is not null && _autocompleteList is not null
+            && mouseEvent.Y >= autocompleteStartRow && mouseEvent.Y < autocompleteStartRow + _renderedAutocompleteHeight)
+        {
+            var result = _autocompleteList.HandleMouse(mouseEvent with
+            {
+                X = mouseEvent.X - paddingX,
+                Y = mouseEvent.Y - autocompleteStartRow,
+                Width = Math.Max(1, mouseEvent.Width - paddingX * 2),
+                Height = _renderedAutocompleteHeight,
+            });
+            return result is null ? null : result with { Focus = true };
+        }
+
+        // Leave press/drag/release unhandled so screen-level text selection can run over the editor rows.
+        // The renderer synthesizes a click when press and release land on the same cell, which positions the cursor.
+        if (mouseEvent.Type != TuiMouseEventType.Click || mouseEvent.Button != TuiMouseButton.Left) return null;
+        if (mouseEvent.Y <= 0 || mouseEvent.Y > _renderedVisibleLineCount) return TuiMouseEventResult.HandledFocus;
+
+        var visualLines = BuildVisualLineMap(_lastWidth);
+        var visualLineIndex = _scrollOffset + mouseEvent.Y - 1;
+        if (visualLineIndex < 0 || visualLineIndex >= visualLines.Count) return TuiMouseEventResult.HandledFocus;
+        var visualLine = visualLines[visualLineIndex];
+        var logicalLine = visualLine.LogicalLine < _state.Lines.Count ? _state.Lines[visualLine.LogicalLine] : "";
+        var chunkEnd = Math.Min(logicalLine.Length, visualLine.StartCol + visualLine.Length);
+        var chunk = logicalLine[Math.Min(visualLine.StartCol, chunkEnd)..chunkEnd];
+        var targetColumn = Math.Max(0, mouseEvent.X - paddingX);
+        var visibleColumn = 0;
+        var targetIndex = chunk.Length;
+        var lastGraphemeIndex = 0;
+        var index = 0;
+        foreach (var grapheme in TextUtils.Graphemes(chunk))
+        {
+            var nextColumn = visibleColumn + TextUtils.VisibleWidth(grapheme);
+            lastGraphemeIndex = index;
+            if (targetColumn < nextColumn)
+            {
+                targetIndex = index;
+                break;
+            }
+            visibleColumn = nextColumn;
+            index += grapheme.Length;
+        }
+        var isLastSegment = visualLineIndex == visualLines.Count - 1 || visualLines[visualLineIndex + 1].LogicalLine != visualLine.LogicalLine;
+        if (!isLastSegment && targetIndex == chunk.Length && chunk.Length > 0) targetIndex = lastGraphemeIndex;
+
+        _state.CursorLine = visualLine.LogicalLine;
+        SetCursorCol(visualLine.StartCol + targetIndex);
+        _lastAction = null;
+        ExitHistoryBrowsing();
+        if (_autocompleteState is not null) UpdateAutocomplete();
+        return TuiMouseEventResult.HandledFocus;
     }
 
     public virtual void HandleInput(string data)

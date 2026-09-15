@@ -120,9 +120,10 @@ public sealed class Spacer(int lines = 1) : IComponent
 }
 
 /// <summary>Container applying padding and background to all children. Port of pi-tui Box.</summary>
-public class Box(int paddingX = 1, int paddingY = 1, Func<string, string>? bg = null) : IComponent
+public class Box(int paddingX = 1, int paddingY = 1, Func<string, string>? bg = null) : IMouseComponent
 {
     private Func<string, string>? _bg = bg;
+    private (int Width, List<(IComponent Component, int Height)> Children)? _mouseLayout;
     private (List<string> ChildLines, int Width, string? BgSample, List<string> Lines)? _cache;
 
     public List<IComponent> Children { get; private set; } = [];
@@ -158,10 +159,14 @@ public class Box(int paddingX = 1, int paddingY = 1, Func<string, string>? bg = 
         var contentWidth = Math.Max(1, width - paddingX * 2);
         var leftPad = new string(' ', paddingX);
         var childLines = new List<string>();
+        var mouseChildren = new List<(IComponent, int)>();
         foreach (var child in Children)
         {
-            foreach (var line in child.Render(contentWidth)) childLines.Add(leftPad + line);
+            var lines = child.Render(contentWidth);
+            mouseChildren.Add((child, lines.Count));
+            foreach (var line in lines) childLines.Add(leftPad + line);
         }
+        _mouseLayout = (contentWidth, mouseChildren);
         if (childLines.Count == 0) return [];
 
         var bgSample = _bg?.Invoke("test");
@@ -173,6 +178,27 @@ public class Box(int paddingX = 1, int paddingY = 1, Func<string, string>? bg = 
         for (var i = 0; i < paddingY; i++) result.Add(ApplyBg("", width));
         _cache = (childLines, width, bgSample, result);
         return result;
+    }
+
+    public virtual TuiMouseEventResult? HandleMouse(TuiMouseEvent mouseEvent)
+    {
+        var contentWidth = Math.Max(1, mouseEvent.Width - paddingX * 2);
+        var contentY = mouseEvent.Y - paddingY;
+        var contentX = mouseEvent.X - paddingX;
+        if (contentY < 0 || contentX < 0 || contentX >= contentWidth) return null;
+        var mouseChildren = _mouseLayout is { } layout && layout.Width == contentWidth
+            ? layout.Children
+            : Children.Select(c => (c, c.Render(contentWidth).Count)).ToList();
+        var childY = 0;
+        foreach (var (child, childHeight) in mouseChildren)
+        {
+            if (contentY >= childY && contentY < childY + childHeight)
+            {
+                return MouseDispatch.Dispatch(child, mouseEvent with { X = contentX, Y = contentY - childY, Width = contentWidth, Height = childHeight });
+            }
+            childY += childHeight;
+        }
+        return null;
     }
 
     private string ApplyBg(string line, int width)

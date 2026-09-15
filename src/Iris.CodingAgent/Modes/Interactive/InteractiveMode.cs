@@ -25,6 +25,9 @@ public sealed class InteractiveModeOptions
     public List<string>? InitialMessages { get; init; }
     public bool Verbose { get; init; }
     public string? InitialThemeSetting { get; init; }
+
+    /// <summary>"regular" or "fullscreen"; overrides the tuiMode setting (--tui-mode).</summary>
+    public string? TuiMode { get; init; }
 }
 
 /// <summary>Text toggling between collapsed and expanded content. Port of interactive-mode.ts ExpandableText.</summary>
@@ -44,7 +47,8 @@ public sealed partial class InteractiveMode
 
     private readonly AgentSessionRuntime _runtimeHost;
     private readonly UiDispatcher _dispatcher;
-    private readonly TuiMainScreen _ui;
+    private readonly TuiBase _ui;
+    private ScrollView? _transcriptScrollView;
     private readonly Container _loadedResourcesContainer = new();
     private readonly Container _chatContainer = new();
     private readonly Container _documentContainer = new();
@@ -135,7 +139,7 @@ public sealed partial class InteractiveMode
             await _themeController!.ApplyFromSettingsAsync();
         }));
 
-        _ui = new TuiMainScreen(new ProcessTerminal(), _dispatcher, SettingsManager.ShowHardwareCursor, AppConfig.AgentDir);
+        _ui = CreateInteractiveTui(_options.TuiMode ?? SettingsManager.TuiMode);
         _ui.SetClearOnShrink(SettingsManager.ClearOnShrink);
         ThemeManager.SetRegisteredThemes(Session.ResourceLoader.GetThemes().Themes.Select(ThemeManager.CreateThemeFromResource));
         _themeController = new InteractiveThemeController(_ui, () => SettingsManager, message => ShowError(message), () => UpdateEditorBorderColor(), _options.InitialThemeSetting);
@@ -156,6 +160,93 @@ public sealed partial class InteractiveMode
 
         _hideThinkingBlock = SettingsManager.HideThinkingBlock;
         _outputPad = SettingsManager.OutputPad;
+    }
+
+    /// <summary>Port of modes/interactive/tui-renderer.ts createInteractiveTui.</summary>
+    private TuiBase CreateInteractiveTui(string tuiMode)
+    {
+        var terminal = new ProcessTerminal();
+        if (tuiMode != "fullscreen") return new TuiMainScreen(terminal, _dispatcher, SettingsManager.ShowHardwareCursor, AppConfig.AgentDir);
+        string StyleSearchMatch(string text) => Theme.Bg("searchMatchBg", Theme.Fg("searchMatchText", text));
+        return new TuiAltScreen(terminal, _dispatcher, SettingsManager.ShowHardwareCursor, AppConfig.AgentDir, new TuiAltScreenOptions
+        {
+            SearchMatchStyle = text => Theme.Underline(StyleSearchMatch(text)),
+            SearchCurrentMatchStyle = text => Theme.Bold(Theme.Inverse(StyleSearchMatch(text))),
+            SearchNavigationButtonStyle = (text, hovered) => hovered ? Theme.Underline(text) : text,
+            ScrollToEndIndicator = () =>
+            {
+                var shortcut = KeyHints.KeyDisplayText("tui.altScreen.bottom");
+                var label = $" ↓ Jump to latest message{(shortcut.Length > 0 ? $" · {shortcut}" : "")} ";
+                return Theme.Bg("selectedBg", Theme.Fg("text", label));
+            },
+            OpenUrl = BrowserLauncher.Open,
+            OnRightClickPaste = () => _ = HandleRightClickPasteAsync(),
+            CopyOnSelect = SettingsManager.FullscreenCopyOnSelect,
+            CopySelection = async text =>
+            {
+                try
+                {
+                    await Clipboard.CopyAsync(text);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            },
+        });
+    }
+
+    private static ScrollViewScrollbar ParseScrollbarSetting(string value) => value switch
+    {
+        "always" => ScrollViewScrollbar.Always,
+        "hidden" => ScrollViewScrollbar.Hidden,
+        _ => ScrollViewScrollbar.Auto,
+    };
+
+    /// <summary>Shared fullscreen transcript and fixed input dock. Port of modes/interactive/chat-viewport.ts.</summary>
+    private IComponent CreateChatViewport()
+    {
+        var transcript = new ScrollView(_documentContainer, new ScrollViewOptions
+        {
+            FollowEnd = true,
+            Primary = true,
+            Scrollbar = ParseScrollbarSetting(SettingsManager.FullscreenScrollbar),
+            ScrollbarTrackStyle = text => Theme.Fg("scrollbarTrack", text),
+            ScrollbarThumbStyle = text => Theme.Fg("scrollbarThumb", text),
+        });
+        _transcriptScrollView = transcript;
+        StackEntryOptions Shrinkable(int minSize) => new() { Shrink = 1, MinSize = minSize };
+        var dock = new VStack(
+        [
+            (_pendingMessagesContainer, Shrinkable(0)),
+            (_statusContainer, Shrinkable(0)),
+            (_widgetContainerAbove, Shrinkable(0)),
+            (_editorContainer, Shrinkable(3)),
+            (_widgetContainerBelow, Shrinkable(0)),
+            (_footerContainer, Shrinkable(0)),
+        ]);
+        return new VStack(
+        [
+            (transcript, new StackEntryOptions { Basis = 0, Grow = 1, Shrink = 1, MinSize = 1 }),
+            (dock, new StackEntryOptions { Grow = 0, Shrink = 1, MinSize = 1 }),
+        ]);
+    }
+
+    private async Task HandleRightClickPasteAsync()
+    {
+        if (_ui.GetFocusedComponent() is not IInputComponent target) return;
+        try
+        {
+            var text = await Clipboard.ReadTextAsync();
+            if (string.IsNullOrEmpty(text) || !ReferenceEquals(_ui.GetFocusedComponent(), target)) return;
+            target.HandleInput($"\e[200~{text}\e[201~");
+            _ui.RequestRender();
+        }
+        catch
+        {
+            // Clipboard errors are ignored.
+        }
     }
 
     private void ApplyCapabilityOverrides()
@@ -299,6 +390,7 @@ public sealed partial class InteractiveMode
         {
             _ui.AddChild(component);
         }
+        if (_ui is TuiAltScreen altScreen) altScreen.SetLayoutRoot(CreateChatViewport());
         _defaultEditor.OnAction("app.clear", HandleCtrlC);
         _defaultEditor.OnCtrlD = HandleCtrlD;
         _defaultEditor.OnSubmit = HandleStartupSubmit;
@@ -920,7 +1012,7 @@ public sealed partial class InteractiveMode
         _activeWorkingIndicatorEmbedded = false;
         _statusContainer.Clear();
         SetEditorWorkingStatusIndicator(null);
-        if (cleared is not null && !wasEmbedded && _ui.GetClearOnShrink()) _statusContainer.AddChild(_idleStatus);
+        if (cleared is not null && !wasEmbedded && _ui is TuiMainScreen && _ui.GetClearOnShrink()) _statusContainer.AddChild(_idleStatus);
     }
 
     private void ShowWorkingStatusIndicator()
@@ -1149,7 +1241,7 @@ public sealed partial class InteractiveMode
         _defaultEditor.OnAction("app.tools.expand", ToggleToolOutputExpansion);
         _defaultEditor.OnAction("app.thinking.toggle", ToggleThinkingBlockVisibility);
         _defaultEditor.OnAction("app.editor.external", () => _ = HandleOpenExternalEditorAsync());
-        _defaultEditor.OnAction("app.message.copy", () => _ = HandleCopyCommandAsync());
+        _defaultEditor.OnAction("app.message.copy", () => _ = HandleCopyCommandAsync(flashConfirmation: true, preferSelection: true));
         _defaultEditor.OnAction("app.message.followUp", () => _ = HandleFollowUpAsync());
         _defaultEditor.OnAction("app.message.dequeue", HandleDequeue);
         _defaultEditor.OnAction("app.session.new", () => _ = HandleClearCommandAsync());

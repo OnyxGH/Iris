@@ -30,25 +30,54 @@ public interface IFocusable
 }
 
 /// <summary>A component containing child components, rendered top to bottom.</summary>
-public class Container : IComponent
+public class Container : IMouseComponent
 {
+    private (int Width, List<(IComponent Component, int Height)> Children)? _mouseLayout;
+
     public List<IComponent> Children { get; set; } = [];
 
-    public void AddChild(IComponent component) => Children.Add(component);
+    public virtual void AddChild(IComponent component) => Children.Add(component);
 
-    public void RemoveChild(IComponent component) => Children.Remove(component);
+    public virtual void RemoveChild(IComponent component) => Children.Remove(component);
 
-    public void Clear() => Children = [];
+    public virtual void Clear() => Children = [];
 
     public virtual void Invalidate()
     {
         foreach (var child in Children.ToList()) child.Invalidate();
     }
 
+    public virtual TuiMouseEventResult? HandleMouse(TuiMouseEvent mouseEvent)
+    {
+        if (mouseEvent.Y < 0 || mouseEvent.Y >= mouseEvent.Height) return null;
+        var mouseChildren = _mouseLayout is { } layout && layout.Width == mouseEvent.Width
+            ? layout.Children
+            : Children.ToList().Select(c => (c, c.Render(mouseEvent.Width).Count)).ToList();
+        var childY = 0;
+        foreach (var (child, childHeight) in mouseChildren)
+        {
+            if (mouseEvent.Y >= childY && mouseEvent.Y < childY + childHeight)
+            {
+                var result = MouseDispatch.Dispatch(child, mouseEvent with { Y = mouseEvent.Y - childY, Height = childHeight });
+                if (result is { Focus: true } && this is IInputComponent) return result with { FocusTarget = this };
+                return result;
+            }
+            childY += childHeight;
+        }
+        return null;
+    }
+
     public virtual List<string> Render(int width)
     {
         var lines = new List<string>();
-        foreach (var child in Children.ToList()) lines.AddRange(child.Render(width));
+        var mouseChildren = new List<(IComponent, int)>();
+        foreach (var child in Children.ToList())
+        {
+            var childLines = child.Render(width);
+            mouseChildren.Add((child, childLines.Count));
+            lines.AddRange(childLines);
+        }
+        _mouseLayout = (width, mouseChildren);
         return lines;
     }
 }
@@ -153,6 +182,7 @@ public abstract partial class TuiBase : Container
 
     private int _focusOrderCounter;
     private readonly List<OverlayEntry> _overlayStack = [];
+    private List<(OverlayEntry Entry, int Row, int Col, int Width, int Height)> _renderedOverlayLayouts = [];
     private FocusRestore _focusRestore = new FocusRestoreInactive();
 
     protected TuiBase(ITerminal terminal, UiDispatcher dispatcher, bool? showHardwareCursor = null, string? logDirectory = null)
@@ -167,7 +197,7 @@ public abstract partial class TuiBase : Container
 
     public int FullRedraws => FullRedrawCount;
 
-    protected bool HasOverlayEntries => _overlayStack.Count > 0;
+    public bool HasOverlayEntries => _overlayStack.Count > 0;
 
     protected abstract void DoRender();
 
@@ -175,7 +205,19 @@ public abstract partial class TuiBase : Container
     {
     }
 
+    protected virtual void BeforeTerminalStart()
+    {
+    }
+
+    protected virtual void AfterTerminalStart()
+    {
+    }
+
     protected virtual void BeforeTerminalStop(bool preserveScreen)
+    {
+    }
+
+    protected virtual void AfterTerminalStop(bool preserveScreen)
     {
     }
 
@@ -383,6 +425,57 @@ public abstract partial class TuiBase : Container
 
     public bool HasOverlay() => _overlayStack.Any(IsOverlayVisible);
 
+    /// <summary>Whether the focused component is a visible overlay.</summary>
+    protected bool IsOverlayFocused() => _overlayStack.Any(e => ReferenceEquals(e.Component, _focused) && IsOverlayVisible(e));
+
+    /// <summary>Keep overlay containers as keyboard focus owners when a nested control is clicked.</summary>
+    protected IComponent ResolveMouseFocusTarget(IComponent component)
+    {
+        for (var index = _overlayStack.Count - 1; index >= 0; index--)
+        {
+            var overlay = _overlayStack[index];
+            if (IsOverlayVisible(overlay) && ContainsComponent(overlay.Component, component)) return overlay.Component;
+        }
+        return component;
+    }
+
+    /// <summary>Iris: screen rectangle of the visually topmost overlay under the pointer.</summary>
+    protected (int Row, int Col, int Width, int Height)? GetOverlayRectAt(int x, int y)
+    {
+        for (var index = _renderedOverlayLayouts.Count - 1; index >= 0; index--)
+        {
+            var layout = _renderedOverlayLayouts[index];
+            if (x >= layout.Col && x < layout.Col + layout.Width && y >= layout.Row && y < layout.Row + layout.Height)
+            {
+                return (layout.Row, layout.Col, layout.Width, layout.Height);
+            }
+        }
+        return null;
+    }
+
+    /// <summary>Dispatch to the visually topmost overlay under the pointer.</summary>
+    protected (bool Hit, TuiMouseDispatchResult? Result) DispatchMouseToOverlay(TuiMouseEvent mouseEvent)
+    {
+        for (var index = _renderedOverlayLayouts.Count - 1; index >= 0; index--)
+        {
+            var layout = _renderedOverlayLayouts[index];
+            if (mouseEvent.ScreenX < layout.Col || mouseEvent.ScreenX >= layout.Col + layout.Width
+                || mouseEvent.ScreenY < layout.Row || mouseEvent.ScreenY >= layout.Row + layout.Height)
+            {
+                continue;
+            }
+            var result = MouseDispatch.Dispatch(layout.Entry.Component, mouseEvent with
+            {
+                X = mouseEvent.ScreenX - layout.Col,
+                Y = mouseEvent.ScreenY - layout.Row,
+                Width = layout.Width,
+                Height = layout.Height,
+            });
+            return (true, result is { Focus: true } ? result with { FocusTarget = layout.Entry.Component } : result);
+        }
+        return (false, null);
+    }
+
     private bool IsOverlayVisible(OverlayEntry entry)
     {
         if (entry.Hidden) return false;
@@ -409,7 +502,9 @@ public abstract partial class TuiBase : Container
     public void Start()
     {
         Stopped = false;
+        BeforeTerminalStart();
         Terminal.Start(HandleTerminalInput, () => RequestRender());
+        AfterTerminalStart();
         Terminal.HideCursor();
         if (_colorSchemeNotifications) Terminal.Write("\e[?2031h");
         if (TerminalImage.GetCapabilities().Images is not null) Terminal.Write("\e[16t");
@@ -445,6 +540,7 @@ public abstract partial class TuiBase : Container
         BeforeTerminalStop(preserveScreen);
         Terminal.ShowCursor();
         Terminal.Stop();
+        AfterTerminalStop(preserveScreen);
     }
 
     public void RenderNow(bool force = false)
@@ -675,11 +771,15 @@ public abstract partial class TuiBase : Container
     /// <summary>Composite visible overlays (by focus order) into rendered lines.</summary>
     protected List<string> CompositeOverlays(List<string> lines, int termWidth, int termHeight)
     {
-        if (_overlayStack.Count == 0) return lines;
+        if (_overlayStack.Count == 0)
+        {
+            _renderedOverlayLayouts = [];
+            return lines;
+        }
         var result = new List<string>(lines);
         foreach (var entry in _overlayStack) entry.Bounds = null;
 
-        var rendered = new List<(List<string> Lines, int Row, int Col, int Width)>();
+        var rendered = new List<(OverlayEntry Entry, List<string> Lines, int Row, int Col, int Width)>();
         var minLinesNeeded = result.Count;
         foreach (var entry in _overlayStack.Where(IsOverlayVisible).OrderBy(e => e.FocusOrder).ToList())
         {
@@ -688,7 +788,7 @@ public abstract partial class TuiBase : Container
             if (maxHeight is { } mh && overlayLines.Count > mh) overlayLines = overlayLines.Take(mh).ToList();
             var (_, row, col, _) = ResolveOverlayLayout(entry.Options, overlayLines.Count, termWidth, termHeight);
             entry.Bounds = new OverlayBounds(row, col, width, overlayLines.Count);
-            rendered.Add((overlayLines, row, col, width));
+            rendered.Add((entry, overlayLines, row, col, width));
             minLinesNeeded = Math.Max(minLinesNeeded, row + overlayLines.Count);
         }
 
@@ -696,7 +796,8 @@ public abstract partial class TuiBase : Container
         while (result.Count < workingHeight) result.Add("");
         var viewportStart = Math.Max(0, workingHeight - termHeight);
 
-        foreach (var (overlayLines, row, col, w) in rendered)
+        _renderedOverlayLayouts = rendered.Select(r => (r.Entry, r.Row, r.Col, r.Width, r.Lines.Count)).ToList();
+        foreach (var (_, overlayLines, row, col, w) in rendered)
         {
             for (var i = 0; i < overlayLines.Count; i++)
             {

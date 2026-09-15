@@ -541,6 +541,21 @@ public sealed class KeybindingsManager
         ["tui.select.pageDown"] = new(["pageDown"], "Selection page down"),
         ["tui.select.confirm"] = new(["enter"], "Confirm selection"),
         ["tui.select.cancel"] = new(["escape", "ctrl+c"], "Cancel selection"),
+        // These intentionally shadow the unmodified editor bindings in fullscreen mode.
+        ["tui.altScreen.pageUp"] = new(["pageUp"], "Scroll viewport up one page"),
+        ["tui.altScreen.pageDown"] = new(["pageDown"], "Scroll viewport down one page"),
+        ["tui.altScreen.halfPageUp"] = new([], "Scroll viewport up half a page"),
+        ["tui.altScreen.halfPageDown"] = new([], "Scroll viewport down half a page"),
+        ["tui.altScreen.lineUp"] = new([], "Scroll viewport up one line"),
+        ["tui.altScreen.lineDown"] = new([], "Scroll viewport down one line"),
+        ["tui.altScreen.previousPrompt"] = new(["ctrl+shift+up", "ctrl+up"], "Jump to previous semantic prompt"),
+        ["tui.altScreen.nextPrompt"] = new(["ctrl+shift+down", "ctrl+down"], "Jump to next semantic prompt"),
+        ["tui.altScreen.search"] = new(["ctrl+shift+f"], "Search the primary scroll view"),
+        ["tui.altScreen.searchNext"] = new(["enter", "ctrl+g"], "Select the next search match"),
+        ["tui.altScreen.searchPrevious"] = new(["shift+enter", "ctrl+shift+g"], "Select the previous search match"),
+        ["tui.altScreen.searchClose"] = new(["escape"], "Close transcript search"),
+        ["tui.altScreen.top"] = new(["home"], "Scroll viewport to top"),
+        ["tui.altScreen.bottom"] = new(["end"], "Scroll viewport to bottom"),
     };
 
     private readonly IReadOnlyDictionary<string, KeybindingDefinition> _definitions;

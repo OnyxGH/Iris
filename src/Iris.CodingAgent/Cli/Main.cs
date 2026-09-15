@@ -454,6 +454,7 @@ public static class Main
                     InitialMessages = parsed.Messages,
                     Verbose = parsed.Verbose,
                     InitialThemeSetting = parsed.UseTheme,
+                    TuiMode = parsed.TuiMode,
                 });
                 trustPrompt = interactiveMode.PromptProjectTrustAsync;
                 return interactiveMode.RunAsync();

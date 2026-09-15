@@ -772,7 +772,8 @@ public sealed class SettingsManager
 
     public void SetShowTerminalProgress(bool enabled) => SetGlobalNested("terminal", "showTerminalProgress", enabled);
 
-    public string TuiMode => GetString("tuiMode") == "fullscreen" ? "fullscreen" : "regular";
+    /// <summary>Iris: fullscreen (fixed input dock) is the default; pi defaults to regular.</summary>
+    public string TuiMode => GetString("tuiMode") == "regular" ? "regular" : "fullscreen";
 
     public void SetTuiMode(string mode) => SetGlobal("tuiMode", mode);
 
