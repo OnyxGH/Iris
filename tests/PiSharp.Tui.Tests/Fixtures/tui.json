@@ -1,0 +1,5284 @@
+{
+ "visibleWidth": [
+  {
+   "s": "hello",
+   "w": 5
+  },
+  {
+   "s": "",
+   "w": 0
+  },
+  {
+   "s": "日本語テキスト",
+   "w": 14
+  },
+  {
+   "s": "é",
+   "w": 1
+  },
+  {
+   "s": "👍🏽 ok",
+   "w": 5
+  },
+  {
+   "s": "👨‍👩‍👧‍👦",
+   "w": 2
+  },
+  {
+   "s": "🇺🇸",
+   "w": 2
+  },
+  {
+   "s": "\u001b[31mred\u001b[0m",
+   "w": 3
+  },
+  {
+   "s": "tab\there",
+   "w": 10
+  },
+  {
+   "s": "a​b",
+   "w": 2
+  },
+  {
+   "s": "\u001b]8;;https://x.y\u001b\\link\u001b]8;;\u001b\\",
+   "w": 4
+  },
+  {
+   "s": "☺️",
+   "w": 2
+  },
+  {
+   "s": "✔",
+   "w": 1
+  },
+  {
+   "s": "กำ",
+   "w": 2
+  },
+  {
+   "s": "ｆｕｌｌ",
+   "w": 8
+  },
+  {
+   "s": "❤",
+   "w": 1
+  },
+  {
+   "s": "❤️",
+   "w": 2
+  },
+  {
+   "s": "1️⃣",
+   "w": 2
+  }
+ ],
+ "wrap": [
+  {
+   "text": "The quick brown fox jumps over the lazy dog",
+   "width": 10,
+   "lines": [
+    "The quick",
+    "brown fox",
+    "jumps over",
+    "the lazy",
+    "dog"
+   ]
+  },
+  {
+   "text": "\u001b[1mbold text that wraps\u001b[22m and normal",
+   "width": 8,
+   "lines": [
+    "\u001b[1mbold",
+    "\u001b[1mtext",
+    "\u001b[1mthat",
+    "\u001b[1mwraps\u001b[22m",
+    "and",
+    "normal"
+   ]
+  },
+  {
+   "text": "averyveryverylongwordwithoutspaces",
+   "width": 7,
+   "lines": [
+    "averyve",
+    "ryveryl",
+    "ongword",
+    "without",
+    "spaces"
+   ]
+  },
+  {
+   "text": "日本語のテキストを折り返す",
+   "width": 7,
+   "lines": [
+    "日本語",
+    "のテキ",
+    "ストを",
+    "折り返",
+    "す"
+   ]
+  },
+  {
+   "text": "line one\nline two is longer than width",
+   "width": 12,
+   "lines": [
+    "line one",
+    "line two is",
+    "longer than",
+    "width"
+   ]
+  },
+  {
+   "text": "\u001b[42mbackground spans many words here\u001b[49m",
+   "width": 9,
+   "lines": [
+    "\u001b[42mbackgroun",
+    "\u001b[42md spans",
+    "\u001b[42mmany",
+    "\u001b[42mwords",
+    "\u001b[42mhere\u001b[49m"
+   ]
+  },
+  {
+   "text": "  leading spaces and   multiple   gaps  ",
+   "width": 6,
+   "lines": [
+    "",
+    "leadin",
+    "g",
+    "spaces",
+    "and",
+    "multip",
+    "le",
+    "gaps"
+   ]
+  },
+  {
+   "text": "emoji 👍🏽👍🏽👍🏽 wrap",
+   "width": 5,
+   "lines": [
+    "emoji",
+    "👍🏽👍🏽",
+    "👍🏽",
+    "wrap"
+   ]
+  },
+  {
+   "text": "\u001b]8;;https://example.com\u001b\\a hyperlink label\u001b]8;;\u001b\\ after",
+   "width": 6,
+   "lines": [
+    "\u001b]8;;https://example.com\u001b\\a \u001b]8;;\u001b\\",
+    "\u001b]8;;https://example.com\u001b\\hyperl\u001b]8;;\u001b\\",
+    "\u001b]8;;https://example.com\u001b\\ink\u001b]8;;\u001b\\",
+    "\u001b]8;;https://example.com\u001b\\label\u001b]8;;\u001b\\",
+    "after"
+   ]
+  },
+  {
+   "text": "",
+   "width": 5,
+   "lines": [
+    ""
+   ]
+  }
+ ],
+ "truncate": [
+  {
+   "text": "hello world",
+   "width": 5,
+   "ellipsis": "...",
+   "pad": false,
+   "out": "he\u001b[0m...\u001b[0m"
+  },
+  {
+   "text": "hello world",
+   "width": 20,
+   "ellipsis": "...",
+   "pad": true,
+   "out": "hello world         "
+  },
+  {
+   "text": "\u001b[31mcolored text\u001b[0m here",
+   "width": 8,
+   "ellipsis": "…",
+   "pad": false,
+   "out": "\u001b[31mcolored\u001b[0m…\u001b[0m"
+  },
+  {
+   "text": "日本語テキスト",
+   "width": 5,
+   "ellipsis": "...",
+   "pad": false,
+   "out": "日\u001b[0m...\u001b[0m"
+  },
+  {
+   "text": "👍🏽👍🏽👍🏽",
+   "width": 3,
+   "ellipsis": "",
+   "pad": false,
+   "out": "👍🏽\u001b[0m"
+  },
+  {
+   "text": "abc",
+   "width": 0,
+   "ellipsis": "...",
+   "pad": false,
+   "out": ""
+  }
+ ],
+ "slice": [
+  {
+   "line": "hello world",
+   "start": 2,
+   "len": 5,
+   "strict": false,
+   "out": "llo w"
+  },
+  {
+   "line": "\u001b[31mred\u001b[0m green",
+   "start": 1,
+   "len": 6,
+   "strict": false,
+   "out": "\u001b[31med\u001b[0m gre"
+  },
+  {
+   "line": "日本語テキスト",
+   "start": 1,
+   "len": 4,
+   "strict": true,
+   "out": "本"
+  },
+  {
+   "line": "日本語テキスト",
+   "start": 1,
+   "len": 4,
+   "strict": false,
+   "out": "本語"
+  }
+ ],
+ "latex": [
+  {
+   "src": "x^2 + y^2 = z^2",
+   "display": false,
+   "out": "x² + y² = z²"
+  },
+  {
+   "src": "x^2 + y^2 = z^2",
+   "display": true,
+   "out": "x² + y² = z²"
+  },
+  {
+   "src": "\\frac{a}{b}",
+   "display": false,
+   "out": "a/b"
+  },
+  {
+   "src": "\\frac{a}{b}",
+   "display": true,
+   "out": "a\n─\nb"
+  },
+  {
+   "src": "\\sqrt{x+1}",
+   "display": false,
+   "out": "√(x+1)"
+  },
+  {
+   "src": "\\sqrt{x+1}",
+   "display": true,
+   "out": "√(x+1)"
+  },
+  {
+   "src": "\\sum_{i=1}^{n} i",
+   "display": false,
+   "out": "∑ᵢ₌₁ⁿ i"
+  },
+  {
+   "src": "\\sum_{i=1}^{n} i",
+   "display": true,
+   "out": " n\n ∑  i\ni=1"
+  },
+  {
+   "src": "\\alpha \\to \\beta",
+   "display": false,
+   "out": "α → β"
+  },
+  {
+   "src": "\\alpha \\to \\beta",
+   "display": true,
+   "out": "α → β"
+  },
+  {
+   "src": "e^{i\\pi} + 1 = 0",
+   "display": false,
+   "out": "e^(iπ) + 1 = 0"
+  },
+  {
+   "src": "e^{i\\pi} + 1 = 0",
+   "display": true,
+   "out": "e^(iπ) + 1 = 0"
+  },
+  {
+   "src": "\\int_0^\\infty e^{-x} dx",
+   "display": false,
+   "out": "∫₀^∞ e⁻ˣ dx"
+  },
+  {
+   "src": "\\int_0^\\infty e^{-x} dx",
+   "display": true,
+   "out": "∞\n∫ e⁻ˣ dx\n0"
+  },
+  {
+   "src": "\\mathbb{R}^n",
+   "display": false,
+   "out": "ℝⁿ"
+  },
+  {
+   "src": "\\mathbb{R}^n",
+   "display": true,
+   "out": "ℝⁿ"
+  },
+  {
+   "src": "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+   "display": false,
+   "out": "⎛ a │ b ⎞\n⎝ c │ d ⎠"
+  },
+  {
+   "src": "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+   "display": true,
+   "out": "⎛ a │ b ⎞\n⎝ c │ d ⎠"
+  },
+  {
+   "src": "\\lim_{x \\to 0} \\frac{\\sin x}{x}",
+   "display": false,
+   "out": "lim[x→0] (sin x)/x"
+  },
+  {
+   "src": "\\lim_{x \\to 0} \\frac{\\sin x}{x}",
+   "display": true,
+   "out": "     sin x\nlim  ─────\nx→0    x"
+  },
+  {
+   "src": "f(x) = \\begin{cases} 1 & x > 0 \\\\ 0 & \\text{otherwise} \\end{cases}",
+   "display": false,
+   "out": "f(x) = ⎧ 1 if x > 0\n⎩ 0 otherwise"
+  },
+  {
+   "src": "f(x) = \\begin{cases} 1 & x > 0 \\\\ 0 & \\text{otherwise} \\end{cases}",
+   "display": true,
+   "out": "f(x) = ⎧ 1 if x > 0\n⎩ 0 otherwise"
+  },
+  {
+   "src": "\\not= \\neq",
+   "display": false,
+   "out": "≠ ≠"
+  },
+  {
+   "src": "\\not= \\neq",
+   "display": true,
+   "out": "≠ ≠"
+  },
+  {
+   "src": "\\hat{x} \\vec{v}",
+   "display": false,
+   "out": "x̂ v⃗"
+  },
+  {
+   "src": "\\hat{x} \\vec{v}",
+   "display": true,
+   "out": "x̂ v⃗"
+  },
+  {
+   "src": "\\operatorname{rank}(A)",
+   "display": false,
+   "out": "rank (A)"
+  },
+  {
+   "src": "\\operatorname{rank}(A)",
+   "display": true,
+   "out": "rank (A)"
+  },
+  {
+   "src": "\\unknowncommand",
+   "display": false,
+   "out": null
+  },
+  {
+   "src": "\\unknowncommand",
+   "display": true,
+   "out": null
+  },
+  {
+   "src": "\\frac{1}{\\frac{2}{3}}",
+   "display": false,
+   "out": "1/(2/3)"
+  },
+  {
+   "src": "\\frac{1}{\\frac{2}{3}}",
+   "display": true,
+   "out": " 1\n───\n2/3"
+  },
+  {
+   "src": "a \\cdot b \\times c",
+   "display": false,
+   "out": "a · b × c"
+  },
+  {
+   "src": "a \\cdot b \\times c",
+   "display": true,
+   "out": "a · b × c"
+  },
+  {
+   "src": "\\sqrt[3]{8}",
+   "display": false,
+   "out": "∛8"
+  },
+  {
+   "src": "\\sqrt[3]{8}",
+   "display": true,
+   "out": "∛8"
+  },
+  {
+   "src": "\\binom{n}{k}",
+   "display": false,
+   "out": "(n choose k)"
+  },
+  {
+   "src": "\\binom{n}{k}",
+   "display": true,
+   "out": "(n choose k)"
+  },
+  {
+   "src": "\\begin{aligned} a &= b \\\\ c &= d \\end{aligned}",
+   "display": false,
+   "out": "a = b\nc = d"
+  },
+  {
+   "src": "\\begin{aligned} a &= b \\\\ c &= d \\end{aligned}",
+   "display": true,
+   "out": "a = b\nc = d"
+  },
+  {
+   "src": "\\sin^2 x + \\cos^2 x",
+   "display": false,
+   "out": "sin² x + cos² x"
+  },
+  {
+   "src": "\\sin^2 x + \\cos^2 x",
+   "display": true,
+   "out": "sin² x + cos² x"
+  },
+  {
+   "src": "x_{ij}",
+   "display": false,
+   "out": "xᵢⱼ"
+  },
+  {
+   "src": "x_{ij}",
+   "display": true,
+   "out": "xᵢⱼ"
+  },
+  {
+   "src": "\\left( \\frac{a}{b} \\right)",
+   "display": false,
+   "out": "( a/b )"
+  },
+  {
+   "src": "\\left( \\frac{a}{b} \\right)",
+   "display": true,
+   "out": "  a\n( ─ )\n  b"
+  },
+  {
+   "src": "\\mathrm{d}x",
+   "display": false,
+   "out": "dx"
+  },
+  {
+   "src": "\\mathrm{d}x",
+   "display": true,
+   "out": "dx"
+  },
+  {
+   "src": "10\\,\\text{km}",
+   "display": false,
+   "out": "10 km"
+  },
+  {
+   "src": "10\\,\\text{km}",
+   "display": true,
+   "out": "10 km"
+  }
+ ],
+ "markdown": [
+  {
+   "doc": "# Heading 1\n\nSome **bold** and *italic* and `code` text.\n\n## Heading 2\n\n### Heading 3 with `code`",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[36m\u001b[1m\u001b[4mHeading 1\u001b[24m\u001b[22m\u001b[39m                                                                      ",
+    "                                                                                ",
+    " Some \u001b[1mbold\u001b[22m and \u001b[3mitalic\u001b[23m and \u001b[33mcode\u001b[39m text.                                            ",
+    "                                                                                ",
+    " \u001b[36m\u001b[1mHeading 2\u001b[22m\u001b[39m                                                                      ",
+    "                                                                                ",
+    " \u001b[36m\u001b[1m### \u001b[22m\u001b[39m\u001b[36m\u001b[1mHeading 3 with \u001b[22m\u001b[39m\u001b[33mcode\u001b[39m                                                        "
+   ]
+  },
+  {
+   "doc": "# Heading 1\n\nSome **bold** and *italic* and `code` text.\n\n## Heading 2\n\n### Heading 3 with `code`",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[36m\u001b[1m\u001b[4mHeading 1\u001b[24m\u001b[22m\u001b[39m                    ",
+    "                              ",
+    " Some \u001b[1mbold\u001b[22m and \u001b[3mitalic\u001b[23m and     ",
+    " \u001b[33mcode\u001b[39m text.                   ",
+    "                              ",
+    " \u001b[36m\u001b[1mHeading 2\u001b[22m\u001b[39m                    ",
+    "                              ",
+    " \u001b[36m\u001b[1m### \u001b[22m\u001b[39m\u001b[36m\u001b[1mHeading 3 with \u001b[22m\u001b[39m\u001b[33mcode\u001b[39m      "
+   ]
+  },
+  {
+   "doc": "- item one\n- item two\n  - nested a\n  - nested b\n- item three\n\n1. first\n2. second\n\n5. five\n6. six",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m- \u001b[39mitem one                                                                     ",
+    " \u001b[96m- \u001b[39mitem two                                                                     ",
+    "     \u001b[96m- \u001b[39mnested a                                                                 ",
+    "     \u001b[96m- \u001b[39mnested b                                                                 ",
+    " \u001b[96m- \u001b[39mitem three                                                                   ",
+    "                                                                                ",
+    " \u001b[96m1. \u001b[39mfirst                                                                       ",
+    "                                                                                ",
+    " \u001b[96m2. \u001b[39msecond                                                                      ",
+    "                                                                                ",
+    " \u001b[96m3. \u001b[39mfive                                                                        ",
+    "                                                                                ",
+    " \u001b[96m4. \u001b[39msix                                                                         "
+   ]
+  },
+  {
+   "doc": "- item one\n- item two\n  - nested a\n  - nested b\n- item three\n\n1. first\n2. second\n\n5. five\n6. six",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m- \u001b[39mitem one                   ",
+    " \u001b[96m- \u001b[39mitem two                   ",
+    "     \u001b[96m- \u001b[39mnested a               ",
+    "     \u001b[96m- \u001b[39mnested b               ",
+    " \u001b[96m- \u001b[39mitem three                 ",
+    "                              ",
+    " \u001b[96m1. \u001b[39mfirst                     ",
+    "                              ",
+    " \u001b[96m2. \u001b[39msecond                    ",
+    "                              ",
+    " \u001b[96m3. \u001b[39mfive                      ",
+    "                              ",
+    " \u001b[96m4. \u001b[39msix                       "
+   ]
+  },
+  {
+   "doc": "- [ ] todo\n- [x] done\n\n* loose item\n\n* another loose",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m- [ ] \u001b[39mtodo                                                                     ",
+    " \u001b[96m- [x] \u001b[39mdone                                                                     ",
+    "                                                                                ",
+    " \u001b[96m- \u001b[39mloose item                                                                   ",
+    "                                                                                ",
+    " \u001b[96m- \u001b[39manother loose                                                                "
+   ]
+  },
+  {
+   "doc": "- [ ] todo\n- [x] done\n\n* loose item\n\n* another loose",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m- [ ] \u001b[39mtodo                   ",
+    " \u001b[96m- [x] \u001b[39mdone                   ",
+    "                              ",
+    " \u001b[96m- \u001b[39mloose item                 ",
+    "                              ",
+    " \u001b[96m- \u001b[39manother loose              "
+   ]
+  },
+  {
+   "doc": "```ts\nconst x = 1;\n  indented();\n```\n\nafter code",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```ts\u001b[39m                                                                          ",
+    "   \u001b[32mconst x = 1;\u001b[39m                                                                 ",
+    "   \u001b[32m  indented();\u001b[39m                                                                ",
+    " \u001b[90m```\u001b[39m                                                                            ",
+    "                                                                                ",
+    " after code                                                                     "
+   ]
+  },
+  {
+   "doc": "```ts\nconst x = 1;\n  indented();\n```\n\nafter code",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```ts\u001b[39m                        ",
+    "   \u001b[32mconst x = 1;\u001b[39m               ",
+    "   \u001b[32m  indented();\u001b[39m              ",
+    " \u001b[90m```\u001b[39m                          ",
+    "                              ",
+    " after code                   "
+   ]
+  },
+  {
+   "doc": "```python\nprint('streaming')\n``",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```python\u001b[39m                                                                      ",
+    "   \u001b[32mprint('streaming')\u001b[39m                                                           ",
+    " \u001b[90m```\u001b[39m                                                                            "
+   ]
+  },
+  {
+   "doc": "```python\nprint('streaming')\n``",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```python\u001b[39m                    ",
+    "   \u001b[32mprint('streaming')\u001b[39m         ",
+    " \u001b[90m```\u001b[39m                          "
+   ]
+  },
+  {
+   "doc": "> quote line one\n> quote **bold** line two\n>\n> - quoted list",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3mquote line one                                                               ",
+    " \u001b[90m│ \u001b[39m\u001b[3;35mquote \u001b[1mbold\u001b[22m\u001b[35m\u001b[3m line two\u001b[23m\u001b[39m                                                          ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[23m\u001b[39m                                                                             ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[96m- \u001b[39mquoted list\u001b[23m\u001b[39m                                                                "
+   ]
+  },
+  {
+   "doc": "> quote line one\n> quote **bold** line two\n>\n> - quoted list",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3mquote line one             ",
+    " \u001b[90m│ \u001b[39m\u001b[3;35mquote \u001b[1mbold\u001b[22m\u001b[35m\u001b[3m line two\u001b[23m\u001b[39m        ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[23m\u001b[39m                           ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[96m- \u001b[39mquoted list\u001b[23m\u001b[39m              "
+   ]
+  },
+  {
+   "doc": "| Name | Description | Value |\n|------|:-----------:|------:|\n| alpha | the first letter of the Greek alphabet used widely | 1 |\n| beta | second | 22 |",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " ┌───────┬────────────────────────────────────────────────────┬───────┐         ",
+    " │ \u001b[1mName \u001b[22m │ \u001b[1mDescription                                       \u001b[22m │ \u001b[1mValue\u001b[22m │         ",
+    " ├───────┼────────────────────────────────────────────────────┼───────┤         ",
+    " │ alpha │ the first letter of the Greek alphabet used widely │ 1     │         ",
+    " ├───────┼────────────────────────────────────────────────────┼───────┤         ",
+    " │ beta  │ second                                             │ 22    │         ",
+    " └───────┴────────────────────────────────────────────────────┴───────┘         "
+   ]
+  },
+  {
+   "doc": "| Name | Description | Value |\n|------|:-----------:|------:|\n| alpha | the first letter of the Greek alphabet used widely | 1 |\n| beta | second | 22 |",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " ┌───────┬───────────┬──────┐ ",
+    " │ \u001b[1mName \u001b[22m │ \u001b[1mDescripti\u001b[22;23;24;25;27;28;29;39m\u001b[22m │ \u001b[1mValu\u001b[22;23;24;25;27;28;29;39m\u001b[22m │ ",
+    " │ \u001b[1m     \u001b[22m │ \u001b[1mon       \u001b[22m │ \u001b[1me   \u001b[22m │ ",
+    " ├───────┼───────────┼──────┤ ",
+    " │ alpha │ the first\u001b[22;23;24;25;27;28;29;39m │ 1    │ ",
+    " │       │ letter of\u001b[22;23;24;25;27;28;29;39m │      │ ",
+    " │       │ the Greek\u001b[22;23;24;25;27;28;29;39m │      │ ",
+    " │       │ alphabet\u001b[22;23;24;25;27;28;29;39m  │      │ ",
+    " │       │ used\u001b[22;23;24;25;27;28;29;39m      │      │ ",
+    " │       │ widely    │      │ ",
+    " ├───────┼───────────┼──────┤ ",
+    " │ beta  │ second    │ 22   │ ",
+    " └───────┴───────────┴──────┘ "
+   ]
+  },
+  {
+   "doc": "Visit https://example.com/path?x=1, or <https://pi.dev>, mail me@example.com or [link text](https://link.test \"title\").",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Visit \u001b[34m\u001b[4mhttps://example.com/path?x=1\u001b[24m\u001b[39m, or \u001b[34m\u001b[4mhttps://pi.dev\u001b[24m\u001b[39m, mail \u001b[34m\u001b[4mme@example.com\u001b[24m\u001b[39m or  ",
+    " \u001b[34m\u001b[4mlink text\u001b[24m\u001b[39m\u001b[90m (https://link.test)\u001b[39m.                                                 "
+   ]
+  },
+  {
+   "doc": "Visit https://example.com/path?x=1, or <https://pi.dev>, mail me@example.com or [link text](https://link.test \"title\").",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Visit                        ",
+    " \u001b[34m\u001b[4mhttps://example.com/path?x=1\u001b[24m\u001b[39m ",
+    " , or \u001b[34m\u001b[4mhttps://pi.dev\u001b[24m\u001b[39m, mail    ",
+    " \u001b[34m\u001b[4mme@example.com\u001b[24m\u001b[39m or \u001b[34m\u001b[4mlink text\u001b[24m\u001b[39m\u001b[90m  ",
+    " \u001b[90m(https://link.test)\u001b[39m.         "
+   ]
+  },
+  {
+   "doc": "snake_case_word and __strong__ and _em_ and ***both*** and ~~strike~~ and ~single~ tilde",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " snake_case_word and \u001b[1mstrong\u001b[22m and \u001b[3mem\u001b[23m and \u001b[3m\u001b[1mboth\u001b[22m\u001b[23m and \u001b[9mstrike\u001b[29m and ~single~ tilde       "
+   ]
+  },
+  {
+   "doc": "snake_case_word and __strong__ and _em_ and ***both*** and ~~strike~~ and ~single~ tilde",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " snake_case_word and \u001b[1mstrong\u001b[22m   ",
+    " and \u001b[3mem\u001b[23m and \u001b[3m\u001b[1mboth\u001b[22m\u001b[23m and \u001b[9mstrike\u001b[29m   ",
+    " and ~single~ tilde           "
+   ]
+  },
+  {
+   "doc": "Inline math $x^2$ and \\(\\frac{a}{b}\\) and price $5 and $10.\n\n$$\n\\sum_{i=1}^n i = \\frac{n(n+1)}{2}\n$$\n\nDone.",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Inline math x² and a/b and price $5 and $10.                                   ",
+    "                                                                                ",
+    "  n      n(n+1)                                                                 ",
+    "  ∑  i = ──────                                                                 ",
+    " i=1       2                                                                    ",
+    "                                                                                ",
+    " Done.                                                                          "
+   ]
+  },
+  {
+   "doc": "Inline math $x^2$ and \\(\\frac{a}{b}\\) and price $5 and $10.\n\n$$\n\\sum_{i=1}^n i = \\frac{n(n+1)}{2}\n$$\n\nDone.",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Inline math x² and a/b and   ",
+    " price $5 and $10.            ",
+    "                              ",
+    "  n      n(n+1)               ",
+    "  ∑  i = ──────               ",
+    " i=1       2                  ",
+    "                              ",
+    " Done.                        "
+   ]
+  },
+  {
+   "doc": "Escapes: \\*not italic\\* and \\_under\\_ and a\\\\b",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Escapes: *not italic* and _under_ and a\\b                                      "
+   ]
+  },
+  {
+   "doc": "Escapes: \\*not italic\\* and \\_under\\_ and a\\\\b",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Escapes: *not italic* and    ",
+    " _under_ and a\\b              "
+   ]
+  },
+  {
+   "doc": "Line with two spaces  \nhard break and\nsoft break",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Line with two spaces                                                           ",
+    " hard break and                                                                 ",
+    " soft break                                                                     "
+   ]
+  },
+  {
+   "doc": "Line with two spaces  \nhard break and\nsoft break",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Line with two spaces         ",
+    " hard break and               ",
+    " soft break                   "
+   ]
+  },
+  {
+   "doc": "<div>html block</div>\n\ninline <b>html</b> here",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " <div>html block</div>                                                          ",
+    "                                                                                ",
+    " inline <b>html</b> here                                                        "
+   ]
+  },
+  {
+   "doc": "<div>html block</div>\n\ninline <b>html</b> here",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " <div>html block</div>        ",
+    "                              ",
+    " inline <b>html</b> here      "
+   ]
+  },
+  {
+   "doc": "---\n\nText after rule\n\n***",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m──────────────────────────────────────────────────────────────────────────────\u001b[39m ",
+    "                                                                                ",
+    " Text after rule                                                                ",
+    "                                                                                ",
+    " \u001b[90m──────────────────────────────────────────────────────────────────────────────\u001b[39m "
+   ]
+  },
+  {
+   "doc": "---\n\nText after rule\n\n***",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m────────────────────────────\u001b[39m ",
+    "                              ",
+    " Text after rule              ",
+    "                              ",
+    " \u001b[90m────────────────────────────\u001b[39m "
+   ]
+  },
+  {
+   "doc": "[ref link][r1] and [r1]\n\n[r1]: https://ref.example \"Ref\"",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[34m\u001b[4mref link\u001b[24m\u001b[39m\u001b[90m (https://ref.example)\u001b[39m and \u001b[34m\u001b[4mr1\u001b[24m\u001b[39m\u001b[90m (https://ref.example)\u001b[39m                    ",
+    "                                                                                "
+   ]
+  },
+  {
+   "doc": "[ref link][r1] and [r1]\n\n[r1]: https://ref.example \"Ref\"",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[34m\u001b[4mref link\u001b[24m\u001b[39m\u001b[90m                     ",
+    " \u001b[90m(https://ref.example)\u001b[39m and \u001b[34m\u001b[4mr1\u001b[24m ",
+    " \u001b[4;34m\u001b[24m\u001b[39m\u001b[90m (https://ref.example)\u001b[39m       ",
+    "                              "
+   ]
+  },
+  {
+   "doc": "Setext Heading\n==============\n\nAnother\n-------",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[36m\u001b[1m\u001b[4mSetext Heading\u001b[24m\u001b[22m\u001b[39m                                                                 ",
+    "                                                                                ",
+    " \u001b[36m\u001b[1mAnother\u001b[22m\u001b[39m                                                                        "
+   ]
+  },
+  {
+   "doc": "Setext Heading\n==============\n\nAnother\n-------",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[36m\u001b[1m\u001b[4mSetext Heading\u001b[24m\u001b[22m\u001b[39m               ",
+    "                              ",
+    " \u001b[36m\u001b[1mAnother\u001b[22m\u001b[39m                      "
+   ]
+  },
+  {
+   "doc": "日本語の段落です。長い文章を折り返します。**強調**もあります。",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " 日本語の段落です。長い文章を折り返します。\u001b[1m強調\u001b[22mもあります。                     "
+   ]
+  },
+  {
+   "doc": "日本語の段落です。長い文章を折り返します。**強調**もあります。",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " 日本語の段落です。長い文章を ",
+    " 折り返します。\u001b[1m強調\u001b[22mもあります ",
+    " 。                           "
+   ]
+  },
+  {
+   "doc": "Emoji 👍🏽 in text with `code 👍` and **bold 🎉**",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Emoji 👍🏽 in text with \u001b[33mcode 👍\u001b[39m and \u001b[1mbold 🎉\u001b[22m                                      "
+   ]
+  },
+  {
+   "doc": "Emoji 👍🏽 in text with `code 👍` and **bold 🎉**",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Emoji 👍🏽 in text with \u001b[33mcode   ",
+    " \u001b[33m👍\u001b[39m and \u001b[1mbold 🎉\u001b[22m               "
+   ]
+  },
+  {
+   "doc": "    indented code block\n    second line",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```\u001b[39m                                                                            ",
+    "   \u001b[32mindented code block\u001b[39m                                                          ",
+    "   \u001b[32msecond line\u001b[39m                                                                  ",
+    " \u001b[90m```\u001b[39m                                                                            "
+   ]
+  },
+  {
+   "doc": "    indented code block\n    second line",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```\u001b[39m                          ",
+    "   \u001b[32mindented code block\u001b[39m        ",
+    "   \u001b[32msecond line\u001b[39m                ",
+    " \u001b[90m```\u001b[39m                          "
+   ]
+  },
+  {
+   "doc": "Paragraph\n- list right after\n- second",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Paragraph                                                                      ",
+    " \u001b[96m- \u001b[39mlist right after                                                             ",
+    " \u001b[96m- \u001b[39msecond                                                                       "
+   ]
+  },
+  {
+   "doc": "Paragraph\n- list right after\n- second",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Paragraph                    ",
+    " \u001b[96m- \u001b[39mlist right after           ",
+    " \u001b[96m- \u001b[39msecond                     "
+   ]
+  },
+  {
+   "doc": "1) paren list\n2) second\n\n10. ten\n11. eleven",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m1. \u001b[39mparen list                                                                  ",
+    " \u001b[96m2. \u001b[39msecond                                                                      ",
+    "                                                                                ",
+    " \u001b[96m10. \u001b[39mten                                                                        ",
+    " \u001b[96m11. \u001b[39meleven                                                                     "
+   ]
+  },
+  {
+   "doc": "1) paren list\n2) second\n\n10. ten\n11. eleven",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m1. \u001b[39mparen list                ",
+    " \u001b[96m2. \u001b[39msecond                    ",
+    "                              ",
+    " \u001b[96m10. \u001b[39mten                      ",
+    " \u001b[96m11. \u001b[39meleven                   "
+   ]
+  },
+  {
+   "doc": "Text with trailing $ unfinished \\frac{1",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Text with trailing $ unfinished \\frac{1                                        "
+   ]
+  },
+  {
+   "doc": "Text with trailing $ unfinished \\frac{1",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Text with trailing $         ",
+    " unfinished \\frac{1           "
+   ]
+  },
+  {
+   "doc": "| a | b |\n|---|---|\n| x |",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " ┌───┬───┐                                                                      ",
+    " │ \u001b[1ma\u001b[22m │ \u001b[1mb\u001b[22m │                                                                      ",
+    " ├───┼───┤                                                                      ",
+    " │ x │   │                                                                      ",
+    " └───┴───┘                                                                      "
+   ]
+  },
+  {
+   "doc": "| a | b |\n|---|---|\n| x |",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " ┌───┬───┐                    ",
+    " │ \u001b[1ma\u001b[22m │ \u001b[1mb\u001b[22m │                    ",
+    " ├───┼───┤                    ",
+    " │ x │   │                    ",
+    " └───┴───┘                    "
+   ]
+  },
+  {
+   "doc": "a | b\n--|--\n1 | 2",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " ┌───┬───┐                                                                      ",
+    " │ \u001b[1ma\u001b[22m │ \u001b[1mb\u001b[22m │                                                                      ",
+    " ├───┼───┤                                                                      ",
+    " │ 1 │ 2 │                                                                      ",
+    " └───┴───┘                                                                      "
+   ]
+  },
+  {
+   "doc": "a | b\n--|--\n1 | 2",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " ┌───┬───┐                    ",
+    " │ \u001b[1ma\u001b[22m │ \u001b[1mb\u001b[22m │                    ",
+    " ├───┼───┤                    ",
+    " │ 1 │ 2 │                    ",
+    " └───┴───┘                    "
+   ]
+  },
+  {
+   "doc": "Nested **bold with *italic* inside** and `a**b**c`",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Nested \u001b[1mbold with \u001b[3mitalic\u001b[23m inside\u001b[22m and \u001b[33ma**b**c\u001b[39m                                     "
+   ]
+  },
+  {
+   "doc": "Nested **bold with *italic* inside** and `a**b**c`",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Nested \u001b[1mbold with \u001b[3mitalic\u001b[23m      ",
+    " \u001b[1minside\u001b[22m and \u001b[33ma**b**c\u001b[39m           "
+   ]
+  },
+  {
+   "doc": "> nested\n>> deeper quote\n\nout",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3mnested\u001b[23m\u001b[39m                                                                       ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[23m\u001b[39m                                                                             ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[90m│ \u001b[39m\u001b[35m\u001b[3mdeeper quote\u001b[23m\u001b[39m\u001b[23m\u001b[39m                                                               ",
+    "                                                                                ",
+    " out                                                                            "
+   ]
+  },
+  {
+   "doc": "> nested\n>> deeper quote\n\nout",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3mnested\u001b[23m\u001b[39m                     ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[23m\u001b[39m                           ",
+    " \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[90m│ \u001b[39m\u001b[35m\u001b[3mdeeper quote\u001b[23m\u001b[39m\u001b[23m\u001b[39m             ",
+    "                              ",
+    " out                          "
+   ]
+  },
+  {
+   "doc": "- item\n\n  continuation paragraph\n\n- next",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m- \u001b[39mitem                                                                         ",
+    "                                                                                ",
+    "   continuation paragraph                                                       ",
+    "                                                                                ",
+    " \u001b[96m- \u001b[39mnext                                                                         "
+   ]
+  },
+  {
+   "doc": "- item\n\n  continuation paragraph\n\n- next",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[96m- \u001b[39mitem                       ",
+    "                              ",
+    "   continuation paragraph     ",
+    "                              ",
+    " \u001b[96m- \u001b[39mnext                       "
+   ]
+  },
+  {
+   "doc": "Auto www.example.com link",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Auto \u001b[34m\u001b[4mwww.example.com\u001b[24m\u001b[39m\u001b[90m (http://www.example.com)\u001b[39m link                             "
+   ]
+  },
+  {
+   "doc": "Auto www.example.com link",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " Auto \u001b[34m\u001b[4mwww.example.com\u001b[24m\u001b[39m\u001b[90m         ",
+    " \u001b[90m(http://www.example.com)\u001b[39m     ",
+    " link                         "
+   ]
+  },
+  {
+   "doc": "\t\ttabbed text",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```\u001b[39m                                                                            ",
+    "   \u001b[32m  tabbed text\u001b[39m                                                                ",
+    " \u001b[90m```\u001b[39m                                                                            "
+   ]
+  },
+  {
+   "doc": "\t\ttabbed text",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " \u001b[90m```\u001b[39m                          ",
+    "   \u001b[32m  tabbed text\u001b[39m              ",
+    " \u001b[90m```\u001b[39m                          "
+   ]
+  },
+  {
+   "doc": "**unclosed bold",
+   "width": 80,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " **unclosed bold                                                                "
+   ]
+  },
+  {
+   "doc": "**unclosed bold",
+   "width": 30,
+   "paddingX": 1,
+   "paddingY": 0,
+   "style": null,
+   "lines": [
+    " **unclosed bold              "
+   ]
+  },
+  {
+   "doc": "# Heading 1\n\nSome **bold** and *italic* and `code` text.\n\n## Heading 2\n\n### Heading 3 with `code`",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "italicGray",
+   "lines": [
+    "                                        ",
+    "  \u001b[36m\u001b[1m\u001b[4mHeading 1\u001b[24m\u001b[22m\u001b[39m                             ",
+    "                                        ",
+    "  \u001b[3m\u001b[90mSome \u001b[39m\u001b[23m\u001b[1m\u001b[3m\u001b[90mbold\u001b[39m\u001b[23m\u001b[22m\u001b[3m\u001b[90m\u001b[3m\u001b[90m and \u001b[39m\u001b[23m\u001b[3m\u001b[3m\u001b[90mitalic\u001b[39m\u001b[23m\u001b[23m\u001b[3m\u001b[90m\u001b[3m\u001b[90m and \u001b[39m\u001b[23m\u001b[33mcode\u001b[39m\u001b[3m\u001b[90m\u001b[3m\u001b[90m text.\u001b[39m\u001b[23m   ",
+    "                                        ",
+    "  \u001b[36m\u001b[1mHeading 2\u001b[22m\u001b[39m                             ",
+    "                                        ",
+    "  \u001b[36m\u001b[1m### \u001b[22m\u001b[39m\u001b[36m\u001b[1mHeading 3 with \u001b[22m\u001b[39m\u001b[33mcode\u001b[39m               ",
+    "                                        "
+   ]
+  },
+  {
+   "doc": "> quote line one\n> quote **bold** line two\n>\n> - quoted list",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "italicGray",
+   "lines": [
+    "                                        ",
+    "  \u001b[90m│ \u001b[39m\u001b[35m\u001b[3mquote line one                      ",
+    "  \u001b[90m│ \u001b[39m\u001b[3;35mquote \u001b[1mbold\u001b[22m\u001b[35m\u001b[3m line two\u001b[23m\u001b[39m                 ",
+    "  \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[23m\u001b[39m                                    ",
+    "  \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[96m- \u001b[39mquoted list\u001b[23m\u001b[39m                       ",
+    "                                        "
+   ]
+  },
+  {
+   "doc": "| Name | Description | Value |\n|------|:-----------:|------:|\n| alpha | the first letter of the Greek alphabet used widely | 1 |\n| beta | second | 22 |",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "italicGray",
+   "lines": [
+    "                                        ",
+    "  ┌───────┬──────────────────┬───────┐  ",
+    "  │ \u001b[1m\u001b[3m\u001b[90mName\u001b[39m\u001b[23m \u001b[22m │ \u001b[1m\u001b[3m\u001b[90mDescription\u001b[39m\u001b[23m     \u001b[22m │ \u001b[1m\u001b[3m\u001b[90mValue\u001b[39m\u001b[23m\u001b[22m │  ",
+    "  ├───────┼──────────────────┼───────┤  ",
+    "  │ \u001b[3m\u001b[90malpha\u001b[39m\u001b[23m │ \u001b[3m\u001b[90mthe first letter\u001b[22;23;24;25;27;28;29;39m │ \u001b[3m\u001b[90m1\u001b[39m\u001b[23m     │  ",
+    "  │       │ \u001b[3;90mof the Greek\u001b[22;23;24;25;27;28;29;39m     │       │  ",
+    "  │       │ \u001b[3;90malphabet used\u001b[22;23;24;25;27;28;29;39m    │       │  ",
+    "  │       │ \u001b[3;90mwidely\u001b[39m\u001b[23m           │       │  ",
+    "  ├───────┼──────────────────┼───────┤  ",
+    "  │ \u001b[3m\u001b[90mbeta\u001b[39m\u001b[23m  │ \u001b[3m\u001b[90msecond\u001b[39m\u001b[23m           │ \u001b[3m\u001b[90m22\u001b[39m\u001b[23m    │  ",
+    "  └───────┴──────────────────┴───────┘  ",
+    "                                        "
+   ]
+  },
+  {
+   "doc": "snake_case_word and __strong__ and _em_ and ***both*** and ~~strike~~ and ~single~ tilde",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "italicGray",
+   "lines": [
+    "                                        ",
+    "  \u001b[3m\u001b[90msnake_case_word and \u001b[39m\u001b[23m\u001b[1m\u001b[3m\u001b[90mstrong\u001b[39m\u001b[23m\u001b[22m\u001b[3m\u001b[90m\u001b[3m\u001b[90m and \u001b[39m\u001b[23m\u001b[3m\u001b[3m\u001b[90mem\u001b[39m\u001b[23m\u001b[23m\u001b[3m\u001b[90m\u001b[3m\u001b[90m     ",
+    "  \u001b[3;90mand \u001b[39m\u001b[23m\u001b[3m\u001b[1m\u001b[3m\u001b[90mboth\u001b[39m\u001b[23m\u001b[22m\u001b[23m\u001b[3m\u001b[90m\u001b[3m\u001b[90m and \u001b[39m\u001b[23m\u001b[9m\u001b[3m\u001b[90mstrike\u001b[39m\u001b[23m\u001b[29m\u001b[3m\u001b[90m\u001b[3m\u001b[90m and ~single~      ",
+    "  \u001b[3;90mtilde\u001b[39m\u001b[23m                                 ",
+    "                                        "
+   ]
+  },
+  {
+   "doc": "# Heading 1\n\nSome **bold** and *italic* and `code` text.\n\n## Heading 2\n\n### Heading 3 with `code`",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "bg",
+   "lines": [
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  \u001b[36m\u001b[1m\u001b[4mHeading 1\u001b[24m\u001b[22m\u001b[39m                             \u001b[49m",
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  \u001b[97mSome \u001b[39m\u001b[1m\u001b[97mbold\u001b[39m\u001b[22m\u001b[97m\u001b[97m and \u001b[39m\u001b[3m\u001b[97mitalic\u001b[39m\u001b[23m\u001b[97m\u001b[97m and \u001b[39m\u001b[33mcode\u001b[39m\u001b[97m\u001b[97m text.\u001b[39m   \u001b[49m",
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  \u001b[36m\u001b[1mHeading 2\u001b[22m\u001b[39m                             \u001b[49m",
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  \u001b[36m\u001b[1m### \u001b[22m\u001b[39m\u001b[36m\u001b[1mHeading 3 with \u001b[22m\u001b[39m\u001b[33mcode\u001b[39m               \u001b[49m",
+    "\u001b[44m                                        \u001b[49m"
+   ]
+  },
+  {
+   "doc": "> quote line one\n> quote **bold** line two\n>\n> - quoted list",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "bg",
+   "lines": [
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  \u001b[90m│ \u001b[39m\u001b[35m\u001b[3mquote line one                      \u001b[49m",
+    "\u001b[44m  \u001b[90m│ \u001b[39m\u001b[3;35mquote \u001b[1mbold\u001b[22m\u001b[35m\u001b[3m line two\u001b[23m\u001b[39m                 \u001b[49m",
+    "\u001b[44m  \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[23m\u001b[39m                                    \u001b[49m",
+    "\u001b[44m  \u001b[90m│ \u001b[39m\u001b[35m\u001b[3m\u001b[96m- \u001b[39mquoted list\u001b[23m\u001b[39m                       \u001b[49m",
+    "\u001b[44m                                        \u001b[49m"
+   ]
+  },
+  {
+   "doc": "| Name | Description | Value |\n|------|:-----------:|------:|\n| alpha | the first letter of the Greek alphabet used widely | 1 |\n| beta | second | 22 |",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "bg",
+   "lines": [
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  ┌───────┬──────────────────┬───────┐  \u001b[49m",
+    "\u001b[44m  │ \u001b[1m\u001b[97mName\u001b[39m \u001b[22m │ \u001b[1m\u001b[97mDescription\u001b[39m     \u001b[22m │ \u001b[1m\u001b[97mValue\u001b[39m\u001b[22m │  \u001b[49m",
+    "\u001b[44m  ├───────┼──────────────────┼───────┤  \u001b[49m",
+    "\u001b[44m  │ \u001b[97malpha\u001b[39m │ \u001b[97mthe first letter\u001b[22;23;24;25;27;28;29;39m │ \u001b[97m1\u001b[39m     │  \u001b[49m",
+    "\u001b[44m  │       │ \u001b[97mof the Greek\u001b[22;23;24;25;27;28;29;39m     │       │  \u001b[49m",
+    "\u001b[44m  │       │ \u001b[97malphabet used\u001b[22;23;24;25;27;28;29;39m    │       │  \u001b[49m",
+    "\u001b[44m  │       │ \u001b[97mwidely\u001b[39m           │       │  \u001b[49m",
+    "\u001b[44m  ├───────┼──────────────────┼───────┤  \u001b[49m",
+    "\u001b[44m  │ \u001b[97mbeta\u001b[39m  │ \u001b[97msecond\u001b[39m           │ \u001b[97m22\u001b[39m    │  \u001b[49m",
+    "\u001b[44m  └───────┴──────────────────┴───────┘  \u001b[49m",
+    "\u001b[44m                                        \u001b[49m"
+   ]
+  },
+  {
+   "doc": "snake_case_word and __strong__ and _em_ and ***both*** and ~~strike~~ and ~single~ tilde",
+   "width": 40,
+   "paddingX": 2,
+   "paddingY": 1,
+   "style": "bg",
+   "lines": [
+    "\u001b[44m                                        \u001b[49m",
+    "\u001b[44m  \u001b[97msnake_case_word and \u001b[39m\u001b[1m\u001b[97mstrong\u001b[39m\u001b[22m\u001b[97m\u001b[97m and \u001b[39m\u001b[3m\u001b[97mem\u001b[39m\u001b[23m\u001b[97m\u001b[97m     \u001b[49m",
+    "\u001b[44m  \u001b[97mand \u001b[39m\u001b[3m\u001b[1m\u001b[97mboth\u001b[39m\u001b[22m\u001b[23m\u001b[97m\u001b[97m and \u001b[39m\u001b[9m\u001b[97mstrike\u001b[39m\u001b[29m\u001b[97m\u001b[97m and ~single~      \u001b[49m",
+    "\u001b[44m  \u001b[97mtilde\u001b[39m                                 \u001b[49m",
+    "\u001b[44m                                        \u001b[49m"
+   ]
+  }
+ ],
+ "markdownStyles": {
+  "italicGray": {
+   "color": [
+    90,
+    39
+   ],
+   "italic": true
+  },
+  "bg": {
+   "bgColor": [
+    44,
+    49
+   ],
+   "color": [
+    97,
+    39
+   ]
+  }
+ },
+ "markdownPreserve": [
+  {
+   "doc": "- item one\n- item two\n  - nested a\n  - nested b\n- item three\n\n1. first\n2. second\n\n5. five\n6. six",
+   "lines": [
+    "\u001b[96m- \u001b[39mitem one                                                  ",
+    "\u001b[96m- \u001b[39mitem two                                                  ",
+    "    \u001b[96m- \u001b[39mnested a                                              ",
+    "    \u001b[96m- \u001b[39mnested b                                              ",
+    "\u001b[96m- \u001b[39mitem three                                                ",
+    "                                                            ",
+    "\u001b[96m1. \u001b[39mfirst                                                    ",
+    "                                                            ",
+    "\u001b[96m2. \u001b[39msecond                                                   ",
+    "                                                            ",
+    "\u001b[96m5. \u001b[39mfive                                                     ",
+    "                                                            ",
+    "\u001b[96m6. \u001b[39msix                                                      "
+   ]
+  },
+  {
+   "doc": "1) paren list\n2) second\n\n10. ten\n11. eleven",
+   "lines": [
+    "\u001b[96m1) \u001b[39mparen list                                               ",
+    "\u001b[96m2) \u001b[39msecond                                                   ",
+    "                                                            ",
+    "\u001b[96m10. \u001b[39mten                                                     ",
+    "\u001b[96m11. \u001b[39meleven                                                  "
+   ]
+  },
+  {
+   "doc": "Escapes: \\*not italic\\* and \\_under\\_ and a\\\\b",
+   "lines": [
+    "Escapes: \\*not italic\\* and \\_under\\_ and a\\\\b              "
+   ]
+  }
+ ],
+ "wordWrapLine": [
+  {
+   "line": "hello world this is a test",
+   "width": 10,
+   "chunks": [
+    {
+     "text": "hello ",
+     "startIndex": 0,
+     "endIndex": 6
+    },
+    {
+     "text": "world ",
+     "startIndex": 6,
+     "endIndex": 12
+    },
+    {
+     "text": "this is a ",
+     "startIndex": 12,
+     "endIndex": 22
+    },
+    {
+     "text": "test",
+     "startIndex": 22,
+     "endIndex": 26
+    }
+   ]
+  },
+  {
+   "line": "abcdefghijklmnopqrstuvwxyz",
+   "width": 8,
+   "chunks": [
+    {
+     "text": "abcdefgh",
+     "startIndex": 0,
+     "endIndex": 8
+    },
+    {
+     "text": "ijklmnop",
+     "startIndex": 8,
+     "endIndex": 16
+    },
+    {
+     "text": "qrstuvwx",
+     "startIndex": 16,
+     "endIndex": 24
+    },
+    {
+     "text": "yz",
+     "startIndex": 24,
+     "endIndex": 26
+    }
+   ]
+  },
+  {
+   "line": "日本語のテキスト",
+   "width": 5,
+   "chunks": [
+    {
+     "text": "日本",
+     "startIndex": 0,
+     "endIndex": 2
+    },
+    {
+     "text": "語の",
+     "startIndex": 2,
+     "endIndex": 4
+    },
+    {
+     "text": "テキ",
+     "startIndex": 4,
+     "endIndex": 6
+    },
+    {
+     "text": "スト",
+     "startIndex": 6,
+     "endIndex": 8
+    }
+   ]
+  },
+  {
+   "line": "a  b   c    d",
+   "width": 3,
+   "chunks": [
+    {
+     "text": "a  ",
+     "startIndex": 0,
+     "endIndex": 3
+    },
+    {
+     "text": "b  ",
+     "startIndex": 3,
+     "endIndex": 6
+    },
+    {
+     "text": " ",
+     "startIndex": 6,
+     "endIndex": 7
+    },
+    {
+     "text": "c  ",
+     "startIndex": 7,
+     "endIndex": 10
+    },
+    {
+     "text": "  d",
+     "startIndex": 10,
+     "endIndex": 13
+    }
+   ]
+  },
+  {
+   "line": "word 👍🏽👍🏽 more",
+   "width": 4,
+   "chunks": [
+    {
+     "text": "word",
+     "startIndex": 0,
+     "endIndex": 4
+    },
+    {
+     "text": " ",
+     "startIndex": 4,
+     "endIndex": 5
+    },
+    {
+     "text": "👍🏽👍🏽",
+     "startIndex": 5,
+     "endIndex": 13
+    },
+    {
+     "text": " ",
+     "startIndex": 13,
+     "endIndex": 14
+    },
+    {
+     "text": "more",
+     "startIndex": 14,
+     "endIndex": 18
+    }
+   ]
+  }
+ ],
+ "wordNav": [
+  {
+   "text": "hello world",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "hello world",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "hello world",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "hello world",
+   "cursor": 3,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "hello world",
+   "cursor": 4,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "hello world",
+   "cursor": 5,
+   "back": 0,
+   "fwd": 11
+  },
+  {
+   "text": "hello world",
+   "cursor": 6,
+   "back": 0,
+   "fwd": 11
+  },
+  {
+   "text": "hello world",
+   "cursor": 7,
+   "back": 6,
+   "fwd": 11
+  },
+  {
+   "text": "hello world",
+   "cursor": 8,
+   "back": 6,
+   "fwd": 11
+  },
+  {
+   "text": "hello world",
+   "cursor": 9,
+   "back": 6,
+   "fwd": 11
+  },
+  {
+   "text": "hello world",
+   "cursor": 10,
+   "back": 6,
+   "fwd": 11
+  },
+  {
+   "text": "hello world",
+   "cursor": 11,
+   "back": 6,
+   "fwd": 11
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 3
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 3
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 3
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 3,
+   "back": 0,
+   "fwd": 4
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 4,
+   "back": 3,
+   "fwd": 7
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 5,
+   "back": 4,
+   "fwd": 7
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 6,
+   "back": 4,
+   "fwd": 7
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 7,
+   "back": 4,
+   "fwd": 8
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 8,
+   "back": 7,
+   "fwd": 11
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 9,
+   "back": 8,
+   "fwd": 11
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 10,
+   "back": 8,
+   "fwd": 11
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 11,
+   "back": 8,
+   "fwd": 12
+  },
+  {
+   "text": "foo.bar(baz)",
+   "cursor": 12,
+   "back": 11,
+   "fwd": 12
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 3,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 4,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 5,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 6,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 7,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 8,
+   "back": 2,
+   "fwd": 14
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 9,
+   "back": 2,
+   "fwd": 14
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 10,
+   "back": 2,
+   "fwd": 14
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 11,
+   "back": 2,
+   "fwd": 14
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 12,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 13,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 14,
+   "back": 11,
+   "fwd": 16
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 15,
+   "back": 11,
+   "fwd": 16
+  },
+  {
+   "text": "  spaced   out  ",
+   "cursor": 16,
+   "back": 11,
+   "fwd": 16
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 3,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 4,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 5,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 6,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 7,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 8,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 9,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 10,
+   "back": 0,
+   "fwd": 14
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 11,
+   "back": 0,
+   "fwd": 14
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 12,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 13,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 14,
+   "back": 11,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 15,
+   "back": 11,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 16,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 17,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 18,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 19,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 20,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 21,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 22,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 23,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "snake_case and camelCase",
+   "cursor": 24,
+   "back": 15,
+   "fwd": 24
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 4
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 4
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 4
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 3,
+   "back": 0,
+   "fwd": 4
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 4,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 5,
+   "back": 4,
+   "fwd": 7
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 6,
+   "back": 5,
+   "fwd": 7
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 7,
+   "back": 5,
+   "fwd": 8
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 8,
+   "back": 7,
+   "fwd": 12
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 9,
+   "back": 8,
+   "fwd": 12
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 10,
+   "back": 8,
+   "fwd": 12
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 11,
+   "back": 8,
+   "fwd": 12
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 12,
+   "back": 8,
+   "fwd": 13
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 13,
+   "back": 12,
+   "fwd": 16
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 14,
+   "back": 13,
+   "fwd": 16
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 15,
+   "back": 13,
+   "fwd": 16
+  },
+  {
+   "text": "path/to/file.txt",
+   "cursor": 16,
+   "back": 13,
+   "fwd": 16
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 3
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 2
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 3
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 3,
+   "back": 0,
+   "fwd": 8
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 4,
+   "back": 0,
+   "fwd": 8
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 5,
+   "back": 4,
+   "fwd": 8
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 6,
+   "back": 4,
+   "fwd": 8
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 7,
+   "back": 4,
+   "fwd": 8
+  },
+  {
+   "text": "日本語 テキスト",
+   "cursor": 8,
+   "back": 4,
+   "fwd": 8
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 2
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 2
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 3
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 3,
+   "back": 2,
+   "fwd": 4
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 4,
+   "back": 3,
+   "fwd": 6
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 5,
+   "back": 3,
+   "fwd": 6
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 6,
+   "back": 5,
+   "fwd": 10
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 7,
+   "back": 5,
+   "fwd": 10
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 8,
+   "back": 7,
+   "fwd": 10
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 9,
+   "back": 7,
+   "fwd": 10
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 10,
+   "back": 7,
+   "fwd": 11
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 11,
+   "back": 10,
+   "fwd": 12
+  },
+  {
+   "text": "it's a don't",
+   "cursor": 12,
+   "back": 11,
+   "fwd": 12
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 1
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 2
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 2,
+   "back": 1,
+   "fwd": 4
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 3,
+   "back": 2,
+   "fwd": 4
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 4,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 5,
+   "back": 2,
+   "fwd": 8
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 6,
+   "back": 5,
+   "fwd": 8
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 7,
+   "back": 5,
+   "fwd": 8
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 8,
+   "back": 5,
+   "fwd": 10
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 9,
+   "back": 5,
+   "fwd": 10
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 10,
+   "back": 9,
+   "fwd": 11
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 11,
+   "back": 10,
+   "fwd": 14
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 12,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 13,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "3.14 and 1,000",
+   "cursor": 14,
+   "back": 11,
+   "fwd": 14
+  },
+  {
+   "text": "a-b-c",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 1
+  },
+  {
+   "text": "a-b-c",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 2
+  },
+  {
+   "text": "a-b-c",
+   "cursor": 2,
+   "back": 1,
+   "fwd": 3
+  },
+  {
+   "text": "a-b-c",
+   "cursor": 3,
+   "back": 2,
+   "fwd": 4
+  },
+  {
+   "text": "a-b-c",
+   "cursor": 4,
+   "back": 3,
+   "fwd": 5
+  },
+  {
+   "text": "a-b-c",
+   "cursor": 5,
+   "back": 4,
+   "fwd": 5
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 0,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 1,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 2,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 3,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 4,
+   "back": 0,
+   "fwd": 5
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 5,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 6,
+   "back": 0,
+   "fwd": 10
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 7,
+   "back": 6,
+   "fwd": 10
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 8,
+   "back": 6,
+   "fwd": 10
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 9,
+   "back": 6,
+   "fwd": 10
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 10,
+   "back": 6,
+   "fwd": 15
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 11,
+   "back": 6,
+   "fwd": 15
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 12,
+   "back": 11,
+   "fwd": 15
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 13,
+   "back": 11,
+   "fwd": 15
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 14,
+   "back": 11,
+   "fwd": 15
+  },
+  {
+   "text": "emoji 👍🏽 word",
+   "cursor": 15,
+   "back": 11,
+   "fwd": 15
+  }
+ ],
+ "keys": [
+  {
+   "data": "a",
+   "parsed": "a",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "A",
+   "parsed": "A",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\r",
+   "parsed": "enter",
+   "printable": null,
+   "matches": {
+    "enter": true,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\n",
+   "parsed": "enter",
+   "printable": null,
+   "matches": {
+    "enter": true,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\t",
+   "parsed": "tab",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": true,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "",
+   "parsed": "backspace",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": true,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\b",
+   "parsed": "backspace",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": true,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b",
+   "parsed": "escape",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": true,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[A",
+   "parsed": "up",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": true,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[B",
+   "parsed": "down",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[C",
+   "parsed": "right",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[D",
+   "parsed": "left",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": true,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[1;5D",
+   "parsed": "ctrl+left",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": true,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[1;3C",
+   "parsed": "alt+right",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001bb",
+   "parsed": "alt+left",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": true,
+    "left": false,
+    "alt+b": true,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001bf",
+   "parsed": "alt+right",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0001",
+   "parsed": "ctrl+a",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": true,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0005",
+   "parsed": "ctrl+e",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u000b",
+   "parsed": "ctrl+k",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": true,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0015",
+   "parsed": "ctrl+u",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0017",
+   "parsed": "ctrl+w",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": true,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0019",
+   "parsed": "ctrl+y",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001by",
+   "parsed": "alt+y",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001f",
+   "parsed": "ctrl+-",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": true,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[13;2u",
+   "parsed": "shift+enter",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": true,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b\r",
+   "parsed": "alt+enter",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": true,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[3~",
+   "parsed": "delete",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": true,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[H",
+   "parsed": "home",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": true,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[F",
+   "parsed": "end",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": true,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[5~",
+   "parsed": "pageUp",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": true,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[6~",
+   "parsed": "pageDown",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[97;5u",
+   "parsed": "ctrl+a",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": true,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[1;2A",
+   "parsed": "shift+up",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": true,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[Z",
+   "parsed": "shift+tab",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": true,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0003",
+   "parsed": "ctrl+c",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": true,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u0004",
+   "parsed": "ctrl+d",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[27;2;13~",
+   "parsed": "shift+enter",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": true,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[99;5u",
+   "parsed": "ctrl+c",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": true,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[127u",
+   "parsed": "backspace",
+   "printable": "",
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": true,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001bOA",
+   "parsed": "up",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": true,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[3;5~",
+   "parsed": "ctrl+delete",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b\u001b[D",
+   "parsed": null,
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001d",
+   "parsed": "ctrl+]",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": true,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[93;5u",
+   "parsed": "ctrl+]",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": true,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[32;2u",
+   "parsed": "shift+space",
+   "printable": " ",
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": true,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\u001b[107;5u",
+   "parsed": "ctrl+k",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": true,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  },
+  {
+   "data": "\f",
+   "parsed": "ctrl+l",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": true
+   }
+  },
+  {
+   "data": "\u001b[1;6D",
+   "parsed": "shift+ctrl+left",
+   "printable": null,
+   "matches": {
+    "enter": false,
+    "shift+enter": false,
+    "ctrl+c": false,
+    "escape": false,
+    "ctrl+left": false,
+    "alt+left": false,
+    "left": false,
+    "alt+b": false,
+    "ctrl+w": false,
+    "alt+backspace": false,
+    "backspace": false,
+    "delete": false,
+    "ctrl+]": false,
+    "shift+tab": false,
+    "tab": false,
+    "ctrl+-": false,
+    "home": false,
+    "end": false,
+    "pageUp": false,
+    "up": false,
+    "shift+up": false,
+    "ctrl+a": false,
+    "ctrl+k": false,
+    "alt+enter": false,
+    "shift+space": false,
+    "ctrl+l": false
+   }
+  }
+ ],
+ "fuzzy": [
+  {
+   "query": "m",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "model",
+    "scoped-models",
+    "gpt-4o-mini",
+    "compact",
+    "name",
+    "llama/Iris",
+    "resume"
+   ]
+  },
+  {
+   "query": "co",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "compact",
+    "copy",
+    "scoped-models",
+    "changelog",
+    "claude-sonnet-4"
+   ]
+  },
+  {
+   "query": "set",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "settings",
+    "claude-sonnet-4"
+   ]
+  },
+  {
+   "query": "sn",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "settings",
+    "claude-sonnet-4",
+    "session"
+   ]
+  },
+  {
+   "query": "4o",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "gpt-4o-mini",
+    "claude-sonnet-4"
+   ]
+  },
+  {
+   "query": "o4",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "gpt-4o-mini",
+    "claude-sonnet-4"
+   ]
+  },
+  {
+   "query": "cls",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "claude-sonnet-4",
+    "scoped-models"
+   ]
+  },
+  {
+   "query": "s m",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "scoped-models",
+    "resume",
+    "llama/Iris"
+   ]
+  },
+  {
+   "query": "llama iris",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "llama/Iris"
+   ]
+  },
+  {
+   "query": "xyz",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": []
+  },
+  {
+   "query": "tre",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "tree"
+   ]
+  },
+  {
+   "query": "gpt4",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "gpt-4o-mini"
+   ]
+  },
+  {
+   "query": "",
+   "items": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ],
+   "result": [
+    "model",
+    "compact",
+    "copy",
+    "clear",
+    "resume",
+    "session",
+    "settings",
+    "export",
+    "share",
+    "thinking",
+    "hotkeys",
+    "changelog",
+    "tree",
+    "fork",
+    "new",
+    "name",
+    "login",
+    "logout",
+    "scoped-models",
+    "reload",
+    "gpt-4o-mini",
+    "claude-sonnet-4",
+    "llama/Iris",
+    "o3"
+   ]
+  }
+ ],
+ "editor": [
+  {
+   "width": 40,
+   "inputs": [
+    "h",
+    "e",
+    "l",
+    "l",
+    "o",
+    " ",
+    "w",
+    "o",
+    "r",
+    "l",
+    "d"
+   ],
+   "submitted": [],
+   "text": "hello world",
+   "expanded": "hello world",
+   "cursor": {
+    "line": 0,
+    "col": 11
+   },
+   "lines": [
+    "\u001b[90m────────────────────────────────────────\u001b[39m",
+    "hello world\u001b_pi:c\u0007\u001b[7m \u001b[0m                            ",
+    "\u001b[90m────────────────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 20,
+   "inputs": [
+    "t",
+    "h",
+    "e",
+    " ",
+    "q",
+    "u",
+    "i",
+    "c",
+    "k",
+    " ",
+    "b",
+    "r",
+    "o",
+    "w",
+    "n",
+    " ",
+    "f",
+    "o",
+    "x",
+    " ",
+    "j",
+    "u",
+    "m",
+    "p",
+    "s",
+    " ",
+    "o",
+    "v",
+    "e",
+    "r",
+    " ",
+    "t",
+    "h",
+    "e",
+    " ",
+    "l",
+    "a",
+    "z",
+    "y",
+    " ",
+    "d",
+    "o",
+    "g",
+    " ",
+    "a",
+    "n",
+    "d",
+    " ",
+    "k",
+    "e",
+    "e",
+    "p",
+    "s",
+    " ",
+    "r",
+    "u",
+    "n",
+    "n",
+    "i",
+    "n",
+    "g"
+   ],
+   "submitted": [],
+   "text": "the quick brown fox jumps over the lazy dog and keeps running",
+   "expanded": "the quick brown fox jumps over the lazy dog and keeps running",
+   "cursor": {
+    "line": 0,
+    "col": 61
+   },
+   "lines": [
+    "\u001b[90m────────────────────\u001b[39m",
+    "the quick brown     ",
+    "fox jumps over the  ",
+    "lazy dog and keeps  ",
+    "running\u001b_pi:c\u0007\u001b[7m \u001b[0m            ",
+    "\u001b[90m────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "h",
+    "e",
+    "l",
+    "l",
+    "o",
+    " ",
+    "w",
+    "o",
+    "r",
+    "l",
+    "d",
+    "\u0017",
+    "\u0017",
+    "a",
+    "g",
+    "a",
+    "i",
+    "n"
+   ],
+   "submitted": [],
+   "text": "again",
+   "expanded": "again",
+   "cursor": {
+    "line": 0,
+    "col": 5
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "again\u001b_pi:c\u0007\u001b[7m \u001b[0m                        ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "o",
+    "n",
+    "e",
+    " ",
+    "t",
+    "w",
+    "o",
+    " ",
+    "t",
+    "h",
+    "r",
+    "e",
+    "e",
+    "\u0001",
+    "\u001bf",
+    "\u001bf",
+    "\u000b",
+    "\u0005",
+    "\u0019"
+   ],
+   "submitted": [],
+   "text": "one two three",
+   "expanded": "one two three",
+   "cursor": {
+    "line": 0,
+    "col": 13
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "one two three\u001b_pi:c\u0007\u001b[7m \u001b[0m                ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "a",
+    "b",
+    "c",
+    "\u001b\r",
+    "d",
+    "e",
+    "f",
+    "\u001b[A",
+    "\u0005",
+    "X"
+   ],
+   "submitted": [],
+   "text": "abcX\ndef",
+   "expanded": "abcX\ndef",
+   "cursor": {
+    "line": 0,
+    "col": 4
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "abcX\u001b_pi:c\u0007\u001b[7m \u001b[0m                         ",
+    "def                           ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "u",
+    "n",
+    "d",
+    "o",
+    " ",
+    "m",
+    "e",
+    "\u001f",
+    "\u001f"
+   ],
+   "submitted": [],
+   "text": "",
+   "expanded": "",
+   "cursor": {
+    "line": 0,
+    "col": 0
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "\u001b_pi:c\u0007\u001b[7m \u001b[0m                             ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "\u001b[200~pasted\ttext\r\nsecond line\u001b[201~"
+   ],
+   "submitted": [],
+   "text": "pasted    text\nsecond line",
+   "expanded": "pasted    text\nsecond line",
+   "cursor": {
+    "line": 1,
+    "col": 11
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "pasted    text                ",
+    "second line\u001b_pi:c\u0007\u001b[7m \u001b[0m                  ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "\u001b[200~line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\u001b[201~",
+    " ",
+    "x"
+   ],
+   "submitted": [],
+   "text": "[paste #1 +15 lines] x",
+   "expanded": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14 x",
+   "cursor": {
+    "line": 0,
+    "col": 22
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "[paste #1 +15 lines] x\u001b_pi:c\u0007\u001b[7m \u001b[0m       ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "f",
+    "i",
+    "r",
+    "s",
+    "t",
+    "\r",
+    "s",
+    "e",
+    "c",
+    "o",
+    "n",
+    "d",
+    "\r",
+    "\u001b[A",
+    "\u001b[A",
+    "\u001b[B"
+   ],
+   "submitted": [
+    "first",
+    "second"
+   ],
+   "text": "second",
+   "expanded": "second",
+   "cursor": {
+    "line": 0,
+    "col": 6
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "second\u001b_pi:c\u0007\u001b[7m \u001b[0m                       ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 16,
+   "inputs": [
+    "a",
+    " ",
+    "l",
+    "o",
+    "n",
+    "g",
+    " ",
+    "l",
+    "i",
+    "n",
+    "e",
+    " ",
+    "t",
+    "h",
+    "a",
+    "t",
+    " ",
+    "w",
+    "r",
+    "a",
+    "p",
+    "s",
+    " ",
+    "s",
+    "e",
+    "v",
+    "e",
+    "r",
+    "a",
+    "l",
+    " ",
+    "t",
+    "i",
+    "m",
+    "e",
+    "s",
+    " ",
+    "o",
+    "v",
+    "e",
+    "r",
+    "\u001b[A",
+    "\u001b[A",
+    "Z",
+    "\u001b[B",
+    "Y"
+   ],
+   "submitted": [],
+   "text": "Za long line that wraps several times overY",
+   "expanded": "Za long line that wraps several times overY",
+   "cursor": {
+    "line": 0,
+    "col": 43
+   },
+   "lines": [
+    "\u001b[90m────────────────\u001b[39m",
+    "Za long line    ",
+    "that wraps      ",
+    "several times   ",
+    "overY\u001b_pi:c\u0007\u001b[7m \u001b[0m          ",
+    "\u001b[90m────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "h",
+    "e",
+    "l",
+    "l",
+    "o",
+    " ",
+    "👍",
+    "🏽",
+    " ",
+    "w",
+    "o",
+    "r",
+    "l",
+    "d",
+    "\u001b[D",
+    "\u001b[D",
+    "\u001b[D",
+    "\u001b[D",
+    "\u001b[D",
+    "\u001b[D",
+    ""
+   ],
+   "submitted": [],
+   "text": "hello  world",
+   "expanded": "hello  world",
+   "cursor": {
+    "line": 0,
+    "col": 6
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "hello \u001b_pi:c\u0007\u001b[7m \u001b[0mworld                  ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "x",
+    " ",
+    "=",
+    " ",
+    "1",
+    "\u0001",
+    "\u001d",
+    "=",
+    "Q"
+   ],
+   "submitted": [],
+   "text": "x Q= 1",
+   "expanded": "x Q= 1",
+   "cursor": {
+    "line": 0,
+    "col": 3
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "x Q\u001b_pi:c\u0007\u001b[7m=\u001b[0m 1                        ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "p",
+    "a",
+    "t",
+    "h",
+    "\\",
+    "\r",
+    "n",
+    "e",
+    "x",
+    "t"
+   ],
+   "submitted": [],
+   "text": "path\nnext",
+   "expanded": "path\nnext",
+   "cursor": {
+    "line": 1,
+    "col": 4
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "path                          ",
+    "next\u001b_pi:c\u0007\u001b[7m \u001b[0m                         ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "日",
+    "本",
+    "語",
+    "テ",
+    "キ",
+    "ス",
+    "ト",
+    "\u001bb",
+    "\u0017"
+   ],
+   "submitted": [],
+   "text": "テキスト",
+   "expanded": "テキスト",
+   "cursor": {
+    "line": 0,
+    "col": 0
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "\u001b_pi:c\u0007\u001b[7mテ\u001b[0mキスト                      ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  },
+  {
+   "width": 30,
+   "inputs": [
+    "k",
+    "i",
+    "l",
+    "l",
+    "\u0015",
+    "n",
+    "e",
+    "w",
+    "\u0019",
+    "\u001by"
+   ],
+   "submitted": [],
+   "text": "newkill",
+   "expanded": "newkill",
+   "cursor": {
+    "line": 0,
+    "col": 7
+   },
+   "lines": [
+    "\u001b[90m──────────────────────────────\u001b[39m",
+    "newkill\u001b_pi:c\u0007\u001b[7m \u001b[0m                      ",
+    "\u001b[90m──────────────────────────────\u001b[39m"
+   ]
+  }
+ ],
+ "input": [
+  {
+   "width": 20,
+   "inputs": [
+    "h",
+    "e",
+    "l",
+    "l",
+    "o"
+   ],
+   "value": "hello",
+   "lines": [
+    "> hello\u001b_pi:c\u0007\u001b[7m \u001b[27m            "
+   ]
+  },
+  {
+   "width": 12,
+   "inputs": [
+    "a",
+    " ",
+    "m",
+    "u",
+    "c",
+    "h",
+    " ",
+    "l",
+    "o",
+    "n",
+    "g",
+    "e",
+    "r",
+    " ",
+    "i",
+    "n",
+    "p",
+    "u",
+    "t",
+    " ",
+    "v",
+    "a",
+    "l",
+    "u",
+    "e",
+    "\u001b[D",
+    "\u001b[D",
+    "\u001b[D"
+   ],
+   "value": "a much longer input value",
+   "lines": [
+    "> nput va\u001b_pi:c\u0007\u001b[7ml\u001b[27mue"
+   ]
+  },
+  {
+   "width": 20,
+   "inputs": [
+    "w",
+    "o",
+    "r",
+    "d",
+    " ",
+    "o",
+    "n",
+    "e",
+    "\u0017",
+    "\u0001",
+    "X"
+   ],
+   "value": "Xword ",
+   "lines": [
+    "> X\u001b_pi:c\u0007\u001b[7mw\u001b[27mord             "
+   ]
+  },
+  {
+   "width": 20,
+   "inputs": [
+    "\u001b[200~multi\nline\u001b[201~"
+   ],
+   "value": "multiline",
+   "lines": [
+    "> multiline\u001b_pi:c\u0007\u001b[7m \u001b[27m        "
+   ]
+  }
+ ],
+ "selectList": [
+  {
+   "width": 60,
+   "keys": [],
+   "lines": [
+    "\u001b[1m→ model                           Select model from list\u001b[22m",
+    "  compact\u001b[90m                         Compact the session cont\u001b[0m\u001b[39m",
+    "  a-very-long-command-name-that-\u001b[0m\u001b[90m  desc\u001b[39m",
+    "  noDesc",
+    "\u001b[90m  (1/7)\u001b[39m"
+   ],
+   "selected": "model"
+  },
+  {
+   "width": 60,
+   "keys": [
+    "\u001b[B",
+    "\u001b[B"
+   ],
+   "lines": [
+    "  model\u001b[90m                           Select model from list\u001b[39m",
+    "  compact\u001b[90m                         Compact the session cont\u001b[0m\u001b[39m",
+    "\u001b[1m→ a-very-long-command-name-that-\u001b[0m  desc\u001b[22m",
+    "  noDesc",
+    "\u001b[90m  (3/7)\u001b[39m"
+   ],
+   "selected": "a-very-long-command-name-that-exceeds-column"
+  },
+  {
+   "width": 30,
+   "keys": [
+    "\u001b[A"
+   ],
+   "lines": [
+    "  noDesc",
+    "  five",
+    "  six",
+    "\u001b[1m→ seven\u001b[22m",
+    "\u001b[90m  (7/7)\u001b[39m"
+   ],
+   "selected": "seven"
+  },
+  {
+   "width": 45,
+   "keys": [
+    "\u001b[B",
+    "\u001b[B",
+    "\u001b[B",
+    "\u001b[B",
+    "\u001b[B"
+   ],
+   "lines": [
+    "  noDesc",
+    "  five",
+    "\u001b[1m→ six\u001b[22m",
+    "  seven",
+    "\u001b[90m  (6/7)\u001b[39m"
+   ],
+   "selected": "six"
+  }
+ ],
+ "selectListEmpty": [
+  "\u001b[31m  No matching commands\u001b[39m"
+ ],
+ "settingsList": [
+  {
+   "search": false,
+   "keys": [],
+   "lines": [
+    "→ \u001b[1mAuto-compact        \u001b[22m  \u001b[36mtrue\u001b[39m",
+    "  Theme                 \u001b[90mdark\u001b[39m",
+    "  Hide thinking blocks  \u001b[90mfalse\u001b[39m",
+    "",
+    "\u001b[90m  Automatically compact when context is full\u001b[39m",
+    "",
+    "\u001b[90m  Enter/Space to change · Esc to cancel\u001b[39m"
+   ],
+   "changes": []
+  },
+  {
+   "search": false,
+   "keys": [
+    "\u001b[B",
+    "\r"
+   ],
+   "lines": [
+    "  Auto-compact          \u001b[90mtrue\u001b[39m",
+    "→ \u001b[1mTheme               \u001b[22m  \u001b[36mlight\u001b[39m",
+    "  Hide thinking blocks  \u001b[90mfalse\u001b[39m",
+    "",
+    "\u001b[90m  Enter/Space to change · Esc to cancel\u001b[39m"
+   ],
+   "changes": [
+    [
+     "theme",
+     "light"
+    ]
+   ]
+  },
+  {
+   "search": true,
+   "keys": [
+    "t",
+    "h"
+   ],
+   "lines": [
+    "> th\u001b[7m \u001b[27m                                             ",
+    "",
+    "→ \u001b[1mTheme               \u001b[22m  \u001b[36mdark\u001b[39m",
+    "  Hide thinking blocks  \u001b[90mfalse\u001b[39m",
+    "",
+    "\u001b[90m  Type to search · Enter/Space to change · Esc \u001b[0m...\u001b[0m"
+   ],
+   "changes": []
+  },
+  {
+   "search": true,
+   "keys": [
+    "\u001b[B",
+    " "
+   ],
+   "lines": [
+    "> \u001b[7m \u001b[27m                                               ",
+    "",
+    "  Auto-compact          \u001b[90mtrue\u001b[39m",
+    "→ \u001b[1mTheme               \u001b[22m  \u001b[36mlight\u001b[39m",
+    "  Hide thinking blocks  \u001b[90mfalse\u001b[39m",
+    "",
+    "\u001b[90m  Type to search · Enter/Space to change · Esc \u001b[0m...\u001b[0m"
+   ],
+   "changes": [
+    [
+     "theme",
+     "light"
+    ]
+   ]
+  }
+ ]
+}
