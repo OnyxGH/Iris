@@ -11,132 +11,6 @@ using Iris.CodingAgent.Utils;
 
 namespace Iris.CodingAgent.Core;
 
-/// <summary>Adds a persisted pi.dev catalog overlay to a static built-in provider. Port of remote-catalog-provider.ts.</summary>
-public sealed class RemoteCatalogProvider : IProvider
-{
-    public const long RefreshIntervalMs = 4 * 60 * 60 * 1000;
-    private const int AttemptTimeoutMs = 4_000;
-
-    private readonly IProvider _inner;
-    private readonly string _catalogBaseUrl;
-    private readonly long? _localGeneratedAt;
-    private IReadOnlyList<Model> _dynamicModels = [];
-
-    public RemoteCatalogProvider(IProvider inner, string? catalogBaseUrl, long? localGeneratedAt)
-    {
-        _inner = inner;
-        _catalogBaseUrl = catalogBaseUrl ?? "https://pi.dev";
-        _localGeneratedAt = localGeneratedAt;
-        RefreshModels = RefreshAsync;
-    }
-
-    public string Id => _inner.Id;
-    public string Name => _inner.Name;
-    public string? BaseUrl => _inner.BaseUrl;
-    public IReadOnlyDictionary<string, string?>? Headers => _inner.Headers;
-    public ProviderAuth Auth => _inner.Auth;
-    public Func<RefreshModelsContext, Task>? RefreshModels { get; }
-    public Func<IReadOnlyList<Model>, Credential?, IReadOnlyList<Model>>? FilterModels => _inner.FilterModels;
-
-    public IReadOnlyList<Model> GetModels()
-    {
-        var merged = _inner.GetModels().ToList();
-        foreach (var model in _dynamicModels)
-        {
-            var index = merged.FindIndex(m => m.Id == model.Id);
-            if (index >= 0) merged[index] = model;
-            else merged.Add(model);
-        }
-        return merged;
-    }
-
-    public AssistantMessageEventStream Stream(Model model, Context context, StreamOptions? options = null) => _inner.Stream(model, context, options);
-
-    public AssistantMessageEventStream StreamSimple(Model model, Context context, SimpleStreamOptions? options = null) => _inner.StreamSimple(model, context, options);
-
-    private IReadOnlyList<Model> RemoteModels(ModelsStoreEntry? entry)
-    {
-        if (entry is null) return [];
-        if (_localGeneratedAt is not null && (entry.LastModified is null || entry.LastModified <= _localGeneratedAt)) return [];
-        return entry.Models;
-    }
-
-    private static List<Model> ParseCatalog(string providerId, JsonNode? value)
-    {
-        IEnumerable<JsonNode?>? entries = value switch
-        {
-            JsonArray arr => arr,
-            JsonObject obj when obj["models"] is JsonArray models => models,
-            JsonObject obj => obj.Select(kv => kv.Value),
-            _ => null,
-        };
-        if (entries is null) throw new InvalidOperationException($"Invalid model catalog for provider \"{providerId}\"");
-        return entries.OfType<JsonObject>().Where(o => o.ContainsKey("id")).Select(o =>
-        {
-            var model = PiJson.Deserialize<Model>(o)!;
-            model.Provider = providerId;
-            return model;
-        }).ToList();
-    }
-
-    private async Task RefreshAsync(RefreshModelsContext context)
-    {
-        var stored = context.Stored;
-        var restored = RemoteModels(stored).Where(m => m.Provider == Id).ToList();
-        if (!await context.Publish(new ModelsPublication { Update = () => _dynamicModels = restored })) return;
-        if (!context.AllowNetwork || context.CancellationToken.IsCancellationRequested) return;
-        if (context.Force != true && stored?.CheckedAt is not null && stored.LastModified is not null && TimeUtil.NowMs() - stored.CheckedAt < RefreshIntervalMs) return;
-
-        var validator = stored is { Models.Count: > 0 } ? stored.Etag : null;
-        var url = new Uri(new Uri(_catalogBaseUrl), $"/api/models/providers/{Uri.EscapeDataString(Id)}");
-        using var response = await ManagementHttp.FetchWithRetryAsync(() =>
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.TryAddWithoutValidation("accept", "application/json");
-            request.Headers.TryAddWithoutValidation("User-Agent", PiUserAgent.Get());
-            if (validator is not null) request.Headers.TryAddWithoutValidation("if-none-match", validator);
-            return request;
-        }, context.CancellationToken, attemptTimeoutMs: AttemptTimeoutMs);
-        if (context.CancellationToken.IsCancellationRequested) return;
-        var checkedAt = TimeUtil.NowMs();
-        if (response.StatusCode == HttpStatusCode.NotModified && stored is not null)
-        {
-            var next = stored.Clone();
-            next.CheckedAt = checkedAt;
-            await context.Publish(new ModelsPublication { HasPersist = true, Persist = next });
-            return;
-        }
-        if (response.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.NotImplemented)
-        {
-            var next = stored?.Clone() ?? new ModelsStoreEntry();
-            next.CheckedAt = checkedAt;
-            next.LastModified = 0;
-            next.Etag = null;
-            await context.Publish(new ModelsPublication { HasPersist = true, Persist = next });
-            return;
-        }
-        if (!response.IsSuccessStatusCode)
-        {
-            var next = stored?.Clone() ?? new ModelsStoreEntry();
-            next.CheckedAt = checkedAt;
-            await context.Publish(new ModelsPublication { HasPersist = true, Persist = next });
-            throw new InvalidOperationException($"Model catalog request failed for {Id}: {(int)response.StatusCode}");
-        }
-        var body = await response.Content.ReadAsStringAsync(context.CancellationToken);
-        var refreshed = ParseCatalog(Id, JsonNode.Parse(body));
-        var lastModified = response.Content.Headers.LastModified?.ToUnixTimeMilliseconds() ?? 0;
-        var entry = new ModelsStoreEntry
-        {
-            Models = refreshed,
-            CheckedAt = checkedAt,
-            LastModified = lastModified,
-            Etag = response.Headers.ETag?.ToString(),
-        };
-        var published = RemoteModels(entry);
-        await context.Publish(new ModelsPublication { HasPersist = true, Persist = entry, Update = () => _dynamicModels = published });
-    }
-}
-
 public sealed class CreateModelRuntimeOptions
 {
     public ICredentialStore? Credentials { get; init; }
@@ -148,7 +22,6 @@ public sealed class CreateModelRuntimeOptions
     public string? ModelsStorePath { get; init; }
     public bool AllowModelNetwork { get; init; }
     public int? ModelRefreshTimeoutMs { get; init; }
-    public string? CatalogBaseUrl { get; init; }
     public bool RefreshOnCreate { get; init; } = true;
     public IEnumerable<IProvider>? BuiltinProviders { get; init; }
     public CancellationToken CancellationToken { get; init; }
@@ -196,10 +69,8 @@ public sealed class ModelRuntime
             ?? (modelsPath is not null
                 ? new FileModelsStore(options.ModelsStorePath ?? Path.Combine(Path.GetDirectoryName(modelsPath)!, "models-store.json"))
                 : new InMemoryModelsStore());
-        var generatedAt = BuiltinCatalog.GeneratedAt;
-        var providers = (options.BuiltinProviders ?? BuiltinProviders.All())
-            .Select(p => (IProvider)new RemoteCatalogProvider(p, options.CatalogBaseUrl, generatedAt))
-            .ToList();
+        // Built-in providers use the model catalog bundled with Iris; there is no remote catalog service.
+        var providers = (options.BuiltinProviders ?? BuiltinProviders.All()).ToList();
         var runtime = new ModelRuntime(credentials, config, modelsPath, modelsStore, providers, Environment.GetEnvironmentVariable("PI_OFFLINE") is null);
 
         var refreshFromNetwork = runtime.ModelNetworkEnabled && options.AllowModelNetwork;

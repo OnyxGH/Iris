@@ -57,11 +57,6 @@ public static class AppConfig
 
     public static string InteractiveAssetsDir => Path.Combine(PackageDir, "assets");
 
-    public static string ShareViewerUrl(string gistId)
-    {
-        var baseUrl = Environment.GetEnvironmentVariable("PI_SHARE_VIEWER_URL");
-        return $"{(string.IsNullOrEmpty(baseUrl) ? "https://pi.dev/session/" : baseUrl)}#{gistId}";
-    }
 
     /// <summary>The agent config directory (e.g. ~/.iris/agent).</summary>
     public static string AgentDir
