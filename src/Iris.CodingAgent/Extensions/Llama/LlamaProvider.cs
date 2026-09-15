@@ -126,10 +126,17 @@ public sealed class LlamaProvider : IProvider
         }
     }
 
+    /// <summary>Context size used when the server does not report one (unloaded models).</summary>
+    public const int PlaceholderContextWindow = 128000;
+
+    /// <summary>Whether the model's limits are the placeholder used before the server reported its context size.</summary>
+    public static bool HasPlaceholderLimits(Model model) =>
+        model.Provider == ProviderId && model.ContextWindow == PlaceholderContextWindow && model.MaxTokens == PlaceholderContextWindow;
+
     private static Model ToModel(LlamaModelInfo model, string serverUrl)
     {
         var reported = model.ContextSize ?? model.TrainContextSize;
-        var contextWindow = reported is > 0 ? reported.Value : 128000;
+        var contextWindow = reported is > 0 ? reported.Value : PlaceholderContextWindow;
         return new Model
         {
             Id = model.Id,

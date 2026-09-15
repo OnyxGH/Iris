@@ -1268,6 +1268,7 @@ public sealed partial class InteractiveMode
 
             case "message_update" when agentEvent is MessageUpdateEvent { Message: AssistantMessage updated }:
                 if (_streamingComponent is null) break;
+                _ = RefreshLlamaModelMetadataAsync();
                 _streamingMessage = updated;
                 _streamingComponent.UpdateContent(updated, true);
                 foreach (var toolCall in updated.Content.OfType<ToolCall>())

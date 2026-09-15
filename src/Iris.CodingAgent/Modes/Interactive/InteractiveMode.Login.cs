@@ -517,7 +517,37 @@ public sealed partial class InteractiveMode
         if (result.Aborted) throw new TimeoutException("Model catalog refresh timed out.");
         if (result.Errors.TryGetValue(LlamaProvider.ProviderId, out var refreshError)) throw refreshError;
         UpdateAvailableProviderCount();
+        if (Session.SyncModelFromCatalog()) _ui.RequestRender();
         return current;
+    }
+
+    private bool _llamaMetadataRefreshRunning;
+    private long _llamaMetadataRefreshAt;
+
+    /// <summary>
+    /// Iris: unloaded llama.cpp models report no context size, so the catalog uses a placeholder. Once the active model
+    /// has answered (the router loaded it), re-read the catalog so the footer and compaction use the real context size.
+    /// </summary>
+    private async Task RefreshLlamaModelMetadataAsync()
+    {
+        if (_llamaMetadataRefreshRunning || Session.Model is not { Provider: LlamaProvider.ProviderId } model) return;
+        if (!LlamaProvider.HasPlaceholderLimits(model) || Environment.TickCount64 - _llamaMetadataRefreshAt < 5_000) return;
+        _llamaMetadataRefreshRunning = true;
+        _llamaMetadataRefreshAt = Environment.TickCount64;
+        try
+        {
+            using var cts = new CancellationTokenSource(15_000);
+            await Session.ModelRuntime.RefreshAsync(new ModelsRefreshOptions { Providers = [LlamaProvider.ProviderId], AllowNetwork = true, CancellationToken = cts.Token });
+            if (Session.SyncModelFromCatalog()) _ui.RequestRender();
+        }
+        catch
+        {
+            // Best effort; the next response retries.
+        }
+        finally
+        {
+            _llamaMetadataRefreshRunning = false;
+        }
     }
 
     private async Task HandleLlamaCommandAsync()

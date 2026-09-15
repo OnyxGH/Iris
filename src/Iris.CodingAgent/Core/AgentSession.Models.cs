@@ -33,6 +33,22 @@ public sealed partial class AgentSession
         await EmitModelSelectAsync(model, previousModel, "set");
     }
 
+    /// <summary>
+    /// Iris: replace the active model with the runtime's current catalog entry when its limits changed, e.g. after a
+    /// llama.cpp model loads and reports its real context size. Not recorded as a model change.
+    /// </summary>
+    public bool SyncModelFromCatalog()
+    {
+        if (Model is not { } current || _modelRuntime.GetModel(current.Provider, current.Id) is not { } latest) return false;
+        if (ReferenceEquals(latest, current)
+            || (latest.ContextWindow == current.ContextWindow && latest.MaxTokens == current.MaxTokens && latest.Input.SequenceEqual(current.Input)))
+        {
+            return false;
+        }
+        Agent.State.Model = latest;
+        return true;
+    }
+
     private void AddPersistedDefaultToNonEmptyScope(Model model)
     {
         if (_scopedModels.Count == 0 || _scopedModels.Any(s => ModelUtils.ModelsAreEqual(s.Model, model))) return;
