@@ -790,6 +790,14 @@ public sealed partial class TuiAltScreen : TuiBase
         {
             return false;
         }
+        // Iris: like Windows Terminal, a right-click copies an active selection instead of pasting.
+        if (GetActiveSelectionText() is { } selected)
+        {
+            ClearTextSelection();
+            RequestRender();
+            _ = CopyTextToClipboardAsync(selected);
+            return true;
+        }
         try
         {
             _onRightClickPaste();
