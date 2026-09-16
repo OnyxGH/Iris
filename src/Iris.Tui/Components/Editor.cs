@@ -128,6 +128,10 @@ public partial class Editor : IEditorComponent, IFocusable, IMouseComponent
     private Dictionary<int, string> _pastes = [];
     private int _pasteCounter;
     private string _pasteBuffer = "";
+
+    /// <summary>Called for a bracketed paste with no content (e.g. a terminal pasting an image-only clipboard).</summary>
+    public Action? OnEmptyPaste { get; set; }
+
     private bool _isInPaste;
 
     private readonly List<string> _history = [];
@@ -597,6 +601,7 @@ public partial class Editor : IEditorComponent, IFocusable, IMouseComponent
             {
                 var pasteContent = _pasteBuffer[..endIndex];
                 if (pasteContent.Length > 0) HandlePaste(pasteContent);
+                else OnEmptyPaste?.Invoke();
                 _isInPaste = false;
                 var remaining = _pasteBuffer[(endIndex + 6)..];
                 _pasteBuffer = "";

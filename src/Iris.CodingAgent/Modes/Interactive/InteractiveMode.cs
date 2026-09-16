@@ -238,7 +238,13 @@ public sealed partial class InteractiveMode
         try
         {
             var text = await Clipboard.ReadTextAsync();
-            if (string.IsNullOrEmpty(text) || !ReferenceEquals(_ui.GetFocusedComponent(), target)) return;
+            if (!ReferenceEquals(_ui.GetFocusedComponent(), target)) return;
+            if (string.IsNullOrEmpty(text))
+            {
+                // Iris: a clipboard without text may hold an image; attach it like the paste-image key does.
+                if (ReferenceEquals(target, _editor)) await HandleClipboardPasteAsync();
+                return;
+            }
             target.HandleInput($"\e[200~{text}\e[201~");
             _ui.RequestRender();
         }
@@ -1177,6 +1183,8 @@ public sealed partial class InteractiveMode
             if (wasBashMode != _isBashMode) UpdateEditorBorderColor();
         };
         _defaultEditor.OnPasteImage = () => _ = HandleClipboardPasteAsync();
+        // Iris: terminals that intercept ctrl+v send an empty paste when the clipboard holds only an image.
+        _defaultEditor.OnEmptyPaste = () => _ = HandleClipboardPasteAsync();
     }
 
     private async Task HandleClipboardPasteAsync()

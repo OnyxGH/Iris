@@ -24,6 +24,9 @@ pi stays the parity baseline, but Iris deliberately deviates in a few places (se
   renderers live).
 - Fullscreen selection that starts outside a scroll view stays inside the section (editor, footer, overlay...) where it
   started, like OpenCode's per-section selection; pi selects across screen rows.
+- Fullscreen right-click (Windows) copies an active selection instead of pasting, like Windows Terminal; with nothing
+  selected it pastes, and an image-only clipboard attaches the image as the paste-image key does. An empty bracketed paste
+  (a terminal handling ctrl+v on an image-only clipboard) also attaches the clipboard image. pi always pastes text.
 - Footer starts with the latest response's output token rate (`120tok/s`), measured from the first streamed delta.
 - Startup header shows a gradient IRIS block-letter banner instead of the one-line logo.
 - llama.cpp models selected while unloaded get their real context size once they answer (catalog re-read); pi keeps the
