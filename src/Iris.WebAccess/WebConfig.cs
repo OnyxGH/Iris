@@ -45,6 +45,22 @@ internal static class WebConfig
 
     public static JsonObject? GetObject(string key) => Root[key] as JsonObject;
 
+    /// <summary>Set one top-level key in web-search.json, keeping the rest of the file.</summary>
+    public static void Set(string key, JsonNode? value)
+    {
+        lock (Gate)
+        {
+            var root = (JsonObject)Root.DeepClone();
+            root[key] = value;
+            var path = Path;
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
+            var temp = $"{path}.{Environment.ProcessId}.tmp";
+            File.WriteAllText(temp, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+            File.Move(temp, path, overwrite: true);
+            _cache = null;
+        }
+    }
+
     public static string? GetString(string key) =>
         Root[key] is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text) ? text.Trim() : null;
 

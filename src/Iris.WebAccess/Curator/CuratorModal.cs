@@ -10,6 +10,9 @@ internal enum CuratorAction
 {
     Cancel,
     Submit,
+
+    /// <summary>Submit, and summarize later searches of this run without opening the curator.</summary>
+    SubmitAndAutoSummarize,
     Regenerate,
     Feedback,
     Edit,
@@ -149,19 +152,23 @@ internal sealed class CuratorModal : IInputComponent
         lines.Add(" " + string.Join("  ", [
             KeyHints.RawKeyHint("↑↓", "move"),
             KeyHints.RawKeyHint("space", "toggle"),
+            KeyHints.RawKeyHint("tab", "fold"),
             KeyHints.RawKeyHint("a/n", "all/none"),
-            KeyHints.RawKeyHint("pgup/pgdn", "summary"),
         ]));
         lines.Add(" " + string.Join("  ", [
             KeyHints.RawKeyHint("g", "regenerate"),
             KeyHints.RawKeyHint("f", "feedback"),
             KeyHints.RawKeyHint("e", "edit"),
+            KeyHints.RawKeyHint("pgup/pgdn", "scroll summary"),
+        ]));
+        lines.Add(" " + string.Join("  ", [
             KeyHints.RawKeyHint("enter", "submit"),
+            KeyHints.RawKeyHint("s", "submit + auto-summarize the rest"),
             KeyHints.RawKeyHint("esc", "cancel"),
         ]));
         lines.Add(theme.Fg("border", new string('─', width)));
         // An overlay paints only what each line contains, so pad them to hide the transcript behind the modal.
-        return [.. lines.Select(line => line + new string(' ', Math.Max(0, width - TextUtils.VisibleWidth(line))))];
+        return [.. lines.Select(line => TextUtils.TruncateToWidth(line, width, "", pad: true))];
     }
 
     private string RenderRow(int index, int inner)
@@ -174,10 +181,14 @@ internal sealed class CuratorModal : IInputComponent
         {
             var box = query.Selected ? theme.Fg("success", "[x]") : theme.Fg("dim", "[ ]");
             var provider = query.Data.Provider is { Length: > 0 } p ? $" ({p})" : "";
-            var suffix = query.Data.Error is not null
-                ? theme.Fg("error", " error")
-                : theme.Fg("dim", $" · {query.Sources.Count(s => s.Selected)}/{query.Sources.Count} sources");
             var label = $"\"{query.Data.Query}\"{provider}";
+            if (query.Data.Error is { } error)
+            {
+                var head = $" {cursor}{box} " + TextUtils.TruncateToWidth(theme.Fg(query.Selected ? "text" : "dim", label), Math.Max(10, inner / 2));
+                var message = error.ReplaceLineEndings(" ");
+                return head + theme.Fg("error", TextUtils.TruncateToWidth($" · {message}", Math.Max(8, inner - TextUtils.VisibleWidth(head))));
+            }
+            var suffix = theme.Fg("dim", $" · {query.Sources.Count(s => s.Selected)}/{query.Sources.Count} sources");
             return $" {cursor}{box} " + TextUtils.TruncateToWidth(theme.Fg(query.Selected ? "text" : "dim", label), Math.Max(10, inner - 24)) + suffix;
         }
 
@@ -214,6 +225,7 @@ internal sealed class CuratorModal : IInputComponent
         else if (data is "\t") ToggleExpanded();
         else if (data is "a" or "A") SetAll(true);
         else if (data is "n" or "N") SetAll(false);
+        else if (data is "s" or "S") _context.Done(CuratorAction.SubmitAndAutoSummarize);
         else if (data is "g" or "G") _context.Done(CuratorAction.Regenerate);
         else if (data is "f" or "F") _context.Done(CuratorAction.Feedback);
         else if (data is "e" or "E") _context.Done(CuratorAction.Edit);

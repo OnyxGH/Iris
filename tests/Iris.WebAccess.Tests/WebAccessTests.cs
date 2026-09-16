@@ -253,6 +253,35 @@ public sealed class FetchTests : IDisposable
         Assert.Contains("HTTP 404", result.Error);
         Assert.Contains("Use web_search to find the current URL", result.Error);
     }
+
+    [Fact]
+    public void SavesWorkflowWithoutLosingOtherSettings()
+    {
+        var path = Path.Combine(_agentDir.Path, "web-search.json");
+        File.WriteAllText(path, """{ "exaApiKey": "$EXA_API_KEY", "workflow": "none" }""");
+        WebConfig.Set("workflow", "summary-review");
+
+        var saved = JsonNode.Parse(File.ReadAllText(path))!;
+        Assert.Equal("summary-review", saved["workflow"]!.GetValue<string>());
+        Assert.Equal("$EXA_API_KEY", saved["exaApiKey"]!.GetValue<string>());
+        Assert.Equal("summary-review", WebConfig.GetString("workflow"));
+    }
+
+    [Theory]
+    [InlineData(null, null, true, Tools.SearchWorkflow.None)]
+    [InlineData("summary-review", null, true, Tools.SearchWorkflow.SummaryReview)]
+    [InlineData("summary-review", null, false, Tools.SearchWorkflow.None)]
+    [InlineData("auto-summary", null, false, Tools.SearchWorkflow.AutoSummary)]
+    [InlineData("summary-review", Tools.SearchWorkflow.None, true, Tools.SearchWorkflow.None)]
+    [InlineData(null, Tools.SearchWorkflow.SummaryReview, true, Tools.SearchWorkflow.SummaryReview)]
+    [InlineData(null, Tools.SearchWorkflow.SummaryReview, false, Tools.SearchWorkflow.None)]
+    public void ResolvesTheSearchWorkflow(string? configured, Tools.SearchWorkflow? requested, bool hasUI, Tools.SearchWorkflow expected)
+    {
+        var path = Path.Combine(_agentDir.Path, "web-search.json");
+        File.WriteAllText(path, configured is null ? "{}" : $$"""{ "workflow": "{{configured}}" }""");
+        var context = new Iris.Extensions.ExtensionContext { Cwd = _agentDir.Path, GetHasUI = () => hasUI };
+        Assert.Equal(expected, new WebAccessExtension().ResolveWorkflow(requested, context));
+    }
 }
 
 internal sealed class TempDirectory : IDisposable

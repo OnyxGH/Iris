@@ -114,18 +114,6 @@ public sealed partial class WebAccessExtension
         return await CurateAsync(call, ctx, queries, results, inline, includeContent, draft);
     }
 
-    /// <summary>The curator needs a terminal; without one a requested review degrades to an automatic summary.</summary>
-    private static SearchWorkflow ResolveWorkflow(SearchWorkflow? requested, ExtensionContext ctx)
-    {
-        var workflow = requested ?? WebConfig.GetString("workflow") switch
-        {
-            "summary-review" => SearchWorkflow.SummaryReview,
-            "auto-summary" => SearchWorkflow.AutoSummary,
-            _ => SearchWorkflow.None,
-        };
-        return workflow == SearchWorkflow.SummaryReview && !ctx.HasUI ? SearchWorkflow.AutoSummary : workflow;
-    }
-
     private async Task<ToolResult> CurateAsync(
         ToolCallContext call,
         ExtensionContext ctx,
@@ -156,7 +144,8 @@ public sealed partial class WebAccessExtension
                     var message = "Search curation cancelled (user).";
                     return Error(message, message, new JsonObject { ["cancelled"] = true, ["cancelReason"] = "user", ["queryCount"] = queries.Count });
 
-                case CuratorAction.Submit:
+                case CuratorAction.Submit or CuratorAction.SubmitAndAutoSummarize:
+                    if (action == CuratorAction.SubmitAndAutoSummarize) _autoSummarizeRemaining = true;
                     var selected = state.Selected();
                     var summary = state.Summary.Trim();
                     var meta = state.Meta;

@@ -54,13 +54,16 @@ password managers). Start a literal with `$$` or `$!` to escape it.
 | `summary-review` | Writes a summary draft, then opens the curator modal so you can review it. What you approve is what the model sees. |
 | `auto-summary` | Writes the summary and returns it without opening the curator. |
 
-Set a different default with `"workflow": "summary-review"` in web-search.json. Without a terminal (print, json and rpc
-modes) a review falls back to `auto-summary`.
+Models rarely ask for a review themselves, so turn the curator on for every search with `/curator` (a toggle), or
+`/curator on|off|summary-review|auto-summary`. This saves `workflow` in web-search.json; an explicit `workflow` in a
+tool call still wins. Without a terminal (print, json and rpc modes) searches return their results instead of opening the
+curator; `auto-summary` still applies.
 
 In the curator, ↑↓ move, space toggles the query or source under the cursor, tab folds a query, and a/n select or clear
 everything. Deselected sources are dropped from the results the model receives; a query with no sources left is dropped
 too. g writes the summary again from the current selection, f asks for feedback and regenerates with it, e opens the
-summary in the editor, page up/down scroll it, enter submits, and escape cancels the search.
+summary in the editor, page up/down scroll it, enter submits, and escape cancels the search. s submits and summarizes the
+remaining searches of the current prompt automatically instead of opening the curator for each.
 
 Summaries are written by the first model that answers of: `summaryModel` in web-search.json (`provider/model-id`),
 Claude Haiku 4.5, Gemini 3.6 Flash, GPT-5 mini, DeepSeek V4 Flash, then the session's own model — restricted to models

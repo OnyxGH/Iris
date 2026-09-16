@@ -43,6 +43,7 @@ public sealed partial class WebAccessExtension : IExtension
         iris.On<SessionShutdownEvent>((_, _) =>
         {
             Interlocked.Increment(ref _sessionGeneration);
+            _autoSummarizeRemaining = false;
             AbortPendingFetches();
             GitHubExtractor.ClearClones();
             _store.Clear();
@@ -51,11 +52,13 @@ public sealed partial class WebAccessExtension : IExtension
         iris.RegisterTool(CreateWebSearchTool());
         iris.RegisterTool(CreateFetchContentTool());
         iris.RegisterTool(CreateGetSearchContentTool());
+        RegisterCuratorWorkflow(iris);
     }
 
     private void HandleSessionChange(ExtensionContext ctx)
     {
         Interlocked.Increment(ref _sessionGeneration);
+        _autoSummarizeRemaining = false;
         AbortPendingFetches();
         GitHubExtractor.ClearClones();
         _store.RestoreFromSession(ctx.SessionManager);
