@@ -553,7 +553,7 @@ public sealed class SettingsSelectorComponent : Container, IInputComponent
             new() { Id = "tui-mode", Label = "TUI mode", Description = "Interface layout; fullscreen mode is experimental", CurrentValue = config.TuiMode, Values = ["regular", "fullscreen"] },
             new() { Id = "fullscreen-exit-output", Label = "Fullscreen exit output", Description = "Print the transcript or only a session resume hint when exiting fullscreen mode", CurrentValue = config.FullscreenExitOutput, Values = ["transcript", "resume-hint"] },
             new() { Id = "fullscreen-scrollbar", Label = "Fullscreen scrollbar", Description = "Scrollbar behavior in fullscreen mode; has no effect in regular mode", CurrentValue = config.FullscreenScrollbar, Values = ["auto", "always", "hidden"] },
-            new() { Id = "fullscreen-copy-on-select", Label = "Fullscreen copy on select", Description = "Automatically copy selected text in fullscreen mode; disable to copy selections with Ctrl+X", CurrentValue = Bool(config.FullscreenCopyOnSelect), Values = ["true", "false"] },
+            new() { Id = "fullscreen-copy-on-select", Label = "Fullscreen copy on select", Description = "Automatically copy selected text in fullscreen mode; otherwise copy selections with right-click or Ctrl+X", CurrentValue = Bool(config.FullscreenCopyOnSelect), Values = ["true", "false"] },
             new() { Id = "theme", Label = "Theme", Description = "Color theme for the interface", CurrentValue = config.CurrentTheme, Submenu = (current, done) => new ThemeSubmenu(current, config.TerminalTheme, config.AvailableThemes, callbacks, done) },
         };
 

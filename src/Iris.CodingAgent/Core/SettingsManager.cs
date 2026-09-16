@@ -784,7 +784,8 @@ public sealed class SettingsManager
 
     public string FullscreenScrollbar => GetString("fullscreenScrollbar") is "always" or "hidden" ? GetString("fullscreenScrollbar")! : "auto";
 
-    public bool FullscreenCopyOnSelect => GetBool("fullscreenCopyOnSelect") ?? true;
+    /// <summary>Iris: off by default; selections are copied with right-click or ctrl+x instead.</summary>
+    public bool FullscreenCopyOnSelect => GetBool("fullscreenCopyOnSelect") ?? false;
 
     public bool ImageAutoResize => IrisJson.GetBool(GetNested("images", "autoResize")) ?? true;
 
