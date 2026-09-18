@@ -271,14 +271,17 @@ public sealed class AnthropicMessagesApi : IApiStreams
                         var message = evt["message"] as JsonObject ?? new JsonObject();
                         output.ResponseId = Str(message, "id");
                         if (message["input_transformations"] is JsonArray transformations) inputTransformations = transformations;
-                        output.Model = Str(message, "model") ?? output.Model;
-                        if (output.Model != model.Id)
+                        // Keep the requested model on the message so thinking replay still matches it; record the
+                        // concrete model separately when the server answered with a fallback.
+                        var responseModel = Str(message, "model") ?? model.Id;
+                        if (responseModel != model.Id)
                         {
-                            var fallback = compatRaw.AllowedFallbackModels?.FirstOrDefault(f => f.Provider == model.Provider && f.Model == output.Model);
+                            output.ResponseModel = responseModel;
+                            var fallback = compatRaw.AllowedFallbackModels?.FirstOrDefault(f => f.Provider == model.Provider && f.Model == responseModel);
                             if (fallback is not null)
                             {
                                 usageModel = model.Clone();
-                                usageModel.Id = output.Model;
+                                usageModel.Id = responseModel;
                                 usageModel.Cost = fallback.Cost;
                             }
                         }
