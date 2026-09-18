@@ -52,6 +52,33 @@ public class ExtensionLoaderTests
     }
 
     [Fact]
+    public async Task DisposingASubscriptionRemovesTheHandler()
+    {
+        using var dir = new TempDir();
+        var file = Path.Combine(dir.Path, "once.cs");
+        await File.WriteAllTextAsync(file, """
+            public sealed class Once : IExtension
+            {
+                public void Register(IExtensionApi iris)
+                {
+                    var first = iris.On<AgentIdleEvent>((e, ctx) => { });
+                    iris.On<AgentIdleEvent>((e, ctx) => { });
+                    var only = iris.OnAsync<AgentEndedEvent>(async (e, ctx) => await Task.Yield());
+                    first.Dispose();
+                    first.Dispose();
+                    only.Dispose();
+                }
+            }
+            """);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+        var result = await ExtensionLoader.LoadAsync([new ResolvedResource(file, true, new PathMetadata("local", "user", "top-level", dir.Path))], dir.Path, Path.Combine(dir.Path, "agent"), null, cts.Token);
+        Assert.Empty(result.Errors);
+        // The emptied agent-ended list is removed; one idle handler remains.
+        var (_, remaining) = Assert.Single(Assert.Single(result.Extensions).Handlers);
+        Assert.Single(remaining);
+    }
+
+    [Fact]
     public async Task ReportsCompilationErrorsWithLocation()
     {
         using var dir = new TempDir();

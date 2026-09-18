@@ -116,13 +116,14 @@ internal sealed class ExtensionEventBus : IEventBus
     {
         lock (_handlers) _handlers.Clear();
     }
+}
 
-    private sealed class Subscription(Action dispose) : IDisposable
-    {
-        private Action? _dispose = dispose;
+/// <summary>Disposable that runs its action once.</summary>
+internal sealed class Subscription(Action dispose) : IDisposable
+{
+    private Action? _dispose = dispose;
 
-        public void Dispose() => Interlocked.Exchange(ref _dispose, null)?.Invoke();
-    }
+    public void Dispose() => Interlocked.Exchange(ref _dispose, null)?.Invoke();
 }
 
 /// <summary>Wire names of the typed extension events.</summary>
@@ -332,32 +333,38 @@ internal sealed class ExtensionApi(LoadedExtension extension, ExtensionRuntime r
 
     internal void FinishLoading() => _loading = false;
 
-    private void AddHandler(Type eventType, Func<ExtensionEvent, ExtensionContext, Task<object?>> handler)
+    private IDisposable AddHandler(Type eventType, Func<ExtensionEvent, ExtensionContext, Task<object?>> handler)
     {
         runtime.AssertActive();
         var name = ExtensionEventNames.Of(eventType);
         if (!extension.Handlers.TryGetValue(name, out var list)) extension.Handlers[name] = list = [];
         list.Add(handler);
+        return new Subscription(() =>
+        {
+            if (!extension.Handlers.TryGetValue(name, out var handlers) || !handlers.Remove(handler)) return;
+            if (handlers.Count == 0) extension.Handlers.Remove(name);
+        });
     }
 
-    public void OnAsync<TEvent>(Func<TEvent, ExtensionContext, Task> handler) where TEvent : ExtensionEvent =>
+
+    public IDisposable OnAsync<TEvent>(Func<TEvent, ExtensionContext, Task> handler) where TEvent : ExtensionEvent =>
         AddHandler(typeof(TEvent), async (evt, ctx) =>
         {
             await handler((TEvent)evt, ctx);
             return null;
         });
 
-    public void On<TEvent>(Action<TEvent, ExtensionContext> handler) where TEvent : ExtensionEvent =>
+    public IDisposable On<TEvent>(Action<TEvent, ExtensionContext> handler) where TEvent : ExtensionEvent =>
         AddHandler(typeof(TEvent), (evt, ctx) =>
         {
             handler((TEvent)evt, ctx);
             return Task.FromResult<object?>(null);
         });
 
-    public void OnAsync<TEvent, TResult>(Func<TEvent, ExtensionContext, Task<TResult?>> handler) where TEvent : ExtensionEvent<TResult> where TResult : class =>
+    public IDisposable OnAsync<TEvent, TResult>(Func<TEvent, ExtensionContext, Task<TResult?>> handler) where TEvent : ExtensionEvent<TResult> where TResult : class =>
         AddHandler(typeof(TEvent), async (evt, ctx) => await handler((TEvent)evt, ctx));
 
-    public void On<TEvent, TResult>(Func<TEvent, ExtensionContext, TResult?> handler) where TEvent : ExtensionEvent<TResult> where TResult : class =>
+    public IDisposable On<TEvent, TResult>(Func<TEvent, ExtensionContext, TResult?> handler) where TEvent : ExtensionEvent<TResult> where TResult : class =>
         AddHandler(typeof(TEvent), (evt, ctx) => Task.FromResult<object?>(handler((TEvent)evt, ctx)));
 
     public void RegisterTool<TParams>(Tool<TParams> tool) => RegisterTool(ToolParameterBinding.ToDefinition(tool));

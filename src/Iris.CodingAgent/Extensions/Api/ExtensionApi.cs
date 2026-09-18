@@ -90,14 +90,15 @@ public interface IExtensionApi
     string Cwd { get; }
 
     // ----- Events (handlers run in load order; On for synchronous handlers, OnAsync for asynchronous ones) -----
+    // Each returns a subscription: dispose it to remove the handler. An event already being emitted still runs it.
 
-    void OnAsync<TEvent>(Func<TEvent, ExtensionContext, Task> handler) where TEvent : ExtensionEvent;
+    IDisposable OnAsync<TEvent>(Func<TEvent, ExtensionContext, Task> handler) where TEvent : ExtensionEvent;
 
-    void On<TEvent>(Action<TEvent, ExtensionContext> handler) where TEvent : ExtensionEvent;
+    IDisposable On<TEvent>(Action<TEvent, ExtensionContext> handler) where TEvent : ExtensionEvent;
 
-    void OnAsync<TEvent, TResult>(Func<TEvent, ExtensionContext, Task<TResult?>> handler) where TEvent : ExtensionEvent<TResult> where TResult : class;
+    IDisposable OnAsync<TEvent, TResult>(Func<TEvent, ExtensionContext, Task<TResult?>> handler) where TEvent : ExtensionEvent<TResult> where TResult : class;
 
-    void On<TEvent, TResult>(Func<TEvent, ExtensionContext, TResult?> handler) where TEvent : ExtensionEvent<TResult> where TResult : class;
+    IDisposable On<TEvent, TResult>(Func<TEvent, ExtensionContext, TResult?> handler) where TEvent : ExtensionEvent<TResult> where TResult : class;
 
     // ----- Registration -----
 

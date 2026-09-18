@@ -80,6 +80,8 @@ The public API lives in the `Iris.Extensions` namespace of the `Iris.CodingAgent
   `AgentEndedEvent`, `AgentIdleEvent`, `TurnStartedEvent`, `TurnEndedEvent`, `MessageStartedEvent`,
   `MessageUpdatedEvent`, `MessageEndedEvent`, `ToolExecution{Started,Updated,Ended}Event`, `ToolCallEvent`,
   `ToolResultEvent`, `InputEvent`, `BeforeAgentStartEvent`, `ContextEvent`, `ResourcesDiscoverEvent`.
+  Each returns an `IDisposable`; dispose it to remove the handler (an event already being emitted still runs it).
+  Prebuilt extension DLLs compiled against Iris 0.2.1 or earlier, when these returned `void`, must be rebuilt.
 - `RegisterTool` (`Tool<TParams>` with a generated schema, or a `ToolDefinition` with a raw schema), `RegisterCommand`,
   `RegisterShortcut`, `RegisterFlag` / `GetFlag`, `RegisterProvider` / `UnregisterProvider`, `RegisterMessageRenderer`.
 - Actions: `SendMessage`, `SendUserMessage`, `AppendEntry`, `Set/GetSessionName`, `SetLabel`, `ExecAsync`,
