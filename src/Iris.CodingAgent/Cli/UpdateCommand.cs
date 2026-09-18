@@ -34,6 +34,15 @@ public static class UpdateCommand
         ? $"dotnet tool update {AppConfig.PackageId} --tool-path \"{install.ToolPath}\""
         : $"dotnet tool update -g {AppConfig.PackageId}";
 
+    /// <summary>PowerShell script that waits for Iris to exit, runs `dotnet toolArgs` and writes its output to logPath.</summary>
+    public static string WindowsUpdateScript(int processId, IEnumerable<string> toolArgs, string logPath)
+    {
+        static string Quote(string value) => $"'{value.Replace("'", "''")}'";
+        return $"Wait-Process -Id {processId} -ErrorAction SilentlyContinue; "
+            + $"& dotnet {string.Join(" ", toolArgs.Select(Quote))} 2>&1 | ForEach-Object {{ \"$_\" }} | Set-Content -Encoding UTF8 -LiteralPath {Quote(logPath)}; "
+            + "exit $LASTEXITCODE";
+    }
+
     private static void PrintHelp() => Console.WriteLine($"""
         {Chalk.Bold("Usage:")}
           {App} update [--check]
@@ -102,15 +111,17 @@ public static class UpdateCommand
 
         if (OperatingSystem.IsWindows())
         {
-            // The running iris.exe locks its version folder, so the update has to run after this process exits.
-            static string Quote(string value) => $"'{value.Replace("'", "''")}'";
-            var script = $"Wait-Process -Id {Environment.ProcessId} -ErrorAction SilentlyContinue; & dotnet {string.Join(" ", toolArgs.Select(Quote))}; exit $LASTEXITCODE";
-            var helper = new ProcessStartInfo("powershell") { UseShellExecute = false };
-            foreach (var arg in new[] { "-NoProfile", "-NonInteractive", "-Command", script }) helper.ArgumentList.Add(arg);
+            // The running iris.exe locks its version folder, so the update has to run after this process exits. The
+            // helper gets its own hidden console: sharing ours would print dotnet's output over the shell's next prompt.
+            var logPath = Path.Combine(AppConfig.AgentDir, "update.log");
+            var helper = new ProcessStartInfo("powershell") { UseShellExecute = false, CreateNoWindow = true };
+            foreach (var arg in new[] { "-NoProfile", "-NonInteractive", "-Command", WindowsUpdateScript(Environment.ProcessId, toolArgs, logPath) }) helper.ArgumentList.Add(arg);
             try
             {
+                Directory.CreateDirectory(AppConfig.AgentDir);
                 Process.Start(helper);
-                Console.WriteLine($"Updating after {App} exits...");
+                Console.WriteLine($"{App} will finish updating in the background once it exits. Run `{App} --version` to confirm.");
+                Console.WriteLine(Chalk.Dim($"Output is written to {logPath}"));
                 return 0;
             }
             catch (Exception ex)

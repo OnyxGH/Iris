@@ -32,4 +32,34 @@ public class UpdateTests
         Assert.Null(UpdateCommand.DetectToolInstall(Path.Combine(custom, "bin", "Debug", "net10.0"), home));
         Assert.Null(UpdateCommand.DetectToolInstall(Path.Combine(custom, ".store", "other-tool", "1.0.0"), home));
     }
+
+    [Theory]
+    [InlineData("--version", 0)]
+    [InlineData("no-such-dotnet-command", 1)]
+    public void WindowsUpdateScriptLogsOutputAndExitCode(string dotnetArg, int expectedExit)
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var dir = Path.Combine(Path.GetTempPath(), "iris-update-" + Guid.NewGuid().ToString("N")[..8]);
+        Directory.CreateDirectory(dir);
+        var log = Path.Combine(dir, "it's update.log");
+        try
+        {
+            // An already exited process id: Wait-Process returns immediately.
+            using var exited = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("cmd", "/c exit") { CreateNoWindow = true })!;
+            exited.WaitForExit();
+            var start = new System.Diagnostics.ProcessStartInfo("powershell") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true };
+            foreach (var arg in new[] { "-NoProfile", "-NonInteractive", "-Command", UpdateCommand.WindowsUpdateScript(exited.Id, [dotnetArg], log) }) start.ArgumentList.Add(arg);
+            using var helper = System.Diagnostics.Process.Start(start)!;
+            var console = helper.StandardOutput.ReadToEnd();
+            helper.WaitForExit();
+
+            Assert.Equal("", console);
+            Assert.Equal(expectedExit, Math.Min(helper.ExitCode, 1));
+            Assert.NotEmpty(File.ReadAllText(log).Trim());
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
+    }
 }
