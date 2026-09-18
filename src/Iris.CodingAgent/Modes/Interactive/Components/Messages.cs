@@ -15,6 +15,17 @@ public interface IExpandable
     void SetExpanded(bool expanded);
 }
 
+internal static class ExpandableRegion
+{
+    /// <summary>Fullscreen mode: a left click on the content toggles the component's expanded view.</summary>
+    public static MouseRegion ToggleOnClick(IComponent content, Action toggle) => new(content, mouseEvent =>
+    {
+        if (mouseEvent.Type != TuiMouseEventType.Click || mouseEvent.Button != TuiMouseButton.Left) return null;
+        toggle();
+        return TuiMouseEventResult.HandledResult;
+    });
+}
+
 /// <summary>Compaction summary with collapsed/expanded state.</summary>
 public sealed class CompactionSummaryMessageComponent : Box, IExpandable
 {
@@ -46,18 +57,20 @@ public sealed class CompactionSummaryMessageComponent : Box, IExpandable
     {
         Clear();
         var theme = ThemeManager.Current;
+        var content = new Container();
         var tokenStr = _message.TokensBefore.ToString("N0", CultureInfo.InvariantCulture);
-        AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[compaction]\e[22m"), 0, 0));
-        AddChild(new Spacer(1));
+        content.AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[compaction]\e[22m"), 0, 0));
+        content.AddChild(new Spacer(1));
         if (_expanded)
         {
-            AddChild(new MarkdownComponent($"**Compacted from {tokenStr} tokens**\n\n" + _message.Summary, 0, 0, _markdownTheme,
+            content.AddChild(new MarkdownComponent($"**Compacted from {tokenStr} tokens**\n\n" + _message.Summary, 0, 0, _markdownTheme,
                 new DefaultTextStyle { Color = t => ThemeManager.Current.Fg("customMessageText", t) }));
         }
         else
         {
-            AddChild(new Text(theme.Fg("customMessageText", $"Compacted from {tokenStr} tokens (") + theme.Fg("dim", KeyHints.KeyText("app.tools.expand")) + theme.Fg("customMessageText", " to expand)"), 0, 0));
+            content.AddChild(new Text(theme.Fg("customMessageText", $"Compacted from {tokenStr} tokens (") + theme.Fg("dim", KeyHints.KeyText("app.tools.expand")) + theme.Fg("customMessageText", " to expand)"), 0, 0));
         }
+        AddChild(ExpandableRegion.ToggleOnClick(content, () => SetExpanded(!_expanded)));
     }
 }
 
@@ -92,17 +105,19 @@ public sealed class BranchSummaryMessageComponent : Box, IExpandable
     {
         Clear();
         var theme = ThemeManager.Current;
-        AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[branch]\e[22m"), 0, 0));
-        AddChild(new Spacer(1));
+        var content = new Container();
+        content.AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[branch]\e[22m"), 0, 0));
+        content.AddChild(new Spacer(1));
         if (_expanded)
         {
-            AddChild(new MarkdownComponent("**Branch Summary**\n\n" + _message.Summary, 0, 0, _markdownTheme,
+            content.AddChild(new MarkdownComponent("**Branch Summary**\n\n" + _message.Summary, 0, 0, _markdownTheme,
                 new DefaultTextStyle { Color = t => ThemeManager.Current.Fg("customMessageText", t) }));
         }
         else
         {
-            AddChild(new Text(theme.Fg("customMessageText", "Branch summary (") + theme.Fg("dim", KeyHints.KeyText("app.tools.expand")) + theme.Fg("customMessageText", " to expand)"), 0, 0));
+            content.AddChild(new Text(theme.Fg("customMessageText", "Branch summary (") + theme.Fg("dim", KeyHints.KeyText("app.tools.expand")) + theme.Fg("customMessageText", " to expand)"), 0, 0));
         }
+        AddChild(ExpandableRegion.ToggleOnClick(content, () => SetExpanded(!_expanded)));
     }
 }
 
@@ -137,16 +152,18 @@ public sealed class SkillInvocationMessageComponent : Box, IExpandable
     {
         Clear();
         var theme = ThemeManager.Current;
+        var content = new Container();
         if (_expanded)
         {
-            AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[skill]\e[22m"), 0, 0));
-            AddChild(new MarkdownComponent($"**{_skillBlock.Name}**\n\n" + _skillBlock.Content, 0, 0, _markdownTheme,
+            content.AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[skill]\e[22m"), 0, 0));
+            content.AddChild(new MarkdownComponent($"**{_skillBlock.Name}**\n\n" + _skillBlock.Content, 0, 0, _markdownTheme,
                 new DefaultTextStyle { Color = t => ThemeManager.Current.Fg("customMessageText", t) }));
         }
         else
         {
-            AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[skill]\e[22m ") + theme.Fg("customMessageText", _skillBlock.Name) + theme.Fg("dim", $" ({KeyHints.KeyText("app.tools.expand")} to expand)"), 0, 0));
+            content.AddChild(new Text(theme.Fg("customMessageLabel", "\e[1m[skill]\e[22m ") + theme.Fg("customMessageText", _skillBlock.Name) + theme.Fg("dim", $" ({KeyHints.KeyText("app.tools.expand")} to expand)"), 0, 0));
         }
+        AddChild(ExpandableRegion.ToggleOnClick(content, () => SetExpanded(!_expanded)));
     }
 }
 
