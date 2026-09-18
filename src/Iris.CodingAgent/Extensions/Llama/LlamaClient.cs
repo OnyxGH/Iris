@@ -54,6 +54,9 @@ public sealed class LlamaModelInfo
     }
 }
 
+/// <summary>Fields Iris reads from llama-server's /props.</summary>
+public sealed record LlamaServerProps(bool? ModelsAutoload, string? ChatTemplate);
+
 public sealed record LlamaProgress(string Message, double? Ratio = null, string? Detail = null);
 
 /// <summary>llama.cpp router-mode HTTP client.</summary>
@@ -147,10 +150,14 @@ public sealed class LlamaClient
         return models!;
     }
 
-    public async Task<bool?> GetModelsAutoloadAsync(CancellationToken ct = default)
+    public async Task<bool?> GetModelsAutoloadAsync(CancellationToken ct = default) => (await GetPropsAsync(ct: ct)).ModelsAutoload;
+
+    /// <summary>Read /props, for one model when given (without autoloading it).</summary>
+    public async Task<LlamaServerProps> GetPropsAsync(string? model = null, CancellationToken ct = default)
     {
-        var payload = await RequestAsync(HttpMethod.Get, "/props", null, ct);
-        return IrisJson.GetBool((payload as JsonObject)?["models_autoload"]);
+        var query = model is null ? "" : $"?model={Uri.EscapeDataString(model)}&autoload=false";
+        var payload = await RequestAsync(HttpMethod.Get, "/props" + query, null, ct) as JsonObject;
+        return new LlamaServerProps(IrisJson.GetBool(payload?["models_autoload"]), IrisJson.GetString(payload?["chat_template"]));
     }
 
     public Task LoadAsync(string model, CancellationToken ct = default) => RequestAsync(HttpMethod.Post, "/models/load", new JsonObject { ["model"] = model }, ct);

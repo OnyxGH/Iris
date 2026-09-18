@@ -133,10 +133,21 @@ public sealed class LlamaProvider : IProvider
     public static bool HasPlaceholderLimits(Model model) =>
         model.Provider == ProviderId && model.ContextWindow == PlaceholderContextWindow && model.MaxTokens == PlaceholderContextWindow;
 
-    private static Model ToModel(LlamaModelInfo model, string serverUrl)
+    private static Model ToModel(LlamaModelInfo model, string serverUrl, LlamaServerProps? props = null)
     {
         var reported = model.ContextSize ?? model.TrainContextSize;
         var contextWindow = reported is > 0 ? reported.Value : PlaceholderContextWindow;
+        var reasoning = props?.ChatTemplate?.Contains("enable_thinking", StringComparison.Ordinal) == true;
+        var compat = new JsonObject
+        {
+            ["supportsStore"] = false,
+            ["supportsDeveloperRole"] = false,
+            ["supportsReasoningEffort"] = false,
+            ["supportsUsageInStreaming"] = true,
+            ["supportsStrictMode"] = false,
+            ["maxTokensField"] = "max_tokens",
+        };
+        if (reasoning) compat["thinkingFormat"] = "qwen-chat-template";
         return new Model
         {
             Id = model.Id,
@@ -144,20 +155,15 @@ public sealed class LlamaProvider : IProvider
             Api = "openai-completions",
             Provider = ProviderId,
             BaseUrl = LlamaClient.InferenceUrl(serverUrl),
-            Reasoning = false,
+            Reasoning = reasoning,
+            ThinkingLevelMap = reasoning
+                ? new Dictionary<string, string?> { ["off"] = "off", ["minimal"] = null, ["low"] = null, ["medium"] = "medium", ["high"] = null, ["xhigh"] = null }
+                : null,
             Input = model.InputModalities?.Contains("image") == true ? ["text", "image"] : ["text"],
             Cost = new ModelCost(),
             ContextWindow = contextWindow,
             MaxTokens = contextWindow,
-            Compat = new JsonObject
-            {
-                ["supportsStore"] = false,
-                ["supportsDeveloperRole"] = false,
-                ["supportsReasoningEffort"] = false,
-                ["supportsUsageInStreaming"] = true,
-                ["supportsStrictMode"] = false,
-                ["maxTokensField"] = "max_tokens",
-            },
+            Compat = compat,
         };
     }
 
@@ -181,7 +187,14 @@ public sealed class LlamaProvider : IProvider
         if (context.CancellationToken.IsCancellationRequested) return;
         var routerAutoload = await RouterAutoloadEnabledAsync(client, catalog, context.CancellationToken);
         if (context.CancellationToken.IsCancellationRequested) return;
-        var refreshed = catalog.Where(m => IsSelectable(m, routerAutoload)).Select(m => ToModel(m, serverUrl)).ToList();
+        var refreshed = (await Task.WhenAll(catalog.Where(m => IsSelectable(m, routerAutoload)).Select(async m =>
+        {
+            // Only loaded models expose their template without side effects: unloaded autoload presets would have to
+            // be loaded and sleeping models may wake. They stay unclassified until a later refresh sees them loaded.
+            if (m.Status.Value != "loaded") return ToModel(m, serverUrl);
+            return ToModel(m, serverUrl, await client.GetPropsAsync(m.Id, context.CancellationToken));
+        }))).ToList();
+        if (context.CancellationToken.IsCancellationRequested) return;
         await context.Publish(new ModelsPublication
         {
             HasPersist = true,
