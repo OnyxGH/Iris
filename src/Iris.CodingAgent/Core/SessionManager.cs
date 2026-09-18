@@ -959,6 +959,28 @@ public sealed partial class SessionManager
         return new SessionManager(resolvedTargetCwd, dir, newSessionFile, true);
     }
 
+    /// <summary>Find a session file by exact ID, reading only headers (no transcript bodies). Best-effort, like ListAsync.</summary>
+    public static string? FindById(string cwd, string id, string? sessionDir = null)
+    {
+        var dir = sessionDir is not null ? PathUtils.NormalizePath(sessionDir) : GetDefaultSessionDir(cwd);
+        var filterCwd = sessionDir is not null && dir != GetDefaultSessionDirPath(cwd);
+        var resolvedCwd = PathUtils.ResolvePath(cwd);
+        try
+        {
+            foreach (var path in Directory.EnumerateFiles(dir, "*.jsonl"))
+            {
+                var header = ReadSessionHeaderForDiscovery(path);
+                if (header?.Id != id) continue;
+                if (filterCwd && !SessionCwdMatches(header.Cwd, resolvedCwd)) continue;
+                return path;
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
+        return null;
+    }
+
     public static async Task<List<SessionInfo>> ListAsync(string cwd, string? sessionDir = null, Action<int, int>? onProgress = null)
     {
         var dir = sessionDir is not null ? PathUtils.NormalizePath(sessionDir) : GetDefaultSessionDir(cwd);

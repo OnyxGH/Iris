@@ -148,7 +148,7 @@ public static class Main
 
         if (parsed.Fork is not null)
         {
-            if (parsed.SessionId is not null && (await SessionManager.ListAsync(cwd, sessionDir)).Any(s => s.Id == parsed.SessionId))
+            if (parsed.SessionId is not null && SessionManager.FindById(cwd, parsed.SessionId, sessionDir) is not null)
             {
                 throw new CliExitException(1, Chalk.Red($"Session already exists with id '{parsed.SessionId}'"));
             }
@@ -187,8 +187,7 @@ public static class Main
 
         if (parsed.SessionId is not null)
         {
-            var existing = (await SessionManager.ListAsync(cwd, sessionDir)).FirstOrDefault(s => s.Id == parsed.SessionId);
-            if (existing is not null) return SessionManager.Open(existing.Path, sessionDir);
+            if (SessionManager.FindById(cwd, parsed.SessionId, sessionDir) is { } existing) return SessionManager.Open(existing, sessionDir);
             Console.Error.WriteLine(Chalk.Yellow($"Warning: No project session found with id '{parsed.SessionId}'; creating a new session with that id."));
         }
 
