@@ -105,12 +105,26 @@ public class OverflowTests
     [Theory]
     [InlineData("400: {\"code\":400,\"message\":\"the request exceeds the available context size, try increasing it\",\"type\":\"exceed_context_size_error\"}")]
     [InlineData("prompt is too long: 213462 tokens > 200000 maximum")]
-    [InlineData("413 status code (no body)")]
     public void Detects_overflow_errors(string error)
     {
         var message = new AssistantMessage { StopReason = StopReason.Error, ErrorMessage = error };
         Assert.True(Overflow.IsContextOverflow(message));
     }
+
+    [Theory]
+    [InlineData("400 status code (no body)")]
+    [InlineData("413 status code (no body)")]
+    public void Bodyless_errors_are_overflow_only_for_cerebras(string error)
+    {
+        Assert.True(Overflow.IsContextOverflow(new AssistantMessage { Provider = "cerebras", StopReason = StopReason.Error, ErrorMessage = error }));
+        Assert.False(Overflow.IsContextOverflow(new AssistantMessage { Provider = "openai", StopReason = StopReason.Error, ErrorMessage = error }));
+    }
+
+    [Theory]
+    [InlineData("520 status code (no body)")]
+    [InlineData("The model is currently experiencing high demand. Please try again later.")]
+    public void Transient_provider_errors_are_retryable(string error) =>
+        Assert.True(AssistantRetry.IsRetryableAssistantError(new AssistantMessage { StopReason = StopReason.Error, ErrorMessage = error }));
 
     [Fact]
     public void Rate_limits_are_not_overflow()

@@ -33,8 +33,9 @@ public static class Overflow
         new(@"context[_ ]length[_ ]exceeded", I),
         new(@"too many tokens", I),
         new(@"token limit exceeded", I),
-        new(@"^4(?:00|13)\s*(?:status code)?\s*\(no body\)", I),
     ];
+
+    private static readonly Regex CerebrasBodylessOverflowPattern = new(@"^4(?:00|13)\s*(?:status code)?\s*\(no body\)", I);
 
     private static readonly Regex[] NonOverflowPatterns =
     [
@@ -49,7 +50,11 @@ public static class Overflow
         {
             var error = message.ErrorMessage;
             var isNonOverflow = NonOverflowPatterns.Any(p => p.IsMatch(error));
-            if (!isNonOverflow && OverflowPatterns.Any(p => p.IsMatch(error))) return true;
+            if (!isNonOverflow)
+            {
+                if (OverflowPatterns.Any(p => p.IsMatch(error))) return true;
+                if (message.Provider == "cerebras" && CerebrasBodylessOverflowPattern.IsMatch(error)) return true;
+            }
         }
 
         if (contextWindow is > 0 && message.StopReason == StopReason.Stop)
