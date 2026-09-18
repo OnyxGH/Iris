@@ -36,13 +36,36 @@ public static class GoogleShared
     /// <summary>Resolve a thinking level (or model mapping) to minimal/low/medium/high.</summary>
     public static string ResolveThinkingLevel(Model model, ThinkingLevel level)
     {
-        if (level == ThinkingLevel.Off) return "high";
         var resolved = model.TryGetThinkingMapping(level, out var mapped) && mapped is not null ? mapped.ToLowerInvariant() : level.ToWire();
         return resolved switch
         {
             "minimal" or "low" or "medium" or "high" => resolved,
             _ => throw new InvalidOperationException($"Unsupported Google thinking level mapping for {model.Provider}/{model.Id}: {level.ToWire()} -> {mapped ?? "undefined"}"),
         };
+    }
+
+    private static readonly Regex ThinkingLevelModel = new(@"gemini-3(?:\.\d+)?-(?:pro|flash)|gemma-?4", RegexOptions.Compiled);
+
+    /// <summary>
+    /// Whether the model uses Gemini's discrete thinkingLevel control instead of thinkingBudget. Supported levels come
+    /// from the model's thinkingLevelMap; this only selects the wire format.
+    /// </summary>
+    public static bool UsesThinkingLevel(Model model)
+    {
+        var id = model.Id.ToLowerInvariant();
+        return ThinkingLevelModel.IsMatch(id) || id is "gemini-flash-latest" or "gemini-flash-lite-latest";
+    }
+
+    /// <summary>Map a resolved level (minimal/low/medium/high) to Google's thinkingLevel value.</summary>
+    public static string ToThinkingLevel(string level) => level.ToUpperInvariant();
+
+    /// <summary>Thinking config that disables thinking, or uses the lowest supported level when the model cannot turn it off.</summary>
+    public static JsonObject DisabledThinkingConfig(Model model)
+    {
+        if (!UsesThinkingLevel(model)) return new JsonObject { ["thinkingBudget"] = 0 };
+        var fallback = ModelUtils.ClampThinkingLevel(model, ThinkingLevel.Off);
+        if (fallback == ThinkingLevel.Off) return new JsonObject { ["thinkingBudget"] = 0 };
+        return new JsonObject { ["thinkingLevel"] = ToThinkingLevel(ResolveThinkingLevel(model, fallback)) };
     }
 
     public static bool IsThinkingPart(JsonObject part) => part["thought"] is JsonValue v && v.TryGetValue<bool>(out var b) && b;
@@ -260,18 +283,6 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
 
     private static long _toolCallCounter;
 
-    private static readonly Regex Gemma4 = new("gemma-?4", RegexOptions.Compiled);
-    private static readonly Regex Gemini3Pro = new(@"gemini-3(?:\.\d+)?-pro", RegexOptions.Compiled);
-    private static readonly Regex Gemini3Flash = new(@"gemini-3(?:\.\d+)?-flash", RegexOptions.Compiled);
-
-    private static bool IsGemma4(Model m) => Gemma4.IsMatch(m.Id.ToLowerInvariant());
-    private static bool IsGemini3Pro(Model m) => Gemini3Pro.IsMatch(m.Id.ToLowerInvariant());
-    private static bool IsGemini3Flash(Model m)
-    {
-        var id = m.Id.ToLowerInvariant();
-        return Gemini3Flash.IsMatch(id) || id is "gemini-flash-latest" or "gemini-flash-lite-latest";
-    }
-
     public AssistantMessageEventStream StreamSimple(Model model, Context context, SimpleStreamOptions? options = null)
     {
         var apiKey = options?.ApiKey;
@@ -289,10 +300,15 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
             return Stream(model, context, opts);
         }
         var clamped = ModelUtils.ClampThinkingLevel(model, options.Reasoning.Value);
-        var resolved = GoogleShared.ResolveThinkingLevel(model, clamped);
-        if (IsGemini3Pro(model) || IsGemini3Flash(model) || IsGemma4(model))
+        if (clamped == ThinkingLevel.Off)
         {
-            opts.Thinking = new GoogleThinkingOptions { Enabled = true, Level = GetThinkingLevel(resolved, model) };
+            opts.Thinking = new GoogleThinkingOptions { Enabled = false };
+            return Stream(model, context, opts);
+        }
+        var resolved = GoogleShared.ResolveThinkingLevel(model, clamped);
+        if (GoogleShared.UsesThinkingLevel(model))
+        {
+            opts.Thinking = new GoogleThinkingOptions { Enabled = true, Level = GoogleShared.ToThinkingLevel(resolved) };
             return Stream(model, context, opts);
         }
         opts.Thinking = new GoogleThinkingOptions { Enabled = true, BudgetTokens = GetGoogleBudget(model, resolved, options.ThinkingBudgets) };
@@ -553,29 +569,12 @@ public sealed class GoogleGenerativeAIApi : IApiStreams
         }
         else if (model.Reasoning && options.Thinking is { Enabled: false })
         {
-            config["thinkingConfig"] = IsGemini3Pro(model)
-                ? new JsonObject { ["thinkingLevel"] = "LOW" }
-                : IsGemini3Flash(model) || IsGemma4(model)
-                    ? new JsonObject { ["thinkingLevel"] = "MINIMAL" }
-                    : new JsonObject { ["thinkingBudget"] = 0 };
+            config["thinkingConfig"] = GoogleShared.DisabledThinkingConfig(model);
         }
 
         if (options.CancellationToken.IsCancellationRequested) throw new OperationCanceledException("Request aborted");
 
         return new JsonObject { ["model"] = model.Id, ["contents"] = contents, ["config"] = config };
-    }
-
-    private static string GetThinkingLevel(string effort, Model model)
-    {
-        if (IsGemini3Pro(model)) return effort is "minimal" or "low" ? "LOW" : "HIGH";
-        if (IsGemma4(model)) return effort is "minimal" or "low" ? "MINIMAL" : "HIGH";
-        return effort switch
-        {
-            "minimal" => "MINIMAL",
-            "low" => "LOW",
-            "medium" => "MEDIUM",
-            _ => "HIGH",
-        };
     }
 
     private static long GetGoogleBudget(Model model, string level, ThinkingBudgets? custom)
