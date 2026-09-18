@@ -290,14 +290,9 @@ public static class Compactor
             accumulated += messageTokens;
             if (accumulated >= keepRecentTokens)
             {
-                foreach (var c in cutPoints)
-                {
-                    if (c >= i)
-                    {
-                        cutIndex = c;
-                        break;
-                    }
-                }
+                // Prefer the closest valid cut point at or after this entry. If trailing tool results exceed the
+                // budget by themselves, keep their preceding assistant tool call instead of falling back to the first message.
+                cutIndex = cutPoints.FirstOrDefault(c => c >= i, cutPoints[^1]);
                 break;
             }
         }

@@ -149,3 +149,39 @@ public class CompactionFixtureTests
         Assert.Equal(expected["result"]!["modifiedFiles"]!.AsArray().Select(Str), result.ModifiedFiles!);
     }
 }
+
+public class CompactionCutPointTests
+{
+    private static readonly Model TestModel = new()
+    {
+        Id = "m", Name = "m", Api = "openai-completions", Provider = "p", BaseUrl = "http://x", Input = ["text"], ContextWindow = 32000, MaxTokens = 3000,
+    };
+
+    private static AssistantMessage Assistant(ContentBlock block, StopReason reason = StopReason.Stop)
+    {
+        var message = AssistantMessage.CreateEmpty(TestModel, reason);
+        message.Content = [block];
+        return message;
+    }
+
+    [Fact]
+    public void KeepsToolCallBeforeOversizedTrailingToolResults()
+    {
+        CodingAgentMessages.Register();
+        var session = SessionManager.InMemory();
+        session.AppendMessage(new UserMessage(UserContent.FromText("old history")));
+        session.AppendMessage(Assistant(new TextContent("old answer")));
+        session.AppendMessage(new UserMessage(UserContent.FromText("read the large file")));
+        var toolCallId = session.AppendMessage(Assistant(new ToolCall { Id = "call-1", Name = "read", Arguments = new JsonObject { ["path"] = "big.txt" } }, StopReason.ToolUse));
+        session.AppendMessage(new ToolResultMessage { ToolCallId = "call-1", ToolName = "read", Content = [new TextContent(new string('x', 8000))] });
+        var entries = session.GetBranch();
+
+        Assert.Equal(new CutPointResult(3, 2, true), Compactor.FindCutPoint(entries, 0, entries.Count, 1000));
+
+        var preparation = Compactor.PrepareCompaction(entries, new CompactionSettings { KeepRecentTokens = 1000 });
+        Assert.NotNull(preparation);
+        Assert.Equal(toolCallId, preparation.FirstKeptEntryId);
+        Assert.Equal(2, preparation.MessagesToSummarize.Count);
+        Assert.Equal("read the large file", Assert.IsType<UserMessage>(Assert.Single(preparation.TurnPrefixMessages)).Content.ToString());
+    }
+}
