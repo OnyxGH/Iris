@@ -1711,7 +1711,7 @@ public sealed partial class InteractiveMode
 | `{K("app.tools.expand")}` | Toggle tool output expansion |
 | `{K("app.thinking.toggle")}` | Toggle thinking block visibility |
 | `{K("app.editor.external")}` | Edit message in external editor |
-| `{K("app.message.copy")}` | Copy last assistant message |
+| `{K("app.message.copy")}` | Copy selection or last assistant message |
 | `{K("app.message.followUp")}` | Queue follow-up message |
 | `{K("app.message.dequeue")}` | Restore queued messages |
 | `{K("app.clipboard.pasteImage")}` | Paste image or text from clipboard |

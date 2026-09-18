@@ -35,7 +35,7 @@ public static class AppKeybindings
         Add("app.thinking.toggle", "Toggle thinking blocks", "ctrl+t");
         Add("app.session.toggleNamedFilter", "Toggle named session filter", "ctrl+n");
         Add("app.editor.external", "Open external editor", "ctrl+g");
-        Add("app.message.copy", "Copy message to clipboard", "ctrl+x");
+        Add("app.message.copy", "Copy selection or last assistant message", "ctrl+x");
         Add("app.message.followUp", "Queue follow-up message", windows ? "ctrl+q" : "alt+enter");
         Add("app.message.dequeue", "Restore queued messages", windows ? "alt+q" : "alt+up");
         Add("app.clipboard.pasteImage", "Paste image from clipboard (text fallback)", windows ? "alt+v" : "ctrl+v");
