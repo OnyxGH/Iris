@@ -287,9 +287,11 @@ public static partial class Fuzzy
             double score = 0;
             var lastMatchIndex = -1;
             var consecutive = 0;
-            for (var i = 0; i < textLower.Length && queryIndex < normalizedQuery.Length; i++)
+            while (queryIndex < normalizedQuery.Length)
             {
-                if (textLower[i] != normalizedQuery[queryIndex]) continue;
+                // Vectorized search for the next query character; scoring and ordering are unchanged.
+                var i = textLower.IndexOf(normalizedQuery[queryIndex], lastMatchIndex + 1);
+                if (i == -1) break;
                 var isWordBoundary = i == 0 || IsBoundary(textLower[i - 1]);
                 if (lastMatchIndex == i - 1)
                 {
