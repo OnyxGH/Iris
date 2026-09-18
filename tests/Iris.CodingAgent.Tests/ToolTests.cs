@@ -252,6 +252,14 @@ public class ShellToolTests
         Assert.Equal("oops\n\n\nCommand exited with code 3", failed.Message);
     }
 
+    [Theory]
+    [InlineData(1234, "1.2s")]
+    [InlineData(59_949, "59.9s")]
+    [InlineData(65_400, "1m 5s")]
+    [InlineData(3_725_000, "1h 2m 5s")]
+    public void FormatsDurations(long ms, string expected) =>
+        Assert.Equal(expected, Iris.CodingAgent.Modes.Interactive.Components.BuiltInToolRenderers.FormatDuration(ms));
+
     private sealed class NoExitCodeOperations : IBashOperations
     {
         public Task<int?> ExecAsync(string command, string cwd, ShellExecOptions options)

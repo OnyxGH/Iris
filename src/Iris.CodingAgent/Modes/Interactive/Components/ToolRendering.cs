@@ -263,7 +263,18 @@ public static class BuiltInToolRenderers
         public int? CachedSkipped;
     }
 
-    private static string FormatDuration(long ms) => NodeCompat.ToFixed(ms / 1000.0, 1) + "s";
+    internal static string FormatDuration(long ms)
+    {
+        var seconds = ms / 1000.0;
+        if (seconds < 60) return NodeCompat.ToFixed(seconds, 1) + "s";
+
+        var totalSeconds = ms / 1000;
+        var minutes = totalSeconds / 60;
+        var remainder = totalSeconds % 60;
+        if (minutes < 60) return $"{minutes}m {remainder}s";
+
+        return $"{minutes / 60}h {minutes % 60}m {remainder}s";
+    }
 
     private static long NowMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
