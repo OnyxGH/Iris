@@ -1336,7 +1336,7 @@ public sealed partial class InteractiveMode
                     else
                     {
                         foreach (var component in _pendingTools.Values) component.SetArgsComplete();
-                        MaybeShowAssistantDiagnostics(finished);
+                        MaybeShowThinkingDropNotice(finished);
                         MaybeShowCacheMissNotice(finished);
                     }
                     _streamingComponent = null;
@@ -1636,7 +1636,6 @@ public sealed partial class InteractiveMode
                 }
                 if (assistant.StopReason is not (StopReason.Aborted or StopReason.Error))
                 {
-                    MaybeShowAssistantDiagnostics(assistant);
                     if (cacheMisses.TryGetValue(assistant, out var miss)) AddCacheMissNotice(miss);
                 }
             }
@@ -1684,25 +1683,26 @@ public sealed partial class InteractiveMode
         _chatContainer.AddChild(new Text(Theme.Fg("warning", $"{label}: {FooterComponent.FormatTokens(tokens)} tokens billed{cost}"), 1, 0));
     }
 
-    private void MaybeShowAssistantDiagnostics(AssistantMessage message)
+    internal static int CountDroppedThinkingBlocks(AssistantMessage message) =>
+        (message.Diagnostics ?? [])
+            .Where(d => d.Type == "anthropic_input_transformations")
+            .SelectMany(d => (d.Details?["transformations"] as JsonArray)?.OfType<JsonObject>() ?? [])
+            .Count(t => IrisJson.GetString(t["type"]) == "thinking_dropped");
+
+    /// <summary>Warn when Anthropic dropped more thinking blocks than for the previous response (drops repeat every turn).</summary>
+    private void MaybeShowThinkingDropNotice(AssistantMessage message)
     {
         if (!SettingsManager.ShowCacheMissNotices) return;
-        foreach (var diagnostic in message.Diagnostics ?? [])
-        {
-            if (diagnostic.Type != "anthropic_input_transformations" || diagnostic.Details?["transformations"] is not JsonArray transformations) continue;
-            var dropped = new List<string>();
-            foreach (var t in transformations.OfType<JsonObject>())
-            {
-                if (IrisJson.GetString(t["type"]) != "thinking_dropped") continue;
-                var reason = IrisJson.GetString(t["reason"]) ?? "unknown reason";
-                var location = IrisJson.GetString(t["path"]) is { } p ? $" at {p}" : "";
-                dropped.Add(reason + location);
-            }
-            if (dropped.Count == 0) continue;
-            var noun = dropped.Count == 1 ? "thinking block" : $"{dropped.Count} thinking blocks";
-            _chatContainer.AddChild(new Spacer(1));
-            _chatContainer.AddChild(new Text(Theme.Fg("warning", $"Anthropic dropped {noun}: {string.Join("; ", dropped)}"), 1, 0));
-        }
+        var droppedCount = CountDroppedThinkingBlocks(message);
+        if (droppedCount == 0) return;
+
+        var previous = SessionManager.GetBranch().OfType<SessionMessageEntry>().Select(e => e.Message)
+            .OfType<AssistantMessage>().LastOrDefault(m => !ReferenceEquals(m, message));
+        if (previous is not null && droppedCount <= CountDroppedThinkingBlocks(previous)) return;
+
+        var noun = droppedCount == 1 ? "thinking block" : "thinking blocks";
+        _chatContainer.AddChild(new Spacer(1));
+        _chatContainer.AddChild(new Text(Theme.Fg("warning", $"Anthropic dropped {droppedCount} {noun} (details in session)"), 1, 0));
     }
 
     private void MaybeShowCacheMissNotice(AssistantMessage message)
