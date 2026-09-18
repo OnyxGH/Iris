@@ -186,11 +186,11 @@ public sealed partial class InteractiveMode
                 try
                 {
                     await Clipboard.CopyAsync(text);
-                    return true;
+                    return null;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return false;
+                    return ex.Message;
                 }
             },
         });

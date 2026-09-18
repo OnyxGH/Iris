@@ -177,7 +177,8 @@ public static class Clipboard
                 break;
             }
         }
-        if (IsRemote || !copied)
+        // Only remote sessions fall back to OSC 52: locally, a terminal that ignores it would report a false success.
+        if (IsRemote)
         {
             var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(text));
             if (encoded.Length <= 100_000)
@@ -187,7 +188,16 @@ public static class Clipboard
                 copied = true;
             }
         }
-        if (!copied) throw new InvalidOperationException("Failed to copy to clipboard");
+        if (!copied) throw new InvalidOperationException(ClipboardUnavailableMessage());
+    }
+
+    private static string ClipboardUnavailableMessage()
+    {
+        if (!OperatingSystem.IsLinux()) return "Clipboard unavailable";
+        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TERMUX_VERSION"))) return "Clipboard unavailable: install the Termux:API app and `termux-api` package";
+        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WAYLAND_DISPLAY"))) return "Clipboard unavailable: install `wl-clipboard` (`wl-copy`) or check Wayland access";
+        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DISPLAY"))) return "Clipboard unavailable: install `xclip` or `xsel`, or check X11 access";
+        return "Clipboard unavailable: no Wayland or X11 display detected";
     }
 
     /// <summary>Read an image from the clipboard as PNG bytes (Windows/macOS/Linux command-line tools).</summary>

@@ -29,8 +29,11 @@ public sealed class TuiAltScreenOptions
     /// <summary>Automatically copy selected text to the clipboard on mouse release.</summary>
     public bool CopyOnSelect { get; init; } = true;
 
-    /// <summary>Copy selected text to the system clipboard; returns success. When null, OSC 52 is used.</summary>
-    public Func<string, Task<bool>>? CopySelection { get; init; }
+    /// <summary>
+    /// Copy selected text to the system clipboard. Return null on success, or an error message to flash (empty for a
+    /// generic one). When null, the selection is copied via an OSC 52 write.
+    /// </summary>
+    public Func<string, Task<string?>>? CopySelection { get; init; }
 }
 
 /// <summary>
@@ -58,6 +61,7 @@ public sealed partial class TuiAltScreen : TuiBase
     private const int PageScrollOverlap = 4;
     private const int AltWheelScrollMultiplier = 5;
     private const int DoubleClickIntervalMs = 500;
+    private const int CopyErrorFlashDurationMs = 5000;
 
     [GeneratedRegex(@"^\e\]133;A(?:\a|\e\\)")]
     private static partial Regex Osc133PromptStart();
@@ -144,7 +148,7 @@ public sealed partial class TuiAltScreen : TuiBase
     private readonly Func<string>? _scrollToEndIndicator;
     private readonly Action<string>? _openUrl;
     private readonly Action? _onRightClickPaste;
-    private readonly Func<string, Task<bool>>? _copySelection;
+    private readonly Func<string, Task<string?>>? _copySelection;
 
     private sealed class ImplicitDocument(TuiAltScreen tui) : IMouseComponent
     {
@@ -1179,9 +1183,10 @@ public sealed partial class TuiAltScreen : TuiBase
     {
         if (_copySelection is not null)
         {
-            var ok = await _copySelection(text);
-            Flash(ok ? "Copied!" : "Copy failed");
-            return ok;
+            var error = await _copySelection(text);
+            if (error is null) Flash("Copied!");
+            else Flash(error.Length > 0 ? error : "Copy failed", CopyErrorFlashDurationMs);
+            return error is null;
         }
         Terminal.Write($"\e]52;c;{Convert.ToBase64String(Encoding.UTF8.GetBytes(text))}\a");
         Flash("Copied!");

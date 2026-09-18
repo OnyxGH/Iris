@@ -66,16 +66,17 @@ internal sealed class ScreenTerminal(int columns, int rows) : ITerminal
 
 public class AltScreenTests
 {
-    private static (TuiAltScreen Tui, ScreenTerminal Terminal, List<string> Copied) Create()
+    private static (TuiAltScreen Tui, ScreenTerminal Terminal, List<string> Copied) Create(string? copyError = null)
     {
         var terminal = new ScreenTerminal(40, 10);
         var copied = new List<string>();
         var tui = new TuiAltScreen(terminal, new UiDispatcher(), options: new TuiAltScreenOptions
         {
+            CopyOnSelect = copyError is null,
             CopySelection = text =>
             {
                 copied.Add(text);
-                return Task.FromResult(true);
+                return Task.FromResult(copyError);
             },
         });
         var transcript = new Container();
@@ -130,5 +131,20 @@ public class AltScreenTests
         terminal.Input!(Sgr(0, 2, 4, release: true));
         tui.RenderNow();
         Assert.Equal(["footer s"], copied);
+    }
+
+    [Fact]
+    public async Task CopyFailureFlashesTheBackendError()
+    {
+        var (tui, terminal, copied) = Create(copyError: "Clipboard unavailable: install xclip");
+        terminal.Input!(Sgr(0, 0, 6));
+        terminal.Input!(Sgr(32, 3, 7));
+        terminal.Input!(Sgr(0, 3, 7, release: true));
+        Assert.Empty(copied);
+
+        Assert.False(await tui.CopyActiveSelectionToClipboardAsync());
+        tui.RenderNow();
+        Assert.Contains(terminal.Screen, line => line.Contains("Clipboard unavailable: install xclip"));
+        Assert.DoesNotContain(terminal.Screen, line => line.Contains("Copy failed"));
     }
 }
