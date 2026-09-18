@@ -173,6 +173,9 @@ public static class DefaultStreamFn
 
     public static void Set(StreamFn? streamFn) => _default = streamFn;
 
+    /// <summary>The configured fallback, or null when none has been set.</summary>
+    public static StreamFn? Current => _default;
+
     public static StreamFn Get() =>
         _default ?? throw new InvalidOperationException("No default stream function configured. Pass streamFn explicitly or call DefaultStreamFn.Set().");
 

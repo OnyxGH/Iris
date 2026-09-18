@@ -179,7 +179,7 @@ public sealed partial class AgentSession : IDisposable
 
     private async Task<RequestAuth> GetSummarizationRequestAuthAsync(Model model)
     {
-        if (ReferenceEquals(Agent.StreamFunction, DefaultStreamFn.Get())) return await GetRequiredRequestAuthAsync(model);
+        if (DefaultStreamFn.Current is { } fallback && ReferenceEquals(Agent.StreamFunction, fallback)) return await GetRequiredRequestAuthAsync(model);
         try
         {
             var result = await _modelRuntime.GetAuthAsync(model);
