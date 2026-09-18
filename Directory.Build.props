@@ -7,7 +7,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <!-- Iris version. -->
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <InvariantGlobalization>true</InvariantGlobalization>
     <!-- Only ship English resources of dependencies (Roslyn has many localized satellite assemblies). -->
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
