@@ -18,7 +18,10 @@ public sealed class ShellExecOptions
     public IDictionary<string, string>? Env { get; init; }
 }
 
-/// <summary>Pluggable operations for the bash/powershell tools. Exec returns the exit code (null if killed).</summary>
+/// <summary>
+/// Pluggable operations for the bash/powershell tools. Exec returns the exit code; report signal terminations as
+/// 128 + signal number. A null exit code is treated as a failed command.
+/// </summary>
 public interface IBashOperations
 {
     Task<int?> ExecAsync(string command, string cwd, ShellExecOptions options);
@@ -383,6 +386,10 @@ public static class ShellTool
 
             var finalSnapshot = await FinishOutputAsync();
             var (outputText, finalDetails) = FormatOutput(finalSnapshot);
+            if (exitCode is null)
+            {
+                throw new InvalidOperationException(AppendStatus(outputText, "Command terminated without an exit code"));
+            }
             if (exitCode is { } code && code != 0)
             {
                 throw new InvalidOperationException(AppendStatus(outputText, $"Command exited with code {code}"));

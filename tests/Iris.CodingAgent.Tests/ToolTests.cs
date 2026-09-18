@@ -252,6 +252,24 @@ public class ShellToolTests
         Assert.Equal("oops\n\n\nCommand exited with code 3", failed.Message);
     }
 
+    private sealed class NoExitCodeOperations : IBashOperations
+    {
+        public Task<int?> ExecAsync(string command, string cwd, ShellExecOptions options)
+        {
+            options.OnData("partial\n"u8.ToArray());
+            return Task.FromResult<int?>(null);
+        }
+    }
+
+    [Fact]
+    public async Task FailsCommandsWithoutAnExitCode()
+    {
+        using var dir = new TempDir();
+        var tool = ShellTool.CreateBashDefinition(dir.Path, new BashToolOptions { Operations = new NoExitCodeOperations() });
+        var ex = await Assert.ThrowsAnyAsync<Exception>(() => tool.Execute("id", new JsonObject { ["command"] = "anything" }, default, null, null));
+        Assert.Equal("partial\n\n\nCommand terminated without an exit code", ex.Message);
+    }
+
     [Fact]
     public async Task ExposesSessionEnvironmentAndCwd()
     {
