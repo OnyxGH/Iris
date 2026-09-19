@@ -32,6 +32,10 @@ pi stays the parity baseline, but Iris deliberately deviates in a few places (se
 - Startup header shows a gradient IRIS block-letter banner instead of the one-line logo.
 - llama.cpp models selected while unloaded get their real context size once they answer (catalog re-read); pi keeps the
   128k placeholder.
+- llama.cpp thinking levels mean something: a template with a `reasoning_effort` variable gets the chosen level (only
+  the values it accepts are offered, e.g. low/medium/xhigh), and a template that can only switch thinking gets a
+  `thinking_budget_tokens` cap per level like llama.cpp's web UI (low 512, medium 2048, high 8192, xhigh unlimited;
+  `thinkingBudgets` overrides). pi offers only on ("medium") and off.
 
 ## Decisions
 

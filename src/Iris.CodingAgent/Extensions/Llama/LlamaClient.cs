@@ -55,7 +55,8 @@ public sealed class LlamaModelInfo
 }
 
 /// <summary>Fields Iris reads from llama-server's /props.</summary>
-public sealed record LlamaServerProps(bool? ModelsAutoload, string? ChatTemplate);
+/// <param name="SupportsReasoningEffort">chat_template_caps.supports_reasoning_effort: the template reads a reasoning_effort variable.</param>
+public sealed record LlamaServerProps(bool? ModelsAutoload, string? ChatTemplate, bool SupportsReasoningEffort = false);
 
 public sealed record LlamaProgress(string Message, double? Ratio = null, string? Detail = null);
 
@@ -157,7 +158,10 @@ public sealed class LlamaClient
     {
         var query = model is null ? "" : $"?model={Uri.EscapeDataString(model)}&autoload=false";
         var payload = await RequestAsync(HttpMethod.Get, "/props" + query, null, ct) as JsonObject;
-        return new LlamaServerProps(IrisJson.GetBool(payload?["models_autoload"]), IrisJson.GetString(payload?["chat_template"]));
+        return new LlamaServerProps(
+            IrisJson.GetBool(payload?["models_autoload"]),
+            IrisJson.GetString(payload?["chat_template"]),
+            IrisJson.GetBool((payload?["chat_template_caps"] as JsonObject)?["supports_reasoning_effort"]) == true);
     }
 
     public Task LoadAsync(string model, CancellationToken ct = default) => RequestAsync(HttpMethod.Post, "/models/load", new JsonObject { ["model"] = model }, ct);

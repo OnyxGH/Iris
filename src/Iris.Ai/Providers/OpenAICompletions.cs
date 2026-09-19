@@ -37,6 +37,7 @@ internal sealed record ResolvedCompletionsCompat
     public bool ZaiToolStream { get; init; }
     public bool? SupportsThinkingTokenBudget { get; init; }
     public string? ThinkingTokenBudgetField { get; init; }
+    public JsonObject? ThinkingTokenBudgets { get; init; }
     public bool SupportsStrictMode { get; init; }
     public bool SupportsOpenAIGrammarTools { get; init; }
     public string? CacheControlFormat { get; init; }
@@ -518,7 +519,7 @@ public sealed class OpenAICompletionsApi : IApiStreams
         if (compat.VllmPriority is not null) p["priority"] = compat.VllmPriority;
 
         var thinkingTokenBudgetField = compat.ThinkingTokenBudgetField ?? (compat.SupportsThinkingTokenBudget == true ? "thinking_token_budget" : null);
-        var thinkingBudget = ResolveClampedThinkingBudget(model, options, p);
+        var thinkingBudget = ResolveClampedThinkingBudget(model, options, p, compat);
         var effort = options?.ReasoningEffort;
 
         string? MappedOr(ThinkingLevel level, string fallback, out bool isNullMapping)
@@ -657,13 +658,30 @@ public sealed class OpenAICompletionsApi : IApiStreams
         return runes.Count <= 64 ? key : string.Concat(runes.Take(64).Select(r => r.ToString()));
     }
 
-    private static long? ResolveClampedThinkingBudget(Model model, OpenAICompletionsOptions? options, JsonObject p)
+    private static long? ResolveClampedThinkingBudget(Model model, OpenAICompletionsOptions? options, JsonObject p, ResolvedCompletionsCompat compat)
     {
-        if (options?.ReasoningEffort is null || !model.Reasoning) return null;
+        if (options?.ReasoningEffort is not { } level || !model.Reasoning) return null;
         long ceiling = p["max_tokens"] is JsonValue a && a.TryGetValue<long>(out var mt) ? mt
             : p["max_completion_tokens"] is JsonValue b && b.TryGetValue<long>(out var mct) ? mct
             : model.MaxTokens;
-        var budget = SimpleOptions.ClampThinkingBudgetToAnswerRoom(SimpleOptions.ThinkingBudgetForLevel(options.ReasoningEffort.Value, options.ThinkingBudgets), ceiling);
+        var custom = options.ThinkingBudgets;
+        int? userBudget = level switch
+        {
+            ThinkingLevel.Minimal => custom?.Minimal,
+            ThinkingLevel.Low => custom?.Low,
+            ThinkingLevel.Medium => custom?.Medium,
+            ThinkingLevel.High => custom?.High,
+            _ => null,
+        };
+        long? requested = userBudget;
+        if (requested is null && compat.ThinkingTokenBudgets is { } defaults && defaults.TryGetPropertyValue(level.ToWire(), out var fallback))
+        {
+            // A model's own default table decides per level; a null entry means no cap for that level.
+            if (fallback is not JsonValue value || !value.TryGetValue<long>(out var perLevel)) return null;
+            requested = perLevel;
+        }
+        requested ??= SimpleOptions.ThinkingBudgetForLevel(level, custom);
+        var budget = SimpleOptions.ClampThinkingBudgetToAnswerRoom(requested.Value, ceiling);
         return budget > 0 ? budget : null;
     }
 
@@ -1233,6 +1251,7 @@ public sealed class OpenAICompletionsApi : IApiStreams
             ZaiToolStream = c.ZaiToolStream ?? detected.ZaiToolStream,
             SupportsThinkingTokenBudget = c.SupportsThinkingTokenBudget ?? detected.SupportsThinkingTokenBudget,
             ThinkingTokenBudgetField = c.ThinkingTokenBudgetField ?? detected.ThinkingTokenBudgetField,
+            ThinkingTokenBudgets = c.ThinkingTokenBudgets,
             SupportsStrictMode = c.SupportsStrictMode ?? detected.SupportsStrictMode,
             SupportsOpenAIGrammarTools = c.SupportsOpenAIGrammarTools ?? detected.SupportsOpenAIGrammarTools,
             CacheControlFormat = c.CacheControlFormat ?? detected.CacheControlFormat,

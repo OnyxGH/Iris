@@ -27,6 +27,11 @@ public sealed class OpenAICompletionsCompat
     /// <summary>"thinking_token_budget" | "thinking_budget" | "thinking_budget_tokens".</summary>
     public string? ThinkingTokenBudgetField { get; set; }
     public bool? SupportsThinkingTokenBudget { get; set; }
+    /// <summary>
+    /// Default thinking token budget per level ("minimal".."xhigh") for thinkingTokenBudgetField; a null value sends no
+    /// budget for that level. User thinkingBudgets settings take precedence.
+    /// </summary>
+    public JsonObject? ThinkingTokenBudgets { get; set; }
     public bool? SupportsOpenAIGrammarTools { get; set; }
     public bool? SupportsStrictMode { get; set; }
     /// <summary>"anthropic".</summary>

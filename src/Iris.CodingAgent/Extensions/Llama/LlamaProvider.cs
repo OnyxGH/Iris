@@ -137,7 +137,8 @@ public sealed class LlamaProvider : IProvider
     {
         var reported = model.ContextSize ?? model.TrainContextSize;
         var contextWindow = reported is > 0 ? reported.Value : PlaceholderContextWindow;
-        var reasoning = props?.ChatTemplate?.Contains("enable_thinking", StringComparison.Ordinal) == true;
+        var thinking = LlamaThinking.Detect(props);
+        var reasoning = thinking is not null;
         var compat = new JsonObject
         {
             ["supportsStore"] = false,
@@ -147,7 +148,7 @@ public sealed class LlamaProvider : IProvider
             ["supportsStrictMode"] = false,
             ["maxTokensField"] = "max_tokens",
         };
-        if (reasoning) compat["thinkingFormat"] = "qwen-chat-template";
+        foreach (var (key, value) in thinking?.Compat ?? []) compat[key] = value?.DeepClone();
         return new Model
         {
             Id = model.Id,
@@ -156,9 +157,7 @@ public sealed class LlamaProvider : IProvider
             Provider = ProviderId,
             BaseUrl = LlamaClient.InferenceUrl(serverUrl),
             Reasoning = reasoning,
-            ThinkingLevelMap = reasoning
-                ? new Dictionary<string, string?> { ["off"] = "off", ["minimal"] = null, ["low"] = null, ["medium"] = "medium", ["high"] = null, ["xhigh"] = null }
-                : null,
+            ThinkingLevelMap = thinking?.ThinkingLevelMap,
             Input = model.InputModalities?.Contains("image") == true ? ["text", "image"] : ["text"],
             Cost = new ModelCost(),
             ContextWindow = contextWindow,
